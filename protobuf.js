@@ -18,36 +18,24 @@ tyts.ProtoBuf.WireStartGroup = 3;
 tyts.ProtoBuf.WireEndGroup   = 4;
 tyts.ProtoBuf.WireFixed32    = 5;
 
-tyts.ProtoBuf.MAKE_TAG = function(fieldNum, wireType) {
-	return (fieldNum << tyts.ProtoBuf.WireTypeBits) | wireType;
-};
-
-tyts.ProtoBuf.MAKE_CUTOFF = function(fieldNum) {
-	var max_tag = tyts.ProtoBuf.MAKE_TAG(fieldNum, tyts.ProtoBuf.WireTypeMask);
-	if (max_tag <= 0x7F) {
-		return 0x7F;
-	} else if (max_tag <= 0x3FFF) {
-		return 0x3FF;
-	} else {
-		return max_tag;
-	}
-};
-
-tyts.ProtoBuf.TAG_FIELD = function(tag) {
-	return tag >> WireTypeBits;
-};
-
-tyts.ProtoBuf.TAG_WIRE = function(tag) {
-	return tag & WireTypeMask;
-};
-
-tyts.ProtoBuf.TAG_SIZE = function(fieldNum) {
-	return tyts.ProtoBuf.SizeVarint(fieldNum << WireTypeBits);
-};
-
 tyts.ProtoBuf.SizeVarint = function(x) {
 	var n = 0;
-	do { n++; x >>= 7; } while (x);
+	do { n++; x >>>= 7; } while (x);
+	return n;
+};
+
+tyts.ProtoBuf.SizeString = function(s) {
+	var n = 0;
+	for (var i = 0; i < s.length; i++) {
+		var c = s.charCodeAt(i);
+		if (c < 128) {
+			n++;
+		} else if (c < 2048) {
+			n += 2;
+		} else {
+			n += 3;
+		}
+	}
 	return n;
 };
 
@@ -55,40 +43,84 @@ tyts.ProtoBuf.prototype.Reset = function() {
 	this.offset = 0;
 };
 
+tyts.ProtoBuf.prototype.End = function() {
+	return this.offset >= this.buffer.length;
+}
+
 tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 	this.buffer.set(bytes, this.offset);
 	this.offset += bytes.length;
 }
 
-tyts.ProtoBuf.prototype.Read = function(n) {
+tyts.ProtoBuf.prototype.ReadBytes = function(n) {
 	return this.buffer.slice(this.offset, this.offset + n);
 }
 
-tyts.ProtoBuf.prototype.WriteVarint = function(x uint64) {
-	for x >= 0x80 {
-		this.buffer[this.offset] = byte(x) | 0x80
-		x >>= 7
-		this.offset++
+tyts.ProtoBuf.prototype.WriteString = function(s) {
+	this.WriteVarint(tyts.ProtoBuf.SizeString(s));
+	// UTF16 to UTF8 conversion loop
+	for (var i = 0; i < s.length; i++) {
+		var c = s.charCodeAt(i);
+		if (c < 128) {
+			this.buffer[this.offset++] = c;
+		} else if (c < 2048) {
+			this.buffer[this.offset++] = (c >> 6) | 192;
+			this.buffer[this.offset++] = (c & 63) | 128;
+		} else {
+			this.buffer[this.offset++] = (c >> 12) | 224;
+			this.buffer[this.offset++] = ((c >> 6) & 63) | 128;
+			this.buffer[this.offset++] = (c & 63) | 128;
+		}
 	}
-	this.buffer[this.offset] = byte(x)
-	this.offset++
 }
 
-tyts.ProtoBuf.prototype.ReadVarint = function() (uint64, error) {
-	var x uint64
-	var s uint
-	for i, b := range this.buffer[this.offset:] {
-		if b < 0x80 {
-			if i > 9 || i == 9 && b > 1 {
-				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadVarint overflow: %v", this.buffer[this.offset:this.offset+i+1])
-			}
-			this.offset += i + 1
-			return x | uint64(b)<<s, nil
+tyts.ProtoBuf.prototype.ReadString = function() {
+	var bytes = this.ReadBytes(this.ReadVarint());
+	var chars = [];
+
+	for (var i = 0; i < bytes.length;) {
+		var c = bytes[i++];
+		if (c < 128) { // Regular 7-bit ASCII.
+			chars.push(c);
+		} else if (c < 192) {
+			// UTF-8 continuation mark. We are out of sync. This
+			// might happen if we attempted to read a character
+			// with more than three bytes.
+			continue;
+		} else if (c < 224) { // UTF-8 with two bytes.
+			var c2 = bytes[i++];
+			chars.push(((c & 31) << 6) | (c2 & 63));
+		} else if (c < 240) { // UTF-8 with three bytes.
+			var c2 = bytes[i++];
+			var c3 = bytes[i++];
+			chars.push(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
 		}
-		x |= uint64(b & 0x7f) << s
-		s += 7
 	}
-	return 0, io.EOF
+
+	// String.fromCharCode.apply is faster than manually appending characters on
+	// Chrome 25+, and generates no additional cons string garbage.
+	return String.fromCharCode.apply(null, chars);
+}
+
+tyts.ProtoBuf.prototype.WriteVarint = function(x) {
+	while (x >= 0x80) {
+		this.buffer[this.offset++] = (x & 0x7F) | 0x80;
+		x >>>= 7;
+	}
+	this.buffer[this.offset++] = (x & 0x7F) | 0x80;
+}
+
+tyts.ProtoBuf.prototype.ReadVarint = function() {
+	var x = 0, s = 0;
+	while (this.offset < 10) {
+		var b = this.buffer[this.offset++];
+		if (b < 0x80) {
+			return x | ((b & 0x7F) << s);
+		}
+		x |= ((b & 0x7F) << s);
+		s += 7;
+	}
+	return x;
 }
 
 tyts.ProtoBuf.prototype.WriteByte = function() {
@@ -114,67 +146,34 @@ tyts.ProtoBuf.prototype.ReadUint32 = function() {
 	return ((a << 0) | (b << 8) | (c << 16) | (d << 24)) >>> 0;
 }
 
-tyts.ProtoBuf.prototype.ReadTag = function(cutoff int) (int, bool, error) {
-	if this.offset >= len(this.buffer) {
-		return 0, false, io.EOF
+tyts.ProtoBuf.prototype.ReadTag = function(cutoff) {
+	var b1 = this.buffer[this.offset++];
+	if (b1 < 0x80) {
+		return [b1 & 0x7F, cutoff >= 0x7F || b1 <= cutoff];
 	}
-	b1 := int(this.buffer[this.offset])
-	if b1 < 0x80 {
-		this.offset++
-		return b1, cutoff >= 0x7F || b1 <= cutoff, nil
+	var b2 = this.buffer[this.offset++];
+	if (cutoff >= 0x80 && b2 < 0x80) {
+		b1 = ((b2 & 0x7F) << 7) + (b1 & 0x7F);
+		return [b1, cutoff >= 0x3FFF || b1 <= cutoff];
 	}
-	if this.offset+1 >= len(this.buffer) {
-		return 0, false, io.EOF
-	}
-	b2 := int(this.buffer[this.offset+1])
-	if cutoff >= 0x80 && b2 < 0x80 {
-		this.offset += 2
-		b1 = (b2 << 7) + (b1 - 0x80)
-		return b1, cutoff >= 0x3FFF || b1 <= cutoff, nil
-	}
-	x, err := this.ReadVarint()
-	return int(x), int(x) <= cutoff, err
+	var x = this.ReadVarint();
+	return [x, x <= cutoff];
 }
 
-tyts.ProtoBuf.prototype.ExpectTag = function(fieldNum int, wireType WireType) bool {
-	if this.offset >= len(this.buffer) {
-		return false
+tyts.ProtoBuf.prototype.SkipField = function(tag) {
+	switch (tag & WireTypeMask) {
+	case tyts.ProtoBuf.WireVarint:
+		this.ReadVarint();
+		break;
+	case tyts.ProtoBuf.WireFixed64:
+		this.ReadUint32();
+		this.ReadUint32();
+		break;
+	case tyts.ProtoBuf.WireBytes:
+		this.ReadBytes(this.ReadVarint());
+		break;
+	case tyts.ProtoBuf.WireFixed32:
+		this.ReadUint32();
+		break;
 	}
-	offset := this.offset
-	tag := _MAKE_TAG(fieldNum, wireType)
-	for tag >= 0x80 {
-		if this.buffer[offset] != byte(tag)|0x80 {
-			return false
-		}
-		tag >>= 7
-		offset++
-		if offset >= len(this.buffer) {
-			return false
-		}
-	}
-	if this.buffer[offset] != byte(tag) {
-		return false
-	}
-	this.offset = offset + 1
-	return true
-}
-
-tyts.ProtoBuf.prototype.ExpectEnd = function() bool {
-	return this.offset >= len(this.buffer)
-}
-
-tyts.ProtoBuf.prototype.SkipField = function(tag int) (err error) {
-	switch _TAG_WIRE(tag) {
-	case WireVarint:
-		_, err = this.ReadVarint()
-	case WireFixed64:
-		_, err = this.ReadFixed64()
-	case WireBytes:
-		_, err = this.ReadBuf()
-	case WireFixed32:
-		_, err = this.ReadFixed32()
-	default:
-		err = fmt.Errorf("[Tygo][WireType] Unexpect field type to skip: %d", tag)
-	}
-	return
 }
