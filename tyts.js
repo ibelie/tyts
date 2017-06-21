@@ -17,6 +17,8 @@ goog.provide('tyts.Extension');
 
 goog.require('tyts.ProtoBuf');
 goog.require('tyts.SizeVarint');
+goog.require('tyts.WireTypeBits');
+goog.require('tyts.WireTypeMask');
 
 
 TYPE_INTEGER    =  0;
@@ -32,13 +34,16 @@ TYPE_LIST       =  9;
 TYPE_DICT       = 10;
 TYPE_EXTENSION  = 11;
 
-TYPE_PRIMITIVE  = 5;
+TYPE_PRIMITIVE  = 4;
 
 
 //=============================================================================
 
 tyts.Integer = new function() {
 	this.$ = TYPE_INTEGER;
+	this.Default = function() {
+		return 0;
+	};
 	this.Check = function(value) {
 		return value === parseInt(value);
 	};
@@ -70,6 +75,10 @@ tyts.FixedPoint = function(floor, precision) {
 };
 
 tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
+
+tyts.FixedPoint.prototype.Default = function() {
+	return 0;
+};
 
 tyts.FixedPoint.prototype.Check = function(value) {
 	return value === parseFloat(value);
@@ -105,6 +114,9 @@ tyts.Float64 = new function() {
 	this.TWO_TO_52 = 4503599627370496;
 	this.FLOAT64_MIN = 2.2250738585072014e-308;
 	this.FLOAT64_MAX = 1.7976931348623157e+308;
+	this.Default = function() {
+		return 0;
+	};
 	this.Check = function(value) {
 		return value === parseFloat(value);
 	};
@@ -191,6 +203,9 @@ tyts.Float32 = new function() {
 	this.TWO_TO_23 = 8388608;
 	this.FLOAT32_MIN = 1.1754943508222875e-38;
 	this.FLOAT32_MAX = 3.4028234663852886e+38;
+	this.Default = function() {
+		return 0;
+	};
 	this.Check = function(value) {
 		return value === parseFloat(value);
 	};
@@ -259,6 +274,9 @@ tyts.Float32 = new function() {
 
 tyts.Bool = new function() {
 	this.$ = TYPE_BOOL;
+	this.Default = function() {
+		return false;
+	};
 	this.Check = function(value) {
 		return value === Boolean(value);
 	};
@@ -286,6 +304,9 @@ tyts.Bool = new function() {
 
 tyts.Bytes = new function() {
 	this.$ = TYPE_BYTES;
+	this.Default = function() {
+		return new Uint8Array(0);
+	};
 	this.Check = function(value) {
 		return value instanceof Uint8Array;
 	};
@@ -314,6 +335,9 @@ tyts.Bytes = new function() {
 
 tyts.String = new function() {
 	this.$ = TYPE_STRING;
+	this.Default = function() {
+		return "";
+	};
 	this.Check = function(value) {
 		return value === String(value);
 	};
@@ -401,42 +425,16 @@ tyts.Object = function(name, cutoff, fields) {
 	type.Instance = function() {
 		for (var i = 0; i < type.fields.length; i++) {
 			var field = type.fields[i];
+			var fieldname = '_' + field.name;
 			Object.defineProperty(this, field.name, {
 				get: function() {
-					var fieldname = '_' + field.name;
 					if (this[fieldname] == undefined) {
-						switch (field.type.$) {
-						case TYPE_INTEGER:
-						case TYPE_FIXEDPOINT:
-						case TYPE_FLOAT64:
-						case TYPE_FLOAT32:
-							this[fieldname] = 0;
-							break;
-						case TYPE_BOOL:
-							this[fieldname] = false;
-							break;
-						case TYPE_BYTES:
-							this[fieldname] = [];
-							break;
-						case TYPE_STRING:
-							this[fieldname] = "";
-							break;
-						case TYPE_OBJECT:
-						case TYPE_VARIANT:
-							this[fieldname] = null;
-							break;
-						case TYPE_LIST:
-							this[fieldname] = [];
-							break;
-						case TYPE_DICT:
-							this[fieldname] = {};
-							break;
-						}
+						this[fieldname] = field.type.Default();
 					}
 					return this[fieldname];
 				},
 				set: function(value) {
-					this['_' + field.name] = value;
+					this[fieldname] = value;
 				}
 			});
 		}
@@ -452,16 +450,20 @@ tyts.Object = function(name, cutoff, fields) {
 		return protobuf.buffer;
 	};
 	type.Instance.prototype.Deserialize = function(buffer) {
-		type.DeserializeNoLimit(this, new tyts.ProtoBuf(buffer));
+		type.DeserializeInplace(this, new tyts.ProtoBuf(buffer));
 	};
 	type.Instance.Deserialize = function(buffer) {
 		var object = new type.Instance();
-		type.DeserializeNoLimit(object, new tyts.ProtoBuf(buffer));
+		type.DeserializeInplace(object, new tyts.ProtoBuf(buffer));
 		return object;
 	};
 };
 
 tyts.Object.prototype.$ = TYPE_OBJECT;
+
+tyts.Object.prototype.Default = function() {
+	return null;
+};
 
 tyts.Object.prototype.Check = function(value) {
 	return value instanceof type.Instance;
@@ -512,16 +514,31 @@ tyts.Object.prototype.Deserialize = function(value, protobuf) {
 		value = new this.Instance();
 	}
 	if (buffer.length > 0) {
-		this.DeserializeNoLimit(value, new tyts.ProtoBuf(buffer));
+		this.DeserializeInplace(value, new tyts.ProtoBuf(buffer));
 	}
 	return value;
 };
 
-tyts.Object.prototype.DeserializeNoLimit = function(value, protobuf) {
+tyts.Object.prototype.DeserializeInplace = function(value, protobuf) {
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
-		if (tag_cutoff[1]) {
+		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		if (tag_cutoff[1] && i >= 0 && i < this.fields.length) {
+			var field = this.fields[i];
+			var fieldname = '_' + field.name;
+			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			if (field.wiretype == wiretype) {
+				value[fieldname] = field.type.Deserialize(value[fieldname], protobuf);
+				continue;
+			} else if (field.type.$ == TYPE_LIST && field.type.element.wiretype == wiretype) {
+				value[fieldname] = field.type.DeserializeRepeat(value[fieldname], protobuf);
+				continue;
+			}
 		}
+		if (!tag_cutoff[0]) {
+			break;
+		}
+		protobuf.SkipField(tag_cutoff[0]);
 	}
 };
 
@@ -533,6 +550,10 @@ tyts.Variant = function(name, types) {
 };
 
 tyts.Variant.prototype.$ = TYPE_VARIANT;
+
+tyts.Variant.prototype.Default = function() {
+	return null;
+};
 
 tyts.Variant.prototype.Check = function(value) {
 	return false;
@@ -577,7 +598,27 @@ tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Variant.prototype.Deserialize = function(value, protobuf) {
-
+	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+	while (!protobuf.End()) {
+		var tag_cutoff = protobuf.ReadTag(this.cutoff);
+		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		if (tag_cutoff[1] && i >= 0 && i < this.types.length) {
+			var variant = this.types[i];
+			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			if (variant.wiretype == wiretype) {
+				value = variant.type.Deserialize(value, protobuf);
+				continue;
+			} else if (variant.type.$ == TYPE_LIST && variant.type.element.wiretype == wiretype) {
+				value = variant.type.DeserializeRepeat(value, protobuf);
+				continue;
+			}
+		}
+		if (!tag_cutoff[0]) {
+			break;
+		}
+		protobuf.SkipField(tag_cutoff[0]);
+	}
+	return value;
 };
 
 //=============================================================================
@@ -589,6 +630,10 @@ tyts.List = function(name, element) {
 
 tyts.List.prototype.$ = TYPE_LIST;
 
+tyts.List.prototype.Default = function() {
+	return [];
+};
+
 tyts.List.prototype.Check = function(value) {
 	return value instanceof Array;
 };
@@ -598,26 +643,25 @@ tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 		return 0;
 	}
 	var element = this.element.type;
-	if ((element.$ == TYPE_LIST && element.element.type.$ < TYPE_PRIMITIVE) ||
-		(element.$ != TYPE_LIST && element.element.type.$ >= TYPE_PRIMITIVE)) {
-		var size = 0;
-		for (var i = 0; i < value.length; i++) {
-			size += element.ByteSize(value[i], tagsize, false);
-		}
-		return size;
-	} else if (element.$ < TYPE_PRIMITIVE) {
-		var size = 0;
-		for (var i = 0; i < value.length; i++) {
-			size += element.ByteSize(value[i], 0, false);
-		}
-		return tagsize + tyts.SizeVarint(size) + size;
-	} else {
+	if (element.$ == TYPE_LIST && element.element.type.$ > TYPE_PRIMITIVE) {
 		var total = 0;
 		for (var i = 0; i < value.length; i++) {
 			var size = element.ByteSize(value[i], 0, false);
 			total += tagsize + tyts.SizeVarint(size) + size;
 		}
 		return total;
+	} else if (element.$ > TYPE_PRIMITIVE) {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			size += element.ByteSize(value[i], tagsize, false);
+		}
+		return size;
+	} else {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			size += element.ByteSize(value[i], 0, false);
+		}
+		return tagsize + tyts.SizeVarint(size) + size;
 	}
 };
 
@@ -626,12 +670,20 @@ tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		return;
 	}
 	var element = this.element.type;
-	if ((element.$ == TYPE_LIST && element.element.type.$ < TYPE_PRIMITIVE) ||
-		(element.$ != TYPE_LIST && element.element.type.$ >= TYPE_PRIMITIVE)) {
+	if (element.$ == TYPE_LIST && element.element.type.$ > TYPE_PRIMITIVE) {
+		for (var i = 0; i < value.length; i++) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			var size = element.ByteSize(value[i], 0, false);
+			protobuf.WriteVarint(size);
+			element.Serialize(value[i], 0, false, protobuf);
+		}
+	} else if (element.$ > TYPE_PRIMITIVE) {
 		for (var i = 0; i < value.length; i++) {
 			element.Serialize(value[i], tag, false, protobuf);
 		}
-	} else if (element.$ < TYPE_PRIMITIVE) {
+	} else {
 		var size = 0;
 		for (var i = 0; i < value.length; i++) {
 			size += element.ByteSize(value[i], 0, false);
@@ -643,20 +695,38 @@ tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		for (var i = 0; i < value.length; i++) {
 			element.Serialize(value[i], 0, false, protobuf);
 		}
-	} else {
-		for (var i = 0; i < value.length; i++) {
-			if (tag != 0) {
-				protobuf.WriteVarint(tag);
-			}
-			var size = element.ByteSize(value[i], 0, false);
-			protobuf.WriteVarint(size);
-			element.Serialize(value[i], 0, false, protobuf);
-		}
 	}
 };
 
 tyts.List.prototype.Deserialize = function(value, protobuf) {
+	if (!value) {
+		value = [];
+	}
+	var element = this.element.type;
+	if (element.$ == TYPE_LIST && element.element.type.$ > TYPE_PRIMITIVE) {
+		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+		var list;
+		while (!protobuf.End()) {
+			list = element.Deserialize(list, protobuf);
+		}
+		value.push(list);
+	} else if (element.$ > TYPE_PRIMITIVE) {
+		value.push(element.Deserialize(undefined, protobuf));
+	} else {
+		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+		while (!protobuf.End()) {
+			value.push(element.Deserialize(undefined, protobuf));
+		}
+	}
+	return value;
+};
 
+tyts.List.prototype.DeserializeRepeat = function(value, protobuf) {
+	if (!value) {
+		value = [];
+	}
+	value.push(element.Deserialize(undefined, protobuf));
+	return value;
 };
 
 //=============================================================================
@@ -668,6 +738,10 @@ tyts.Dict = function(name, key, value) {
 };
 
 tyts.Dict.prototype.$ = TYPE_DICT;
+
+tyts.Dict.prototype.Default = function() {
+	return {};
+};
 
 tyts.Dict.prototype.Check = function(value) {
 	return (value instanceof Object) && !(value instanceof Array) && !value.__class__;
@@ -698,7 +772,40 @@ tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Dict.prototype.Deserialize = function(value, protobuf) {
-
+	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+	var v, k = this.key.type.Default();
+	while (!protobuf.End()) {
+		var tag_cutoff = protobuf.ReadTag(this.cutoff);
+		var i = tag_cutoff[0] >> tyts.WireTypeBits;
+		if (tag_cutoff[1] && (i == 1 || i == 2)) {
+			var field = (i == 1 ? this.key : this.value);
+			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			if (field.wiretype == wiretype) {
+				if (i == 1) {
+					k = field.type.Deserialize(k, protobuf);
+				} else {
+					v = field.type.Deserialize(v, protobuf);
+				}
+				continue;
+			} else if (field.type.$ == TYPE_LIST && field.type.element.wiretype == wiretype) {
+				if (i == 1) {
+					k = field.type.DeserializeRepeat(k, protobuf);
+				} else {
+					v = field.type.DeserializeRepeat(v, protobuf);
+				}
+				continue;
+			}
+		}
+		if (!tag_cutoff[0]) {
+			break;
+		}
+		protobuf.SkipField(tag_cutoff[0]);
+	}
+	if (!value) {
+		value = {};
+	}
+	value[k] = v;
+	return value;
 };
 
 //=============================================================================
@@ -709,6 +816,10 @@ tyts.Extension = function(name, type) {
 };
 
 tyts.Extension.prototype.$ = TYPE_EXTENSION;
+
+tyts.Extension.prototype.Default = function() {
+	return null;
+};
 
 tyts.Extension.prototype.Check = function(value) {
 	return value instanceof this.type;

@@ -4,6 +4,18 @@
 
 goog.provide('tyts.ProtoBuf');
 goog.provide('tyts.SizeVarint');
+goog.provide('tyts.WireTypeBits');
+goog.provide('tyts.WireTypeMask');
+
+tyts.WireTypeBits   = 3;
+tyts.WireTypeMask   = (1 << WireTypeBits) - 1;
+
+tyts.WireVarint     = 0;
+tyts.WireFixed64    = 1;
+tyts.WireBytes      = 2;
+tyts.WireStartGroup = 3;
+tyts.WireEndGroup   = 4;
+tyts.WireFixed32    = 5;
 
 tyts.SizeVarint = function(x) {
 	var n = 0;
@@ -15,15 +27,6 @@ tyts.ProtoBuf = function(buffer) {
 	this.offset = 0;
 	this.buffer = buffer;
 };
-
-tyts.ProtoBuf.WireTypeBits   = 3;
-tyts.ProtoBuf.WireTypeMask   = (1 << WireTypeBits) - 1;
-tyts.ProtoBuf.WireVarint     = 0;
-tyts.ProtoBuf.WireFixed64    = 1;
-tyts.ProtoBuf.WireBytes      = 2;
-tyts.ProtoBuf.WireStartGroup = 3;
-tyts.ProtoBuf.WireEndGroup   = 4;
-tyts.ProtoBuf.WireFixed32    = 5;
 
 tyts.ProtoBuf.prototype.Reset = function() {
 	this.offset = 0;
@@ -110,17 +113,17 @@ tyts.ProtoBuf.prototype.ReadTag = function(cutoff) {
 
 tyts.ProtoBuf.prototype.SkipField = function(tag) {
 	switch (tag & WireTypeMask) {
-	case tyts.ProtoBuf.WireVarint:
+	case tyts.WireVarint:
 		this.ReadVarint();
 		break;
-	case tyts.ProtoBuf.WireFixed64:
+	case tyts.WireFixed64:
 		this.ReadUint32();
 		this.ReadUint32();
 		break;
-	case tyts.ProtoBuf.WireBytes:
+	case tyts.WireBytes:
 		this.ReadBytes(this.ReadVarint());
 		break;
-	case tyts.ProtoBuf.WireFixed32:
+	case tyts.WireFixed32:
 		this.ReadUint32();
 		break;
 	}
