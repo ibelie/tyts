@@ -292,9 +292,23 @@ tyts.Bytes = new function() {
 
 tyts.String = new function() {
 	this.$ = TYPE_STRING;
+	this.Size = function(value) {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			var c = value.charCodeAt(i);
+			if (c < 128) {
+				size++;
+			} else if (c < 2048) {
+				size += 2;
+			} else {
+				size += 3;
+			}
+		}
+		return size;
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value.length > 0) {
-			var size = tyts.ProtoBuf.SizeString(value);
+			var size = this.Size();
 			return tagsize + tyts.ProtoBuf.SizeVarint(size) + size;
 		} else {
 			return 0;
@@ -305,11 +319,49 @@ tyts.String = new function() {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
-			protobuf.WriteString(value);
+			protobuf.WriteVarint(this.Size(value));
+			// UTF16 to UTF8 conversion loop
+			for (var i = 0; i < value.length; i++) {
+				var c = value.charCodeAt(i);
+				if (c < 128) {
+					protobuf.buffer[protobuf.offset++] = c;
+				} else if (c < 2048) {
+					protobuf.buffer[protobuf.offset++] = (c >> 6) | 192;
+					protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
+				} else {
+					protobuf.buffer[protobuf.offset++] = (c >> 12) | 224;
+					protobuf.buffer[protobuf.offset++] = ((c >> 6) & 63) | 128;
+					protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
+				}
+			}
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
-		return protobuf.ReadString();
+		var bytes = protobuf.ReadBytes(protobuf.ReadVarint());
+		var chars = [];
+
+		for (var i = 0; i < bytes.length;) {
+			var c = bytes[i++];
+			if (c < 128) { // Regular 7-bit ASCII.
+				chars.push(c);
+			} else if (c < 192) {
+				// UTF-8 continuation mark. We are out of sync. This
+				// might happen if we attempted to read a character
+				// with more than three bytes.
+				continue;
+			} else if (c < 224) { // UTF-8 with two bytes.
+				var c2 = bytes[i++];
+				chars.push(((c & 31) << 6) | (c2 & 63));
+			} else if (c < 240) { // UTF-8 with three bytes.
+				var c2 = bytes[i++];
+				var c3 = bytes[i++];
+				chars.push(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+			}
+		}
+
+		// String.fromCharCode.apply is faster than manually appending characters on
+		// Chrome 25+, and generates no additional cons string garbage.
+		return String.fromCharCode.apply(null, chars);
 	};
 }();
 

@@ -24,21 +24,6 @@ tyts.ProtoBuf.SizeVarint = function(x) {
 	return n;
 };
 
-tyts.ProtoBuf.SizeString = function(s) {
-	var n = 0;
-	for (var i = 0; i < s.length; i++) {
-		var c = s.charCodeAt(i);
-		if (c < 128) {
-			n++;
-		} else if (c < 2048) {
-			n += 2;
-		} else {
-			n += 3;
-		}
-	}
-	return n;
-};
-
 tyts.ProtoBuf.prototype.Reset = function() {
 	this.offset = 0;
 };
@@ -54,52 +39,6 @@ tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 
 tyts.ProtoBuf.prototype.ReadBytes = function(n) {
 	return this.buffer.slice(this.offset, this.offset + n);
-}
-
-tyts.ProtoBuf.prototype.WriteString = function(s) {
-	this.WriteVarint(tyts.ProtoBuf.SizeString(s));
-	// UTF16 to UTF8 conversion loop
-	for (var i = 0; i < s.length; i++) {
-		var c = s.charCodeAt(i);
-		if (c < 128) {
-			this.buffer[this.offset++] = c;
-		} else if (c < 2048) {
-			this.buffer[this.offset++] = (c >> 6) | 192;
-			this.buffer[this.offset++] = (c & 63) | 128;
-		} else {
-			this.buffer[this.offset++] = (c >> 12) | 224;
-			this.buffer[this.offset++] = ((c >> 6) & 63) | 128;
-			this.buffer[this.offset++] = (c & 63) | 128;
-		}
-	}
-}
-
-tyts.ProtoBuf.prototype.ReadString = function() {
-	var bytes = this.ReadBytes(this.ReadVarint());
-	var chars = [];
-
-	for (var i = 0; i < bytes.length;) {
-		var c = bytes[i++];
-		if (c < 128) { // Regular 7-bit ASCII.
-			chars.push(c);
-		} else if (c < 192) {
-			// UTF-8 continuation mark. We are out of sync. This
-			// might happen if we attempted to read a character
-			// with more than three bytes.
-			continue;
-		} else if (c < 224) { // UTF-8 with two bytes.
-			var c2 = bytes[i++];
-			chars.push(((c & 31) << 6) | (c2 & 63));
-		} else if (c < 240) { // UTF-8 with three bytes.
-			var c2 = bytes[i++];
-			var c3 = bytes[i++];
-			chars.push(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-		}
-	}
-
-	// String.fromCharCode.apply is faster than manually appending characters on
-	// Chrome 25+, and generates no additional cons string garbage.
-	return String.fromCharCode.apply(null, chars);
 }
 
 tyts.ProtoBuf.prototype.WriteVarint = function(x) {
