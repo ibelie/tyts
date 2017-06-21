@@ -32,6 +32,8 @@ TYPE_LIST       =  9;
 TYPE_DICT       = 10;
 TYPE_EXTENSION  = 11;
 
+TYPE_PRIMITIVE  = 5;
+
 
 //=============================================================================
 
@@ -390,9 +392,10 @@ tyts.String = new function() {
 
 //=============================================================================
 
-tyts.Object = function(name, fields) {
+tyts.Object = function(name, cutoff, fields) {
 	var type = this;
 	type.name = name;
+	type.cutoff = cutoff;
 	type.fields = fields;
 
 	type.Instance = function() {
@@ -449,11 +452,11 @@ tyts.Object = function(name, fields) {
 		return protobuf.buffer;
 	};
 	type.Instance.prototype.Deserialize = function(buffer) {
-		return type.Deserialize(this, new tyts.ProtoBuf(buffer));
+		type.DeserializeNoLimit(this, new tyts.ProtoBuf(buffer));
 	};
 	type.Instance.Deserialize = function(buffer) {
 		var object = new type.Instance();
-		object.Deserialize(buffer);
+		type.DeserializeNoLimit(object, new tyts.ProtoBuf(buffer));
 		return object;
 	};
 };
@@ -504,7 +507,22 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Object.prototype.Deserialize = function(value, protobuf) {
+	var buffer = protobuf.ReadBuffer(protobuf.ReadVarint());
+	if (!value) {
+		value = new this.Instance();
+	}
+	if (buffer.length > 0) {
+		this.DeserializeNoLimit(value, new tyts.ProtoBuf(buffer));
+	}
+	return value;
+};
 
+tyts.Object.prototype.DeserializeNoLimit = function(value, protobuf) {
+	while (!protobuf.End()) {
+		var tag_cutoff = protobuf.ReadTag(this.cutoff);
+		if (tag_cutoff[1]) {
+		}
+	}
 };
 
 //=============================================================================
@@ -576,9 +594,65 @@ tyts.List.prototype.Check = function(value) {
 };
 
 tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
+	if (!value.length && ignore) {
+		return 0;
+	}
+	var element = this.element.type;
+	if ((element.$ == TYPE_LIST && element.element.type.$ < TYPE_PRIMITIVE) ||
+		(element.$ != TYPE_LIST && element.element.type.$ >= TYPE_PRIMITIVE)) {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			size += element.ByteSize(value[i], tagsize, false);
+		}
+		return size;
+	} else if (element.$ < TYPE_PRIMITIVE) {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			size += element.ByteSize(value[i], 0, false);
+		}
+		return tagsize + tyts.SizeVarint(size) + size;
+	} else {
+		var total = 0;
+		for (var i = 0; i < value.length; i++) {
+			var size = element.ByteSize(value[i], 0, false);
+			total += tagsize + tyts.SizeVarint(size) + size;
+		}
+		return total;
+	}
 };
 
 tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
+	if (!value.length && ignore) {
+		return;
+	}
+	var element = this.element.type;
+	if ((element.$ == TYPE_LIST && element.element.type.$ < TYPE_PRIMITIVE) ||
+		(element.$ != TYPE_LIST && element.element.type.$ >= TYPE_PRIMITIVE)) {
+		for (var i = 0; i < value.length; i++) {
+			element.Serialize(value[i], tag, false, protobuf);
+		}
+	} else if (element.$ < TYPE_PRIMITIVE) {
+		var size = 0;
+		for (var i = 0; i < value.length; i++) {
+			size += element.ByteSize(value[i], 0, false);
+		}
+		if (tag != 0) {
+			protobuf.WriteVarint(tag);
+		}
+		protobuf.WriteVarint(size);
+		for (var i = 0; i < value.length; i++) {
+			element.Serialize(value[i], 0, false, protobuf);
+		}
+	} else {
+		for (var i = 0; i < value.length; i++) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			var size = element.ByteSize(value[i], 0, false);
+			protobuf.WriteVarint(size);
+			element.Serialize(value[i], 0, false, protobuf);
+		}
+	}
 };
 
 tyts.List.prototype.Deserialize = function(value, protobuf) {

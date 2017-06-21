@@ -39,7 +39,15 @@ tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 }
 
 tyts.ProtoBuf.prototype.ReadBytes = function(n) {
-	return this.buffer.slice(this.offset, this.offset + n);
+	var slice = this.buffer.slice(this.offset, this.offset + n);
+	this.offset += n;
+	return slice;
+}
+
+tyts.ProtoBuf.prototype.ReadBuffer = function(n) {
+	var buffer = this.buffer.subarray(this.offset, this.offset + n);
+	this.offset += n;
+	return buffer;
 }
 
 tyts.ProtoBuf.prototype.WriteVarint = function(x) {
