@@ -52,7 +52,7 @@ tyts.ProtoBuf.prototype.WriteVarint = function(x) {
 
 tyts.ProtoBuf.prototype.ReadVarint = function() {
 	var x = 0, s = 0;
-	while (this.offset < 10) {
+	while (s < 64) {
 		var b = this.buffer[this.offset++];
 		if (b < 0x80) {
 			return x | ((b & 0x7F) << s);

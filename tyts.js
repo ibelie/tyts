@@ -37,6 +37,9 @@ TYPE_EXTENSION  = 11;
 
 tyts.Integer = new function() {
 	this.$ = TYPE_INTEGER;
+	this.Check = function(value) {
+		return value === parseInt(value);
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value != 0) {
 			return tagsize + tyts.SizeVarint(value);
@@ -65,6 +68,10 @@ tyts.FixedPoint = function(floor, precision) {
 };
 
 tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
+
+tyts.FixedPoint.prototype.Check = function(value) {
+	return value === parseFloat(value);
+};
 
 tyts.FixedPoint.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!ignore || value != this.floor) {
@@ -96,6 +103,9 @@ tyts.Float64 = new function() {
 	this.TWO_TO_52 = 4503599627370496;
 	this.FLOAT64_MIN = 2.2250738585072014e-308;
 	this.FLOAT64_MAX = 1.7976931348623157e+308;
+	this.Check = function(value) {
+		return value === parseFloat(value);
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value != 0) {
 			return tagsize + 8;
@@ -179,6 +189,9 @@ tyts.Float32 = new function() {
 	this.TWO_TO_23 = 8388608;
 	this.FLOAT32_MIN = 1.1754943508222875e-38;
 	this.FLOAT32_MAX = 3.4028234663852886e+38;
+	this.Check = function(value) {
+		return value === parseFloat(value);
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value != 0) {
 			return tagsize + 4;
@@ -244,6 +257,9 @@ tyts.Float32 = new function() {
 
 tyts.Bool = new function() {
 	this.$ = TYPE_BOOL;
+	this.Check = function(value) {
+		return value === Boolean(value);
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value) {
 			return tagsize + 1;
@@ -268,6 +284,9 @@ tyts.Bool = new function() {
 
 tyts.Bytes = new function() {
 	this.$ = TYPE_BYTES;
+	this.Check = function(value) {
+		return value instanceof Uint8Array;
+	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value.length > 0) {
 			return tagsize + tyts.SizeVarint(value.length) + value.length;
@@ -293,6 +312,9 @@ tyts.Bytes = new function() {
 
 tyts.String = new function() {
 	this.$ = TYPE_STRING;
+	this.Check = function(value) {
+		return value === String(value);
+	};
 	this.Size = function(value) {
 		var size = 0;
 		for (var i = 0; i < value.length; i++) {
@@ -417,6 +439,7 @@ tyts.Object = function(name, fields) {
 		}
 	};
 
+	type.Instance.prototype.__class__ = name;
 	type.Instance.prototype.ByteSize = function() {
 		return type.ByteSize(this, 0, true);
 	};
@@ -437,6 +460,10 @@ tyts.Object = function(name, fields) {
 
 tyts.Object.prototype.$ = TYPE_OBJECT;
 
+tyts.Object.prototype.Check = function(value) {
+	return value instanceof type.Instance;
+};
+
 tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!value) {
 		return ignore ? 0 : tagsize + 1;
@@ -445,7 +472,7 @@ tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
 		var fieldname = '_' + field.name;
-		if (value[fieldname]) {
+		if (value[fieldname] != undefined) {
 			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
 		}
 	}
@@ -470,7 +497,7 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
 		var fieldname = '_' + field.name;
-		if (value[fieldname]) {
+		if (value[fieldname] != undefined) {
 			field.type.Serialize(value[fieldname], field.tag, true, protobuf);
 		}
 	}
@@ -489,24 +516,26 @@ tyts.Variant = function(name, types) {
 
 tyts.Variant.prototype.$ = TYPE_VARIANT;
 
+tyts.Variant.prototype.Check = function(value) {
+	return false;
+};
+
 tyts.Variant.prototype.ByteSize = function(value, tagsize, ignore) {
-	if (!value) {
+	if (value == null) {
 		return ignore ? 0 : tagsize + 1;
 	}
-	var size = 0;
 	for (var i = 0; i < this.types.length; i++) {
-		var field = this.types[i];
-		var fieldname = '_' + field.name;
-		if (value[fieldname]) {
-			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
+		var variant = this.types[i];
+		if (variant.Check(value)) {
+			var size = variant.type.ByteSize(value, variant.tagsize, true);
+			return tagsize + tyts.SizeVarint(size) + size;
 		}
 	}
-	value.cached_size = size;
-	return tagsize + tyts.SizeVarint(size) + size;
+	return tagsize + 1;
 };
 
 tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
-	if (!value) {
+	if (value == null) {
 		if (!ignore) {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
@@ -518,14 +547,15 @@ tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (tag != 0) {
 		protobuf.WriteVarint(tag);
 	}
-	protobuf.WriteVarint(value.cached_size);
 	for (var i = 0; i < this.types.length; i++) {
-		var field = this.types[i];
-		var fieldname = '_' + field.name;
-		if (value[fieldname]) {
-			field.type.Serialize(value[fieldname], field.tag, true, protobuf);
+		var variant = this.types[i];
+		if (variant.Check(value)) {
+			protobuf.WriteVarint(variant.type.ByteSize(value, variant.tagsize, true));
+			variant.type.Serialize(value, variant.tag, true, protobuf);
+			return;
 		}
 	}
+	protobuf.WriteByte(0);
 };
 
 tyts.Variant.prototype.Deserialize = function(value, protobuf) {
@@ -540,6 +570,10 @@ tyts.List = function(name, element) {
 };
 
 tyts.List.prototype.$ = TYPE_LIST;
+
+tyts.List.prototype.Check = function(value) {
+	return value instanceof Array;
+};
 
 tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 };
@@ -561,10 +595,32 @@ tyts.Dict = function(name, key, value) {
 
 tyts.Dict.prototype.$ = TYPE_DICT;
 
+tyts.Dict.prototype.Check = function(value) {
+	return (value instanceof Object) && !(value instanceof Array) && !value.__class__;
+};
+
 tyts.Dict.prototype.ByteSize = function(value, tagsize, ignore) {
+	var total = 0;
+	for (var k in value) {
+		var size = this.key.type.ByteSize(k, this.key.tagsize, true);
+		size += this.value.type.ByteSize(value[k], this.value.tagsize, true);
+		total += tagsize + tyts.SizeVarint(size) + size;
+	}
+	return total;
 };
 
 tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
+	for (var k in value) {
+		if (tag != 0) {
+			protobuf.WriteVarint(tag);
+		}
+		var v = value[k];
+		var size = this.key.type.ByteSize(k, this.key.tagsize, true);
+		size += this.value.type.ByteSize(v, this.value.tagsize, true);
+		protobuf.WriteVarint(size);
+		this.key.type.Serialize(k, this.key.tag, true, protobuf);
+		this.value.type.Serialize(v, this.value.tag, true, protobuf);
+	}
 };
 
 tyts.Dict.prototype.Deserialize = function(value, protobuf) {
@@ -579,6 +635,10 @@ tyts.Extension = function(name, type) {
 };
 
 tyts.Extension.prototype.$ = TYPE_EXTENSION;
+
+tyts.Extension.prototype.Check = function(value) {
+	return value instanceof this.type;
+};
 
 tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!ignore || value) {
