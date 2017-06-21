@@ -3,6 +3,13 @@
 // that can be found in the LICENSE file.
 
 goog.provide('tyts.ProtoBuf');
+goog.provide('tyts.SizeVarint');
+
+tyts.SizeVarint = function(x) {
+	var n = 0;
+	do { n++; x >>>= 7; } while (x);
+	return n;
+};
 
 tyts.ProtoBuf = function(buffer) {
 	this.offset = 0;
@@ -17,12 +24,6 @@ tyts.ProtoBuf.WireBytes      = 2;
 tyts.ProtoBuf.WireStartGroup = 3;
 tyts.ProtoBuf.WireEndGroup   = 4;
 tyts.ProtoBuf.WireFixed32    = 5;
-
-tyts.ProtoBuf.SizeVarint = function(x) {
-	var n = 0;
-	do { n++; x >>>= 7; } while (x);
-	return n;
-};
 
 tyts.ProtoBuf.prototype.Reset = function() {
 	this.offset = 0;

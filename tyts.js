@@ -16,6 +16,7 @@ goog.provide('tyts.Dict');
 goog.provide('tyts.Extension');
 
 goog.require('tyts.ProtoBuf');
+goog.require('tyts.SizeVarint');
 
 
 TYPE_INTEGER    =  0;
@@ -38,7 +39,7 @@ tyts.Integer = new function() {
 	this.$ = TYPE_INTEGER;
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value != 0) {
-			return tagsize + tyts.ProtoBuf.SizeVarint(value);
+			return tagsize + tyts.SizeVarint(value);
 		} else {
 			return 0;
 		}
@@ -67,7 +68,7 @@ tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
 
 tyts.FixedPoint.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!ignore || value != this.floor) {
-		return tagsize + tyts.ProtoBuf.SizeVarint(Math.floor((value - this.floor) * this.precision));
+		return tagsize + tyts.SizeVarint(Math.floor((value - this.floor) * this.precision));
 	} else {
 		return 0;
 	}
@@ -269,7 +270,7 @@ tyts.Bytes = new function() {
 	this.$ = TYPE_BYTES;
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value.length > 0) {
-			return tagsize + tyts.ProtoBuf.SizeVarint(value.length) + value.length;
+			return tagsize + tyts.SizeVarint(value.length) + value.length;
 		} else {
 			return 0;
 		}
@@ -309,7 +310,7 @@ tyts.String = new function() {
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value.length > 0) {
 			var size = this.Size();
-			return tagsize + tyts.ProtoBuf.SizeVarint(size) + size;
+			return tagsize + tyts.SizeVarint(size) + size;
 		} else {
 			return 0;
 		}
@@ -449,7 +450,7 @@ tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
 		}
 	}
 	value.cached_size = size;
-	return tagsize + tyts.ProtoBuf.SizeVarint(size) + size;
+	return tagsize + tyts.SizeVarint(size) + size;
 };
 
 tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
@@ -481,9 +482,9 @@ tyts.Object.prototype.Deserialize = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.Variant = function(name, fields) {
+tyts.Variant = function(name, types) {
 	this.name = name;
-	this.fields = fields;
+	this.types = types;
 };
 
 tyts.Variant.prototype.$ = TYPE_VARIANT;
@@ -493,15 +494,15 @@ tyts.Variant.prototype.ByteSize = function(value, tagsize, ignore) {
 		return ignore ? 0 : tagsize + 1;
 	}
 	var size = 0;
-	for (var i = 0; i < this.fields.length; i++) {
-		var field = this.fields[i];
+	for (var i = 0; i < this.types.length; i++) {
+		var field = this.types[i];
 		var fieldname = '_' + field.name;
 		if (value[fieldname]) {
 			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
 		}
 	}
 	value.cached_size = size;
-	return tagsize + tyts.ProtoBuf.SizeVarint(size) + size;
+	return tagsize + tyts.SizeVarint(size) + size;
 };
 
 tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
@@ -518,8 +519,8 @@ tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		protobuf.WriteVarint(tag);
 	}
 	protobuf.WriteVarint(value.cached_size);
-	for (var i = 0; i < this.fields.length; i++) {
-		var field = this.fields[i];
+	for (var i = 0; i < this.types.length; i++) {
+		var field = this.types[i];
 		var fieldname = '_' + field.name;
 		if (value[fieldname]) {
 			field.type.Serialize(value[fieldname], field.tag, true, protobuf);
@@ -582,7 +583,7 @@ tyts.Extension.prototype.$ = TYPE_EXTENSION;
 tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!ignore || value) {
 		var size = value.ByteSize();
-		return tagsize + tyts.ProtoBuf.SizeVarint(size) + size;
+		return tagsize + tyts.SizeVarint(size) + size;
 	} else {
 		return 0;
 	}
