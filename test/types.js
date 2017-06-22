@@ -45,7 +45,7 @@ LGoType = tyts.List('LGoType', GoTypeDelegate)
 
 DiGoType = tyts.Dict('DiGoType', tyts.Integer, GoTypeDelegate)
 
-ViGoType = tyts.Variant('ViGoType', [
+VGoTypei = tyts.Variant('VGoTypei', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: GoTypeDelegate}
 ])
@@ -66,7 +66,7 @@ DiCorpus = tyts.Dict('DiCorpus', tyts.Integer, tyts.Integer)
 
 LLf = tyts.List('LLf', Lf)
 
-VifbyVector2 = tyts.Variant('VifbyVector2', [
+VVector2byfi = tyts.Variant('VVector2byfi', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 21, tagsize: 1, type: tyts.Float32},
 	{tag: 26, tagsize: 1, type: tyts.Bytes},
@@ -75,31 +75,31 @@ VifbyVector2 = tyts.Variant('VifbyVector2', [
 
 FixedPoint_3_0 = tyts.FixedPoint(0, 3)
 
-ViFixedPoint_3_0sVector2 = tyts.Variant('ViFixedPoint_3_0sVector2', [
+VFixedPoint_3_0Vector2is = tyts.Variant('VFixedPoint_3_0Vector2is', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 16, tagsize: 1, type: FixedPoint_3_0},
 	{tag: 26, tagsize: 1, type: tyts.String},
 	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
-LViFixedPoint_3_0sVector2 = tyts.List('LViFixedPoint_3_0sVector2', ViFixedPoint_3_0sVector2)
+LVFixedPoint_3_0Vector2is = tyts.List('LVFixedPoint_3_0Vector2is', VFixedPoint_3_0Vector2is)
 
-VCorpusdsVector2 = tyts.Variant('VCorpusdsVector2', [
+VCorpusVector2ds = tyts.Variant('VCorpusVector2ds', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 17, tagsize: 1, type: tyts.Float64},
 	{tag: 26, tagsize: 1, type: tyts.String},
 	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
-DiVCorpusdsVector2 = tyts.Dict('DiVCorpusdsVector2', tyts.Integer, VCorpusdsVector2)
+DiVCorpusVector2ds = tyts.Dict('DiVCorpusVector2ds', tyts.Integer, VCorpusVector2ds)
 
-LVCorpusdsVector2 = tyts.List('LVCorpusdsVector2', VCorpusdsVector2)
+LVCorpusVector2ds = tyts.List('LVCorpusVector2ds', VCorpusVector2ds)
 
-DiLVCorpusdsVector2 = tyts.Dict('DiLVCorpusdsVector2', tyts.Integer, LVCorpusdsVector2)
+DiLVCorpusVector2ds = tyts.Dict('DiLVCorpusVector2ds', tyts.Integer, LVCorpusVector2ds)
 
 DiLf = tyts.Dict('DiLf', tyts.Integer, Lf)
 
-ViCorpusdsVector2 = tyts.Variant('ViCorpusdsVector2', [
+VCorpusVector2dis = tyts.Variant('VCorpusVector2dis', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 16, tagsize: 1, type: tyts.Integer},
 	{tag: 25, tagsize: 1, type: tyts.Float64},
@@ -107,13 +107,13 @@ ViCorpusdsVector2 = tyts.Variant('ViCorpusdsVector2', [
 	{tag: 42, tagsize: 1, type: Vector2}
 ])
 
-DiViCorpusdsVector2 = tyts.Dict('DiViCorpusdsVector2', tyts.Integer, ViCorpusdsVector2)
+DiVCorpusVector2dis = tyts.Dict('DiVCorpusVector2dis', tyts.Integer, VCorpusVector2dis)
 
-DiDiViCorpusdsVector2 = tyts.Dict('DiDiViCorpusdsVector2', tyts.Integer, DiViCorpusdsVector2)
+DiDiVCorpusVector2dis = tyts.Dict('DiDiVCorpusVector2dis', tyts.Integer, DiVCorpusVector2dis)
 
 DiDif = tyts.Dict('DiDif', tyts.Integer, Dif)
 
-Vni = tyts.Variant('Vni', [
+Vin = tyts.Variant('Vin', [
 	{tag: 16, tagsize: 1, type: tyts.Integer}
 ])
 
@@ -124,24 +124,24 @@ Vfs = tyts.Variant('Vfs', [
 
 LVfs = tyts.List('LVfs', Vfs)
 
-ViLVfs = tyts.Variant('ViLVfs', [
+VLVfsi = tyts.Variant('VLVfsi', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: LVfs}
 ])
 
-ViLf = tyts.Variant('ViLf', [
+VLfi = tyts.Variant('VLfi', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: Lf}
 ])
 
 DiVfs = tyts.Dict('DiVfs', tyts.Integer, Vfs)
 
-ViDiVfs = tyts.Variant('ViDiVfs', [
+VDiVfsi = tyts.Variant('VDiVfsi', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: DiVfs}
 ])
 
-ViDif = tyts.Variant('ViDif', [
+VDifi = tyts.Variant('VDifi', [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: Dif}
 ])
@@ -156,8 +156,8 @@ tyts.tygo.Fighter = tyts.Object('Fighter', 1023, [
 	{name: Posll, tag: 58, tagsize: 1, type: LLVector2},
 	{name: Pyl, tag: 66, tagsize: 1, type: LGoType},
 	{name: Pyd, tag: 74, tagsize: 1, type: DiGoType},
-	{name: Pyv1, tag: 82, tagsize: 1, type: ViGoType},
-	{name: Pyv2, tag: 90, tagsize: 1, type: ViGoType},
+	{name: Pyv1, tag: 82, tagsize: 1, type: VGoTypei},
+	{name: Pyv2, tag: 90, tagsize: 1, type: VGoTypei},
 	{name: Fl, tag: 98, tagsize: 1, type: Lf},
 	{name: Bl, tag: 106, tagsize: 1, type: Lby},
 	{name: Sl, tag: 114, tagsize: 1, type: Ls},
@@ -166,22 +166,22 @@ tyts.tygo.Fighter = tyts.Object('Fighter', 1023, [
 	{name: El, tag: 138, tagsize: 2, type: LCorpus},
 	{name: Ed, tag: 146, tagsize: 2, type: DiCorpus},
 	{name: Ll, tag: 154, tagsize: 2, type: LLf},
-	{name: V0, tag: 162, tagsize: 2, type: VifbyVector2},
-	{name: V1, tag: 170, tagsize: 2, type: VifbyVector2},
-	{name: V2, tag: 178, tagsize: 2, type: VifbyVector2},
-	{name: V3, tag: 186, tagsize: 2, type: VifbyVector2},
-	{name: V4, tag: 194, tagsize: 2, type: VifbyVector2},
-	{name: Vl, tag: 202, tagsize: 2, type: LViFixedPoint_3_0sVector2},
-	{name: Vd, tag: 210, tagsize: 2, type: DiVCorpusdsVector2},
-	{name: Ld, tag: 218, tagsize: 2, type: DiLVCorpusdsVector2},
+	{name: V0, tag: 162, tagsize: 2, type: VVector2byfi},
+	{name: V1, tag: 170, tagsize: 2, type: VVector2byfi},
+	{name: V2, tag: 178, tagsize: 2, type: VVector2byfi},
+	{name: V3, tag: 186, tagsize: 2, type: VVector2byfi},
+	{name: V4, tag: 194, tagsize: 2, type: VVector2byfi},
+	{name: Vl, tag: 202, tagsize: 2, type: LVFixedPoint_3_0Vector2is},
+	{name: Vd, tag: 210, tagsize: 2, type: DiVCorpusVector2ds},
+	{name: Ld, tag: 218, tagsize: 2, type: DiLVCorpusVector2ds},
 	{name: Fld, tag: 226, tagsize: 2, type: DiLf},
-	{name: Dd, tag: 234, tagsize: 2, type: DiDiViCorpusdsVector2},
+	{name: Dd, tag: 234, tagsize: 2, type: DiDiVCorpusVector2dis},
 	{name: Fdd, tag: 242, tagsize: 2, type: DiDif},
-	{name: Nv, tag: 250, tagsize: 2, type: Vni},
-	{name: Lv, tag: 258, tagsize: 2, type: ViLVfs},
-	{name: Flv, tag: 266, tagsize: 2, type: ViLf},
-	{name: Dv, tag: 274, tagsize: 2, type: ViDiVfs},
-	{name: Fdv, tag: 282, tagsize: 2, type: ViDif}
+	{name: Nv, tag: 250, tagsize: 2, type: Vin},
+	{name: Lv, tag: 258, tagsize: 2, type: VLVfsi},
+	{name: Flv, tag: 266, tagsize: 2, type: VLfi},
+	{name: Dv, tag: 274, tagsize: 2, type: VDiVfsi},
+	{name: Fdv, tag: 282, tagsize: 2, type: VDifi}
 ]);
 
 tyts.tygo.Fighter_Part1 = tyts.Object('Fighter_Part1', 127, [
@@ -194,8 +194,8 @@ tyts.tygo.Fighter_Part1 = tyts.Object('Fighter_Part1', 127, [
 	{name: Posll, tag: 58, tagsize: 1, type: LLVector2},
 	{name: Pyl, tag: 66, tagsize: 1, type: LGoType},
 	{name: Pyd, tag: 74, tagsize: 1, type: DiGoType},
-	{name: Pyv1, tag: 82, tagsize: 1, type: ViGoType},
-	{name: Pyv2, tag: 90, tagsize: 1, type: ViGoType}
+	{name: Pyv1, tag: 82, tagsize: 1, type: VGoTypei},
+	{name: Pyv2, tag: 90, tagsize: 1, type: VGoTypei}
 ]);
 
 tyts.tygo.Fighter_Part2 = tyts.Object('Fighter_Part2', 1023, [
@@ -208,8 +208,8 @@ tyts.tygo.Fighter_Part2 = tyts.Object('Fighter_Part2', 1023, [
 	{name: Posll, tag: 58, tagsize: 1, type: LLVector2},
 	{name: Pyl, tag: 66, tagsize: 1, type: LGoType},
 	{name: Pyd, tag: 74, tagsize: 1, type: DiGoType},
-	{name: Pyv1, tag: 82, tagsize: 1, type: ViGoType},
-	{name: Pyv2, tag: 90, tagsize: 1, type: ViGoType},
+	{name: Pyv1, tag: 82, tagsize: 1, type: VGoTypei},
+	{name: Pyv2, tag: 90, tagsize: 1, type: VGoTypei},
 	{name: Fl, tag: 98, tagsize: 1, type: Lf},
 	{name: Bl, tag: 106, tagsize: 1, type: Lby},
 	{name: Sl, tag: 114, tagsize: 1, type: Ls},
