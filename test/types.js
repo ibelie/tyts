@@ -5,18 +5,18 @@ goog.provide('tyts.tygo.Fighter_Part1');
 goog.provide('tyts.tygo.Fighter_Part2');
 goog.provide('tyts.tygo.Vector2');
 
-goog.require('tyts.Integer');
-goog.require('tyts.FixedPoint');
-goog.require('tyts.Float64');
-goog.require('tyts.Float32');
 goog.require('tyts.Bool');
 goog.require('tyts.Bytes');
-goog.require('tyts.String');
-goog.require('tyts.Object');
-goog.require('tyts.Variant');
-goog.require('tyts.List');
 goog.require('tyts.Dict');
 goog.require('tyts.Extension');
+goog.require('tyts.FixedPoint');
+goog.require('tyts.Float32');
+goog.require('tyts.Float64');
+goog.require('tyts.Integer');
+goog.require('tyts.List');
+goog.require('tyts.Object');
+goog.require('tyts.String');
+goog.require('tyts.Variant');
 
 goog.require('GoType');
 
