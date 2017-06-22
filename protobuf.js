@@ -6,16 +6,22 @@ goog.provide('tyts.ProtoBuf');
 goog.provide('tyts.SizeVarint');
 goog.provide('tyts.WireTypeBits');
 goog.provide('tyts.WireTypeMask');
+goog.provide('tyts.WireVarint')
+goog.provide('tyts.WireFixed64')
+goog.provide('tyts.WireBytes')
+goog.provide('tyts.WireStart')
+goog.provide('tyts.WireEnd')
+goog.provide('tyts.WireFixed32')
 
 tyts.WireTypeBits   = 3;
 tyts.WireTypeMask   = (1 << WireTypeBits) - 1;
 
-tyts.WireVarint     = 0;
-tyts.WireFixed64    = 1;
-tyts.WireBytes      = 2;
-tyts.WireStartGroup = 3;
-tyts.WireEndGroup   = 4;
-tyts.WireFixed32    = 5;
+tyts.WireVarint  = 0;
+tyts.WireFixed64 = 1;
+tyts.WireBytes   = 2;
+tyts.WireStart   = 3;
+tyts.WireEnd     = 4;
+tyts.WireFixed32 = 5;
 
 tyts.SizeVarint = function(x) {
 	var n = 0;
