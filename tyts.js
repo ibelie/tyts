@@ -433,7 +433,7 @@ tyts.Object = function(name, cutoff, fields) {
 	type.cutoff = cutoff;
 	type.fields = fields;
 
-	type.Instance = function() {
+	type.Type = function() {
 		for (var i = 0; i < type.fields.length; i++) {
 			var field = type.fields[i];
 			var fieldname = '_' + field.name;
@@ -451,20 +451,20 @@ tyts.Object = function(name, cutoff, fields) {
 		}
 	};
 
-	type.Instance.prototype.__class__ = name;
-	type.Instance.prototype.ByteSize = function() {
+	type.Type.prototype.__class__ = name;
+	type.Type.prototype.ByteSize = function() {
 		return type.ByteSize(this, 0, true);
 	};
-	type.Instance.prototype.Serialize = function() {
+	type.Type.prototype.Serialize = function() {
 		var protobuf = new tyts.ProtoBuf(new Uint8Array(this.ByteSize()));
 		type.Serialize(this, 0, true, protobuf);
 		return protobuf.buffer;
 	};
-	type.Instance.prototype.Deserialize = function(buffer) {
+	type.Type.prototype.Deserialize = function(buffer) {
 		type.DeserializeInplace(this, new tyts.ProtoBuf(buffer));
 	};
-	type.Instance.Deserialize = function(buffer) {
-		var object = new type.Instance();
+	type.Type.Deserialize = function(buffer) {
+		var object = new type.Type();
 		type.DeserializeInplace(object, new tyts.ProtoBuf(buffer));
 		return object;
 	};
@@ -478,7 +478,7 @@ tyts.Object.prototype.Default = function() {
 };
 
 tyts.Object.prototype.Check = function(value) {
-	return value instanceof type.Instance;
+	return value instanceof type.Type;
 };
 
 tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
@@ -523,7 +523,7 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 tyts.Object.prototype.Deserialize = function(value, protobuf) {
 	var buffer = protobuf.ReadBuffer(protobuf.ReadVarint());
 	if (!value) {
-		value = new this.Instance();
+		value = new this.Type();
 	}
 	if (buffer.length > 0) {
 		this.DeserializeInplace(value, new tyts.ProtoBuf(buffer));
@@ -856,7 +856,7 @@ tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
 			protobuf.WriteVarint(tag);
 		}
 		protobuf.WriteVarint(value.ByteSize());
-		value.Serialize(protobuf);
+		protobuf.WriteBytes(value.Serialize());
 	}
 };
 
@@ -864,6 +864,6 @@ tyts.Extension.prototype.Deserialize = function(value, protobuf) {
 	if (!value) {
 		value = new this.type();
 	}
-	value.Deserialize(protobuf);
+	value.Deserialize(protobuf.ReadBytes(protobuf.ReadVarint()));
 	return value;
 };

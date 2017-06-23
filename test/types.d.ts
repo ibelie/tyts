@@ -1,5 +1,14 @@
 // Generated for tyts by tygo.  DO NOT EDIT!
 
+declare module tyts {
+	interface Type {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
+	}
+}
+
 declare module tyts.tygo {
 
 	const enum Corpus {
@@ -18,7 +27,7 @@ declare module tyts.tygo {
 		B: Uint8Array;
 		S: string;
 		E: Corpus;
-		P: GoType;
+		P: tyts.Type;
 	}
 
 	class Fighter_Part1 {
@@ -29,8 +38,8 @@ declare module tyts.tygo {
 		Posi: {[index: number]: number};
 		Posl: Vector2[];
 		Posll: Vector2[][];
-		Pyl: GoType[];
-		Pyd: {[index: number]: GoType};
+		Pyl: tyts.Type[];
+		Pyd: {[index: number]: tyts.Type};
 		Pyv1: any;
 		Pyv2: any;
 	}

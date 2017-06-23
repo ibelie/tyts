@@ -24,7 +24,7 @@ FixedPoint_1_s10 = tyts.FixedPoint(-10, 1)
 
 GoTypeDelegate = tyts.Extension('GoTypeDelegate', GoType)
 
-tyts.tygo.Vector2 = tyts.Object('Vector2', 127, [
+Vector2 = tyts.Object('Vector2', 127, [
 	{name: X, tag: 13, tagsize: 1, type: tyts.Float32},
 	{name: Y, tag: 16, tagsize: 1, type: FixedPoint_1_s10},
 	{name: B, tag: 26, tagsize: 1, type: tyts.Bytes},
@@ -32,6 +32,7 @@ tyts.tygo.Vector2 = tyts.Object('Vector2', 127, [
 	{name: E, tag: 40, tagsize: 1, type: tyts.Integer},
 	{name: P, tag: 50, tagsize: 1, type: GoTypeDelegate}
 ]);
+tyts.tygo.Vector2 = Vector2.Type;
 
 DiVector2 = tyts.Dict('DiVector2', tyts.Integer, Vector2)
 
@@ -146,7 +147,7 @@ VDifi = tyts.Variant('VDifi', [
 	{tag: 18, tagsize: 1, type: Dif}
 ])
 
-tyts.tygo.Fighter = tyts.Object('Fighter', 1023, [
+Fighter = tyts.Object('Fighter', 1023, [
 	{name: Pos, tag: 10, tagsize: 1, type: Vector2},
 	{name: IsAwake, tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: Hp, tag: 29, tagsize: 1, type: tyts.Float32},
@@ -183,8 +184,9 @@ tyts.tygo.Fighter = tyts.Object('Fighter', 1023, [
 	{name: Dv, tag: 274, tagsize: 2, type: VDiVfsi},
 	{name: Fdv, tag: 282, tagsize: 2, type: VDifi}
 ]);
+tyts.tygo.Fighter = Fighter.Type;
 
-tyts.tygo.Fighter_Part1 = tyts.Object('Fighter_Part1', 127, [
+Fighter_Part1 = tyts.Object('Fighter_Part1', 127, [
 	{name: Pos, tag: 10, tagsize: 1, type: Vector2},
 	{name: IsAwake, tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: Hp, tag: 29, tagsize: 1, type: tyts.Float32},
@@ -197,8 +199,9 @@ tyts.tygo.Fighter_Part1 = tyts.Object('Fighter_Part1', 127, [
 	{name: Pyv1, tag: 82, tagsize: 1, type: VGoTypei},
 	{name: Pyv2, tag: 90, tagsize: 1, type: VGoTypei}
 ]);
+tyts.tygo.Fighter_Part1 = Fighter_Part1.Type;
 
-tyts.tygo.Fighter_Part2 = tyts.Object('Fighter_Part2', 1023, [
+Fighter_Part2 = tyts.Object('Fighter_Part2', 1023, [
 	{name: Pos, tag: 10, tagsize: 1, type: Vector2},
 	{name: IsAwake, tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: Hp, tag: 29, tagsize: 1, type: tyts.Float32},
@@ -219,3 +222,4 @@ tyts.tygo.Fighter_Part2 = tyts.Object('Fighter_Part2', 1023, [
 	{name: Ed, tag: 146, tagsize: 2, type: DiCorpus},
 	{name: Ll, tag: 154, tagsize: 2, type: LLf}
 ]);
+tyts.tygo.Fighter_Part2 = Fighter_Part2.Type;
