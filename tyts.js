@@ -437,6 +437,9 @@ tyts.Object = function(name, cutoff, fields) {
 		for (var i = 0; i < type.fields.length; i++) {
 			var field = type.fields[i];
 			var fieldname = '_' + field.name;
+			if (i < arguments.length) {
+				this[fieldname] = arguments[i];
+			}
 			Object.defineProperty(this, field.name, {
 				get: function() {
 					if (this[fieldname] == undefined) {
@@ -462,6 +465,13 @@ tyts.Object = function(name, cutoff, fields) {
 	};
 	type.Type.prototype.Deserialize = function(buffer) {
 		type.DeserializeInplace(this, new tyts.ProtoBuf(buffer));
+	};
+	type.Type.prototype.Arguments = function() {
+		var args = new Array(type.fields.length);
+		for (var i = 0; i < type.fields.length; i++) {
+			args[i] = this['_' + type.fields[i].name];
+		}
+		return args;
 	};
 	type.Type.Deserialize = function(buffer) {
 		var object = new type.Type();

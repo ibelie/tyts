@@ -22,6 +22,10 @@ declare module tyts.tygo {
 	}
 
 	class Vector2 {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
 		X: number;
 		Y: number;
 		B: Uint8Array;
@@ -30,7 +34,15 @@ declare module tyts.tygo {
 		P: tyts.Type;
 	}
 
+	namespace Vector2 {
+		function Deserialize(data: Uint8Array): Vector2;
+	}
+
 	class Fighter_Part1 {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
 		Pos: Vector2;
 		IsAwake: boolean;
 		Hp: number;
@@ -44,7 +56,15 @@ declare module tyts.tygo {
 		Pyv2: any;
 	}
 
+	namespace Fighter_Part1 {
+		function Deserialize(data: Uint8Array): Fighter_Part1;
+	}
+
 	class Fighter_Part2 {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
 		Fl: number[];
 		Bl: Uint8Array[];
 		Sl: string[];
@@ -55,7 +75,15 @@ declare module tyts.tygo {
 		Ll: number[][];
 	}
 
+	namespace Fighter_Part2 {
+		function Deserialize(data: Uint8Array): Fighter_Part2;
+	}
+
 	class Fighter {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
 		V0: any;
 		V1: any;
 		V2: any;
@@ -72,5 +100,9 @@ declare module tyts.tygo {
 		Flv: any;
 		Dv: any;
 		Fdv: any;
+	}
+
+	namespace Fighter {
+		function Deserialize(data: Uint8Array): Fighter;
 	}
 }
