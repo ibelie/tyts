@@ -23,9 +23,11 @@ declare module tyts.tygo {
 
 	class Vector2 {
 		__class__: string;
+		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
+
 		X: number;
 		Y: number;
 		B: Uint8Array;
@@ -40,9 +42,11 @@ declare module tyts.tygo {
 
 	class Fighter_Part1 {
 		__class__: string;
+		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
+
 		Pos: Vector2;
 		IsAwake: boolean;
 		Hp: number;
@@ -62,9 +66,11 @@ declare module tyts.tygo {
 
 	class Fighter_Part2 {
 		__class__: string;
+		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
+
 		Fl: number[];
 		Bl: Uint8Array[];
 		Sl: string[];
@@ -81,9 +87,11 @@ declare module tyts.tygo {
 
 	class Fighter {
 		__class__: string;
+		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
+
 		V0: any;
 		V1: any;
 		V2: any;
@@ -100,6 +108,14 @@ declare module tyts.tygo {
 		Flv: any;
 		Dv: any;
 		Fdv: any;
+		SerializeRPGParam(a0: Fighter, a1: any, a2: number): Uint8Array;
+		DeserializeRPGParam(data: Uint8Array): any;
+		SerializeRPGResult(a0: Vector2): Uint8Array;
+		DeserializeRPGResult(data: Uint8Array): any;
+		SerializeGPRParam(a0: {[index: number]: any}): Uint8Array;
+		DeserializeGPRParam(data: Uint8Array): any;
+		SerializeGPRResult(a0: Fighter, a1: number): Uint8Array;
+		DeserializeGPRResult(data: Uint8Array): any;
 	}
 
 	namespace Fighter {

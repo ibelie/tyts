@@ -10,6 +10,7 @@ goog.provide('tyts.Bool');
 goog.provide('tyts.Bytes');
 goog.provide('tyts.String');
 goog.provide('tyts.Object');
+goog.provide('tyts.Method');
 goog.provide('tyts.Variant');
 goog.provide('tyts.List');
 goog.provide('tyts.Dict');
@@ -427,19 +428,17 @@ tyts.String = new function() {
 
 //=============================================================================
 
-tyts.Object = function(name, cutoff, fields) {
+tyts.Object = function(name, cutoff, fields, methods) {
 	var type = this;
 	type.name = name;
 	type.cutoff = cutoff;
 	type.fields = fields;
+	type.methods = methods;
 
 	type.Type = function() {
 		for (var i = 0; i < type.fields.length; i++) {
 			var field = type.fields[i];
 			var fieldname = '_' + field.name;
-			if (i < arguments.length) {
-				this[fieldname] = arguments[i];
-			}
 			Object.defineProperty(this, field.name, {
 				get: function() {
 					if (this[fieldname] == undefined) {
@@ -454,6 +453,18 @@ tyts.Object = function(name, cutoff, fields) {
 		}
 	};
 
+	for (var i = 0; i < type.methods.length; i++) {
+		var method = type.methods[i];
+		type.Type.prototype['Serialize' + method.name] = function() {
+			var buffer = new Uint8Array(method.type.ByteSize(arguments));
+			method.type.Serialize(arguments, new tyts.ProtoBuf(buffer));
+			return buffer;
+		};
+		type.Type.prototype['Deserialize' + method.name] = function(buffer) {
+			return method.type.Deserialize(new tyts.ProtoBuf(buffer));
+		};
+	}
+
 	type.Type.prototype.__class__ = name;
 	type.Type.prototype.ByteSize = function() {
 		return type.ByteSize(this, 0, true);
@@ -465,13 +476,6 @@ tyts.Object = function(name, cutoff, fields) {
 	};
 	type.Type.prototype.Deserialize = function(buffer) {
 		type.DeserializeInplace(this, new tyts.ProtoBuf(buffer));
-	};
-	type.Type.prototype.Arguments = function() {
-		var args = new Array(type.fields.length);
-		for (var i = 0; i < type.fields.length; i++) {
-			args[i] = this['_' + type.fields[i].name];
-		}
-		return args;
 	};
 	type.Type.Deserialize = function(buffer) {
 		var object = new type.Type();
@@ -566,8 +570,78 @@ tyts.Object.prototype.DeserializeInplace = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.Variant = function(name, types) {
+tyts.Method = function(name, cutoff, params) {
 	this.name = name;
+	this.cutoff = cutoff;
+	this.params = params;
+};
+
+tyts.Method.prototype.$ = TYPE_OBJECT;
+tyts.Method.prototype.wiretype = tyts.WireBytes;
+
+tyts.Method.prototype.Default = function() {
+	return undefined;
+};
+
+tyts.Method.prototype.Check = function(value) {
+	return false;
+};
+
+tyts.Method.prototype.ByteSize = function(args) {
+	if (!args) {
+		return 0;
+	}
+	var size = 0;
+	for (var i = 0; i < this.params.length; i++) {
+		var param = this.params[i];
+		if (args[i] != undefined) {
+			size += param.type.ByteSize(args[i], param.tagsize, true);
+		}
+	}
+	return size;
+};
+
+tyts.Method.prototype.Serialize = function(args, protobuf) {
+	if (!args) {
+		return;
+	}
+	for (var i = 0; i < this.params.length; i++) {
+		var param = this.params[i];
+		if (args[i] != undefined) {
+			param.type.Serialize(args[i], param.tag, true, protobuf);
+		}
+	}
+};
+
+tyts.Method.prototype.Deserialize = function(protobuf) {
+	var args = new Array(this.params.length);
+	while (!protobuf.End()) {
+		var tag_cutoff = protobuf.ReadTag(this.cutoff);
+		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		if (tag_cutoff[1] && i >= 0 && i < this.params.length) {
+			var param = this.params[i].type;
+			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			if (param.wiretype == wiretype) {
+				args[i] = param.Deserialize(args[i], protobuf);
+				continue;
+			} else if (param.$ == TYPE_LIST && param.element.wiretype == wiretype) {
+				args[i] = param.DeserializeRepeat(args[i], protobuf);
+				continue;
+			}
+		}
+		if (!tag_cutoff[0]) {
+			break;
+		}
+		protobuf.SkipField(tag_cutoff[0]);
+	}
+	return args;
+};
+
+//=============================================================================
+
+tyts.Variant = function(name, cutoff, types) {
+	this.name = name;
+	this.cutoff = cutoff;
 	this.types = types;
 };
 
