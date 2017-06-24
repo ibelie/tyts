@@ -149,6 +149,12 @@ VDifi = tyts.Variant('VDifi', 127, [
 	{tag: 18, tagsize: 1, type: Dif}
 ])
 
+LLLVector2 = tyts.List('LLLVector2', LLVector2)
+
+DsVector2 = tyts.Dict('DsVector2', tyts.String, Vector2)
+
+LDsVector2 = tyts.List('LDsVector2', DsVector2)
+
 FighterRPGParam = tyts.Method('FighterRPGParam', 127, [
 	{tag: 10, tagsize: 1, type: Fighter}, 
 	{tag: 18, tagsize: 1, type: Vin}, 
@@ -203,7 +209,9 @@ Fighter = tyts.Object('Fighter', 1023, [
 	{name: 'Lv', tag: 258, tagsize: 2, type: VLVfsi},
 	{name: 'Flv', tag: 266, tagsize: 2, type: VLfi},
 	{name: 'Dv', tag: 274, tagsize: 2, type: VDiVfsi},
-	{name: 'Fdv', tag: 282, tagsize: 2, type: VDifi}
+	{name: 'Fdv', tag: 282, tagsize: 2, type: VDifi},
+	{name: 'Poslll', tag: 290, tagsize: 2, type: LLLVector2},
+	{name: 'Posdl', tag: 298, tagsize: 2, type: LDsVector2}
 ], [
 	{name: 'RPGParam', type: FighterRPGParam},
 	{name: 'RPGResult', type: FighterRPGResult},

@@ -39,13 +39,12 @@ TYPE_LIST       =  9;
 TYPE_DICT       = 10;
 TYPE_EXTENSION  = 11;
 
-TYPE_PRIMITIVE  = 4;
-
-
 //=============================================================================
 
 tyts.Integer = new function() {
 	this.$ = TYPE_INTEGER;
+	this.isPrimitive = true;
+	this.isIterative = false;
 	this.wiretype = tyts.WireVarint;
 	this.Default = function() {
 		return 0;
@@ -81,6 +80,8 @@ tyts.FixedPoint = function(floor, precision) {
 };
 
 tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
+tyts.FixedPoint.prototype.isPrimitive = true;
+tyts.FixedPoint.prototype.isIterative = false;
 tyts.FixedPoint.prototype.wiretype = tyts.WireBytes;
 
 tyts.FixedPoint.prototype.Default = function() {
@@ -116,6 +117,8 @@ tyts.FixedPoint.prototype.Deserialize = function(value, protobuf) {
 
 tyts.Float64 = new function() {
 	this.$ = TYPE_FLOAT64;
+	this.isPrimitive = true;
+	this.isIterative = false;
 	this.wiretype = tyts.WireFixed64;
 	this.TWO_TO_20 = 1048576;
 	this.TWO_TO_32 = 4294967296;
@@ -208,6 +211,8 @@ tyts.Float64 = new function() {
 
 tyts.Float32 = new function() {
 	this.$ = TYPE_FLOAT32;
+	this.isPrimitive = true;
+	this.isIterative = false;
 	this.wiretype = tyts.WireFixed32;
 	this.TWO_TO_23 = 8388608;
 	this.FLOAT32_MIN = 1.1754943508222875e-38;
@@ -283,6 +288,8 @@ tyts.Float32 = new function() {
 
 tyts.Bool = new function() {
 	this.$ = TYPE_BOOL;
+	this.isPrimitive = true;
+	this.isIterative = false;
 	this.wiretype = tyts.WireVarint;
 	this.Default = function() {
 		return false;
@@ -314,6 +321,8 @@ tyts.Bool = new function() {
 
 tyts.Bytes = new function() {
 	this.$ = TYPE_BYTES;
+	this.isPrimitive = false;
+	this.isIterative = false;
 	this.wiretype = tyts.WireBytes;
 	this.Default = function() {
 		return new Uint8Array(0);
@@ -346,6 +355,8 @@ tyts.Bytes = new function() {
 
 tyts.String = new function() {
 	this.$ = TYPE_STRING;
+	this.isPrimitive = false;
+	this.isIterative = false;
 	this.wiretype = tyts.WireBytes;
 	this.Default = function() {
 		return "";
@@ -485,6 +496,8 @@ tyts.Object = function(name, cutoff, fields, methods) {
 };
 
 tyts.Object.prototype.$ = TYPE_OBJECT;
+tyts.Object.prototype.isPrimitive = false;
+tyts.Object.prototype.isIterative = false;
 tyts.Object.prototype.wiretype = tyts.WireBytes;
 
 tyts.Object.prototype.Default = function() {
@@ -577,6 +590,8 @@ tyts.Method = function(name, cutoff, params) {
 };
 
 tyts.Method.prototype.$ = TYPE_OBJECT;
+tyts.Method.prototype.isPrimitive = false;
+tyts.Method.prototype.isIterative = false;
 tyts.Method.prototype.wiretype = tyts.WireBytes;
 
 tyts.Method.prototype.Default = function() {
@@ -646,6 +661,8 @@ tyts.Variant = function(name, cutoff, types) {
 };
 
 tyts.Variant.prototype.$ = TYPE_VARIANT;
+tyts.Variant.prototype.isPrimitive = false;
+tyts.Variant.prototype.isIterative = false;
 tyts.Variant.prototype.wiretype = tyts.WireBytes;
 
 tyts.Variant.prototype.Default = function() {
@@ -723,9 +740,11 @@ tyts.Variant.prototype.Deserialize = function(value, protobuf) {
 tyts.List = function(name, element) {
 	this.name = name;
 	this.element = element;
+	this.isIterative = !this.element.isPrimitive;
 };
 
 tyts.List.prototype.$ = TYPE_LIST;
+tyts.List.prototype.isPrimitive = false;
 tyts.List.prototype.wiretype = tyts.WireBytes;
 
 tyts.List.prototype.Default = function() {
@@ -741,14 +760,14 @@ tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 		return 0;
 	}
 	var element = this.element;
-	if (element.$ == TYPE_LIST && element.element.$ > TYPE_PRIMITIVE) {
+	if (element.isIterative) {
 		var total = 0;
 		for (var i = 0; i < value.length; i++) {
 			var size = element.ByteSize(value[i], 0, false);
 			total += tagsize + tyts.SizeVarint(size) + size;
 		}
 		return total;
-	} else if (element.$ > TYPE_PRIMITIVE) {
+	} else if (!element.isPrimitive) {
 		var size = 0;
 		for (var i = 0; i < value.length; i++) {
 			size += element.ByteSize(value[i], tagsize, false);
@@ -768,7 +787,7 @@ tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		return;
 	}
 	var element = this.element;
-	if (element.$ == TYPE_LIST && element.element.$ > TYPE_PRIMITIVE) {
+	if (element.isIterative) {
 		for (var i = 0; i < value.length; i++) {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
@@ -777,7 +796,7 @@ tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 			protobuf.WriteVarint(size);
 			element.Serialize(value[i], 0, false, protobuf);
 		}
-	} else if (element.$ > TYPE_PRIMITIVE) {
+	} else if (!element.isPrimitive) {
 		for (var i = 0; i < value.length; i++) {
 			element.Serialize(value[i], tag, false, protobuf);
 		}
@@ -801,14 +820,14 @@ tyts.List.prototype.Deserialize = function(value, protobuf) {
 		value = [];
 	}
 	var element = this.element;
-	if (element.$ == TYPE_LIST && element.element.$ > TYPE_PRIMITIVE) {
+	if (element.isIterative) {
 		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
 		var list;
 		while (!protobuf.End()) {
 			list = element.Deserialize(list, protobuf);
 		}
 		value.push(list);
-	} else if (element.$ > TYPE_PRIMITIVE) {
+	} else if (!element.isPrimitive) {
 		value.push(element.Deserialize(undefined, protobuf));
 	} else {
 		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
@@ -836,6 +855,8 @@ tyts.Dict = function(name, key, value) {
 };
 
 tyts.Dict.prototype.$ = TYPE_DICT;
+tyts.Dict.prototype.isPrimitive = false;
+tyts.Dict.prototype.isIterative = true;
 tyts.Dict.prototype.wiretype = tyts.WireBytes;
 
 tyts.Dict.prototype.Default = function() {
@@ -915,6 +936,8 @@ tyts.Extension = function(name, type) {
 };
 
 tyts.Extension.prototype.$ = TYPE_EXTENSION;
+tyts.Extension.prototype.isPrimitive = false;
+tyts.Extension.prototype.isIterative = false;
 tyts.Extension.prototype.wiretype = tyts.WireBytes;
 
 tyts.Extension.prototype.Default = function() {

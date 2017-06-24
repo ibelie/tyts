@@ -108,6 +108,8 @@ declare module tyts.tygo {
 		Flv: any;
 		Dv: any;
 		Fdv: any;
+		Poslll: Vector2[][][];
+		Posdl: {[index: string]: Vector2}[];
 		SerializeRPGParam(a0: Fighter, a1: any, a2: number): Uint8Array;
 		DeserializeRPGParam(data: Uint8Array): any;
 		SerializeRPGResult(a0: Vector2): Uint8Array;
