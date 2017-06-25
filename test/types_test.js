@@ -18,7 +18,6 @@ goog.global.CLOSURE_IMPORT_SCRIPT = function (path) {
     return true;
 };
 var types = require("./types");
-console.log(types);
 var v = new types.Vector2();
 v.P = new GoType();
 v.X = 123;

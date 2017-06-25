@@ -24,8 +24,6 @@ goog.global.CLOSURE_IMPORT_SCRIPT = function(path) {
 
 import * as types from "./types";
 
-console.log(types);
-
 let v = new types.Vector2();
 v.P = new GoType();
 v.X = 123;

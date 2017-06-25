@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Egret</title>
+	<script type="text/javascript" src="../../closure/lib/closure/goog/base.js"></script>
+	<script type="text/javascript" src="deps.js"></script>
+	<script type="text/javascript">
+		goog.require("Vector2");
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		var v = new Vector2();
+		v.P = new GoType();
+		v.X = 123;
+		v.Y = 123.4;
+		var d = v.Serialize();
+		console.log(d);
+		var v2 = Vector2.Deserialize(d);
+		console.log(v2);
+	</script>
+	test
+</body>
+</html>
