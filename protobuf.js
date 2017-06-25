@@ -14,7 +14,7 @@ goog.provide('tyts.WireEnd')
 goog.provide('tyts.WireFixed32')
 
 tyts.WireTypeBits   = 3;
-tyts.WireTypeMask   = (1 << WireTypeBits) - 1;
+tyts.WireTypeMask   = (1 << tyts.WireTypeBits) - 1;
 
 tyts.WireVarint  = 0;
 tyts.WireFixed64 = 1;
