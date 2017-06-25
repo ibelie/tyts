@@ -156,8 +156,8 @@ DsVector2 = tyts.Dict('DsVector2', tyts.String, Vector2)
 LDsVector2 = tyts.List('LDsVector2', DsVector2)
 
 FighterRPGParam = tyts.Method('FighterRPGParam', 127, [
-	{tag: 10, tagsize: 1, type: Fighter}, 
-	{tag: 18, tagsize: 1, type: Vin}, 
+	{tag: 10, tagsize: 1, type: Fighter},
+	{tag: 18, tagsize: 1, type: Vin},
 	{tag: 24, tagsize: 1, type: FixedPoint_3_0}
 ]);
 
@@ -170,7 +170,7 @@ FighterGPRParam = tyts.Method('FighterGPRParam', 127, [
 ]);
 
 FighterGPRResult = tyts.Method('FighterGPRResult', 127, [
-	{tag: 10, tagsize: 1, type: Fighter}, 
+	{tag: 10, tagsize: 1, type: Fighter},
 	{tag: 16, tagsize: 1, type: tyts.Integer}
 ]);
 

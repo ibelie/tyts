@@ -564,13 +564,28 @@ tyts.Object.prototype.DeserializeInplace = function(value, protobuf) {
 		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.fields.length) {
 			var field = this.fields[i].type;
-			var fieldname = '_' + this.fields[i].name;
+			var name = this.fields[i].name
+			var fieldname = '_' + name;
 			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			var handler = 'On' + name[0].toUpperCase() + name.substr(1) + 'Changed';
 			if (field.wiretype == wiretype) {
-				value[fieldname] = field.Deserialize(value[fieldname], protobuf);
+				if (value[handler] == undefined) {
+					value[fieldname] = field.Deserialize(value[fieldname], protobuf);
+				} else {
+					var old_value = value[fieldname];
+					var new_value = field.Deserialize(value[fieldname], protobuf);
+					value[fieldname] = new_value;
+					value[handler](old_value, new_value);
+				}
 				continue;
 			} else if (field.$ == TYPE_LIST && field.element.wiretype == wiretype) {
-				value[fieldname] = field.DeserializeRepeat(value[fieldname], protobuf);
+				if (value[handler] == undefined) {
+					value[fieldname] = field.DeserializeRepeat(value[fieldname], protobuf);
+				} else {
+					var new_value = field.DeserializeRepeat(value[fieldname], protobuf);
+					value[fieldname] = new_value;
+					value[handler](new_value, new_value[new_value.length - 1]);
+				}
 				continue;
 			}
 		}
