@@ -89,10 +89,10 @@ tyts.ProtoBuf.prototype.ReadByte = function() {
 }
 
 tyts.ProtoBuf.prototype.WriteUint32 = function(x) {
-	this.buffer[this.offset++] = (value >>>  0) & 0xFF;
-	this.buffer[this.offset++] = (value >>>  8) & 0xFF;
-	this.buffer[this.offset++] = (value >>> 16) & 0xFF;
-	this.buffer[this.offset++] = (value >>> 24) & 0xFF;
+	this.buffer[this.offset++] = (x >>>  0) & 0xFF;
+	this.buffer[this.offset++] = (x >>>  8) & 0xFF;
+	this.buffer[this.offset++] = (x >>> 16) & 0xFF;
+	this.buffer[this.offset++] = (x >>> 24) & 0xFF;
 }
 
 tyts.ProtoBuf.prototype.ReadUint32 = function() {

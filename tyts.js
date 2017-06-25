@@ -331,19 +331,26 @@ tyts.Bytes = new function() {
 		return value instanceof Uint8Array;
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
-		if (!ignore || value.length > 0) {
+		if (value.length > 0) {
 			return tagsize + tyts.SizeVarint(value.length) + value.length;
+		} else if (!ignore) {
+			return tagsize + 1;
 		} else {
 			return 0;
 		}
 	};
 	this.Serialize = function(value, tag, ignore, protobuf) {
-		if (!ignore || value.length > 0) {
+		if (value.length > 0) {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
 			protobuf.WriteVarint(value.length);
 			protobuf.WriteBytes(value);
+		} else if (!ignore) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			protobuf.WriteVarint(0);
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
@@ -379,15 +386,17 @@ tyts.String = new function() {
 		return size;
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
-		if (!ignore || value.length > 0) {
+		if (value.length > 0) {
 			var size = this.Size();
 			return tagsize + tyts.SizeVarint(size) + size;
+		} else if (!ignore) {
+			return tagsize + 1;
 		} else {
 			return 0;
 		}
 	};
 	this.Serialize = function(value, tag, ignore, protobuf) {
-		if (!ignore || value.length > 0) {
+		if (value.length > 0) {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
@@ -406,6 +415,11 @@ tyts.String = new function() {
 					protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
 				}
 			}
+		} else if (!ignore) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			protobuf.WriteVarint(0);
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
@@ -439,6 +453,34 @@ tyts.String = new function() {
 
 //=============================================================================
 
+function registerProperty(type, object, i) {
+	var field = type.fields[i];
+	var fieldname = '_' + field.name;
+	Object.defineProperty(object, field.name, {
+		get: function() {
+			if (object[fieldname] == undefined) {
+				object[fieldname] = field.type.Default();
+			}
+			return object[fieldname];
+		},
+		set: function(value) {
+			object[fieldname] = value;
+		}
+	});
+}
+
+function registerMethod(type, i) {
+	var method = type.methods[i];
+	type.Type.prototype['Serialize' + method.name] = function() {
+		var buffer = new Uint8Array(method.type.ByteSize(arguments));
+		method.type.Serialize(arguments, new tyts.ProtoBuf(buffer));
+		return buffer;
+	};
+	type.Type.prototype['Deserialize' + method.name] = function(buffer) {
+		return method.type.Deserialize(new tyts.ProtoBuf(buffer));
+	};
+}
+
 tyts.Object = function(name, cutoff, fields, methods) {
 	var type = this;
 	type.name = name;
@@ -448,32 +490,12 @@ tyts.Object = function(name, cutoff, fields, methods) {
 
 	type.Type = function() {
 		for (var i = 0; i < type.fields.length; i++) {
-			var field = type.fields[i];
-			var fieldname = '_' + field.name;
-			Object.defineProperty(this, field.name, {
-				get: function() {
-					if (this[fieldname] == undefined) {
-						this[fieldname] = field.type.Default();
-					}
-					return this[fieldname];
-				},
-				set: function(value) {
-					this[fieldname] = value;
-				}
-			});
+			registerProperty(type, this, i);
 		}
 	};
 
 	for (var i = 0; i < type.methods.length; i++) {
-		var method = type.methods[i];
-		type.Type.prototype['Serialize' + method.name] = function() {
-			var buffer = new Uint8Array(method.type.ByteSize(arguments));
-			method.type.Serialize(arguments, new tyts.ProtoBuf(buffer));
-			return buffer;
-		};
-		type.Type.prototype['Deserialize' + method.name] = function(buffer) {
-			return method.type.Deserialize(new tyts.ProtoBuf(buffer));
-		};
+		registerMethod(type, i);
 	}
 
 	type.Type.prototype.__class__ = name;
@@ -964,21 +986,28 @@ tyts.Extension.prototype.Check = function(value) {
 };
 
 tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
-	if (!ignore || value) {
+	if (value) {
 		var size = value.ByteSize();
 		return tagsize + tyts.SizeVarint(size) + size;
+	} else if (!ignore) {
+		return tagsize + 1;
 	} else {
 		return 0;
 	}
 };
 
 tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
-	if (!ignore || value) {
+	if (value) {
 		if (tag != 0) {
 			protobuf.WriteVarint(tag);
 		}
 		protobuf.WriteVarint(value.ByteSize());
 		protobuf.WriteBytes(value.Serialize());
+	} else if (!ignore) {
+		if (tag != 0) {
+			protobuf.WriteVarint(tag);
+		}
+		protobuf.WriteVarint(0);
 	}
 };
 
