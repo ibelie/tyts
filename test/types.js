@@ -1,9 +1,9 @@
 // Generated for tyts by tygo.  DO NOT EDIT!
 
-goog.provide('Fighter');
-goog.provide('Fighter_Part1');
-goog.provide('Fighter_Part2');
-goog.provide('Vector2');
+goog.provide('types.Fighter');
+goog.provide('types.Fighter_Part1');
+goog.provide('types.Fighter_Part2');
+goog.provide('types.Vector2');
 
 goog.require('tyts.Bool');
 goog.require('tyts.Bytes');
@@ -25,7 +25,7 @@ var FixedPoint_1_s10 = new tyts.FixedPoint(-10, 1)
 
 var GoTypeDelegate = new tyts.Extension('GoTypeDelegate', GoType)
 
-var _Vector2 = new tyts.Object('Vector2', 127, [
+var Vector2 = new tyts.Object('Vector2', 127, [
 	{name: 'X', tag: 13, tagsize: 1, type: tyts.Float32},
 	{name: 'Y', tag: 16, tagsize: 1, type: FixedPoint_1_s10},
 	{name: 'B', tag: 26, tagsize: 1, type: tyts.Bytes},
@@ -34,16 +34,13 @@ var _Vector2 = new tyts.Object('Vector2', 127, [
 	{name: 'P', tag: 50, tagsize: 1, type: GoTypeDelegate}
 ], [
 ]);
-var Vector2 = _Vector2.Type;
-if (typeof(module) != 'undefined') {
-	module.exports.Vector2 = Vector2;
-}
+types.Vector2 = Vector2.Type;
 
-var DiVector2 = new tyts.Dict('DiVector2', tyts.Integer, _Vector2)
+var DiVector2 = new tyts.Dict('DiVector2', tyts.Integer, Vector2)
 
 var Dif = new tyts.Dict('Dif', tyts.Integer, tyts.Float32)
 
-var LVector2 = new tyts.List('LVector2', _Vector2)
+var LVector2 = new tyts.List('LVector2', Vector2)
 
 var LLVector2 = new tyts.List('LLVector2', LVector2)
 
@@ -76,7 +73,7 @@ var VVector2byfi = new tyts.Variant('VVector2byfi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 21, tagsize: 1, type: tyts.Float32},
 	{tag: 26, tagsize: 1, type: tyts.Bytes},
-	{tag: 34, tagsize: 1, type: _Vector2}
+	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
 var FixedPoint_3_0 = new tyts.FixedPoint(0, 3)
@@ -85,7 +82,7 @@ var VFixedPoint_3_0Vector2is = new tyts.Variant('VFixedPoint_3_0Vector2is', 127,
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 16, tagsize: 1, type: FixedPoint_3_0},
 	{tag: 26, tagsize: 1, type: tyts.String},
-	{tag: 34, tagsize: 1, type: _Vector2}
+	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
 var LVFixedPoint_3_0Vector2is = new tyts.List('LVFixedPoint_3_0Vector2is', VFixedPoint_3_0Vector2is)
@@ -94,7 +91,7 @@ var VCorpusVector2ds = new tyts.Variant('VCorpusVector2ds', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 17, tagsize: 1, type: tyts.Float64},
 	{tag: 26, tagsize: 1, type: tyts.String},
-	{tag: 34, tagsize: 1, type: _Vector2}
+	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
 var DiVCorpusVector2ds = new tyts.Dict('DiVCorpusVector2ds', tyts.Integer, VCorpusVector2ds)
@@ -110,7 +107,7 @@ var VCorpusVector2dis = new tyts.Variant('VCorpusVector2dis', 127, [
 	{tag: 16, tagsize: 1, type: tyts.Integer},
 	{tag: 25, tagsize: 1, type: tyts.Float64},
 	{tag: 34, tagsize: 1, type: tyts.String},
-	{tag: 42, tagsize: 1, type: _Vector2}
+	{tag: 42, tagsize: 1, type: Vector2}
 ])
 
 var DiVCorpusVector2dis = new tyts.Dict('DiVCorpusVector2dis', tyts.Integer, VCorpusVector2dis)
@@ -154,12 +151,12 @@ var VDifi = new tyts.Variant('VDifi', 127, [
 
 var LLLVector2 = new tyts.List('LLLVector2', LLVector2)
 
-var DsVector2 = new tyts.Dict('DsVector2', tyts.String, _Vector2)
+var DsVector2 = new tyts.Dict('DsVector2', tyts.String, Vector2)
 
 var LDsVector2 = new tyts.List('LDsVector2', DsVector2)
 
-var _Fighter = new tyts.Object('Fighter', 1023, [
-	{name: 'Pos', tag: 10, tagsize: 1, type: _Vector2},
+var Fighter = new tyts.Object('Fighter', 1023, [
+	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: tyts.Float32},
 	{name: 'Poss', tag: 34, tagsize: 1, type: DiVector2},
@@ -202,32 +199,29 @@ var _Fighter = new tyts.Object('Fighter', 1023, [
 	{name: 'GPRParam', type: null},
 	{name: 'GPRResult', type: null}
 ]);
-_Fighter.methods[0].type = new tyts.Method('FighterRPGParam', 127, [
-	{tag: 10, tagsize: 1, type: _Fighter},
+Fighter.methods[0].type = new tyts.Method('FighterRPGParam', 127, [
+	{tag: 10, tagsize: 1, type: Fighter},
 	{tag: 18, tagsize: 1, type: Vin},
 	{tag: 24, tagsize: 1, type: FixedPoint_3_0}
 ]);
 
-_Fighter.methods[1].type = new tyts.Method('FighterRPGResult', 127, [
-	{tag: 10, tagsize: 1, type: _Vector2}
+Fighter.methods[1].type = new tyts.Method('FighterRPGResult', 127, [
+	{tag: 10, tagsize: 1, type: Vector2}
 ]);
 
-_Fighter.methods[2].type = new tyts.Method('FighterGPRParam', 127, [
+Fighter.methods[2].type = new tyts.Method('FighterGPRParam', 127, [
 	{tag: 10, tagsize: 1, type: DiVCorpusVector2ds}
 ]);
 
-_Fighter.methods[3].type = new tyts.Method('FighterGPRResult', 127, [
-	{tag: 10, tagsize: 1, type: _Fighter},
+Fighter.methods[3].type = new tyts.Method('FighterGPRResult', 127, [
+	{tag: 10, tagsize: 1, type: Fighter},
 	{tag: 16, tagsize: 1, type: tyts.Integer}
 ]);
 
-var Fighter = _Fighter.Type;
-if (typeof(module) != 'undefined') {
-	module.exports.Fighter = Fighter;
-}
+types.Fighter = Fighter.Type;
 
-var _Fighter_Part1 = new tyts.Object('Fighter_Part1', 127, [
-	{name: 'Pos', tag: 10, tagsize: 1, type: _Vector2},
+var Fighter_Part1 = new tyts.Object('Fighter_Part1', 127, [
+	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: tyts.Float32},
 	{name: 'Poss', tag: 34, tagsize: 1, type: DiVector2},
@@ -240,13 +234,10 @@ var _Fighter_Part1 = new tyts.Object('Fighter_Part1', 127, [
 	{name: 'Pyv2', tag: 90, tagsize: 1, type: VGoTypei}
 ], [
 ]);
-var Fighter_Part1 = _Fighter_Part1.Type;
-if (typeof(module) != 'undefined') {
-	module.exports.Fighter_Part1 = Fighter_Part1;
-}
+types.Fighter_Part1 = Fighter_Part1.Type;
 
-var _Fighter_Part2 = new tyts.Object('Fighter_Part2', 1023, [
-	{name: 'Pos', tag: 10, tagsize: 1, type: _Vector2},
+var Fighter_Part2 = new tyts.Object('Fighter_Part2', 1023, [
+	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: tyts.Float32},
 	{name: 'Poss', tag: 34, tagsize: 1, type: DiVector2},
@@ -267,7 +258,4 @@ var _Fighter_Part2 = new tyts.Object('Fighter_Part2', 1023, [
 	{name: 'Ll', tag: 154, tagsize: 2, type: LLf}
 ], [
 ]);
-var Fighter_Part2 = _Fighter_Part2.Type;
-if (typeof(module) != 'undefined') {
-	module.exports.Fighter_Part2 = Fighter_Part2;
-}
+types.Fighter_Part2 = Fighter_Part2.Type;

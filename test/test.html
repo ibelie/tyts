@@ -6,24 +6,14 @@
 	<script type="text/javascript" src="../../closure/lib/closure/goog/base.js"></script>
 	<script type="text/javascript" src="deps.js"></script>
 	<script type="text/javascript">
-		goog.require("Vector2");
-		goog.require("Fighter");
-		goog.require('fighter');
-		goog.require('v');
-		goog.require("compareVector2");
-		goog.require("compareFighter");
+		goog.require('TestVector2');
+		goog.require('TestFighter');
 	</script>
 </head>
 <body>
 	<script type="text/javascript">
-		var v = new Vector2();
-		v.P = new GoType();
-		v.X = 123;
-		v.Y = 123.4;
-		var d = v.Serialize();
-		console.log(d);
-		var v2 = Vector2.Deserialize(d);
-		console.log(v2);
+		TestVector2();
+		TestFighter();
 	</script>
 	test
 </body>

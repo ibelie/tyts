@@ -3,7 +3,10 @@
 // that can be found in the LICENSE file.
 goog.provide('GoType');
 var GoType = (function () {
-    function GoType() {
+    function GoType(PP, AP) {
+        this.__class__ = 'GoType';
+        this.PP = PP;
+        this.AP = AP;
     }
     GoType.prototype.ByteSize = function () {
         return 0;

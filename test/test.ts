@@ -1,5 +1,5 @@
 /// <reference path="../../typings/node/node.d.ts"/>
-/// <reference path="extension.ts"/>
+/// <reference path="types_test.ts"/>
 
 // Copyright 2017 ibelie, Chen Jie, Joungtao. All rights reserved.
 // Use of this source code is governed by The MIT License
@@ -22,13 +22,8 @@ goog.global.CLOSURE_IMPORT_SCRIPT = function(path) {
 	return true;
 };
 
-import * as types from "./types";
+goog.require('TestVector2');
+goog.require('TestFighter');
 
-let v = new types.Vector2();
-v.P = new GoType();
-v.X = 123;
-v.Y = 123.4;
-let d = v.Serialize();
-console.log(d)
-let v2 = types.Vector2.Deserialize(d);
-console.log(v2);
+TestVector2();
+TestFighter();

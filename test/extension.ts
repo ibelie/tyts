@@ -11,6 +11,12 @@ class GoType {
 	PP: number;
 	AP: string;
 
+	constructor(PP?: number, AP?: string) {
+		this.__class__ = 'GoType';
+		this.PP = PP;
+		this.AP = AP;
+	}
+
 	ByteSize(): number {
 		return 0;
 	}
