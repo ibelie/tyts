@@ -21,9 +21,9 @@ goog.require('tyts.Variant');
 
 goog.require('GoType');
 
-FixedPoint_1_s10 = new tyts.FixedPoint(-10, 1)
+var FixedPoint_1_s10 = new tyts.FixedPoint(-10, 1)
 
-GoTypeDelegate = new tyts.Extension('GoTypeDelegate', GoType)
+var GoTypeDelegate = new tyts.Extension('GoTypeDelegate', GoType)
 
 var _Vector2 = new tyts.Object('Vector2', 127, [
 	{name: 'X', tag: 13, tagsize: 1, type: tyts.Float32},
@@ -34,78 +34,78 @@ var _Vector2 = new tyts.Object('Vector2', 127, [
 	{name: 'P', tag: 50, tagsize: 1, type: GoTypeDelegate}
 ], [
 ]);
-Vector2 = _Vector2.Type;
+var Vector2 = _Vector2.Type;
 if (typeof(module) != 'undefined') {
 	module.exports.Vector2 = Vector2;
 }
 
-DiVector2 = new tyts.Dict('DiVector2', tyts.Integer, _Vector2)
+var DiVector2 = new tyts.Dict('DiVector2', tyts.Integer, _Vector2)
 
-Dif = new tyts.Dict('Dif', tyts.Integer, tyts.Float32)
+var Dif = new tyts.Dict('Dif', tyts.Integer, tyts.Float32)
 
-LVector2 = new tyts.List('LVector2', _Vector2)
+var LVector2 = new tyts.List('LVector2', _Vector2)
 
-LLVector2 = new tyts.List('LLVector2', LVector2)
+var LLVector2 = new tyts.List('LLVector2', LVector2)
 
-LGoType = new tyts.List('LGoType', GoTypeDelegate)
+var LGoType = new tyts.List('LGoType', GoTypeDelegate)
 
-DiGoType = new tyts.Dict('DiGoType', tyts.Integer, GoTypeDelegate)
+var DiGoType = new tyts.Dict('DiGoType', tyts.Integer, GoTypeDelegate)
 
-VGoTypei = new tyts.Variant('VGoTypei', 127, [
+var VGoTypei = new tyts.Variant('VGoTypei', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: GoTypeDelegate}
 ])
 
-Lf = new tyts.List('Lf', tyts.Float32)
+var Lf = new tyts.List('Lf', tyts.Float32)
 
-Lby = new tyts.List('Lby', tyts.Bytes)
+var Lby = new tyts.List('Lby', tyts.Bytes)
 
-Ls = new tyts.List('Ls', tyts.String)
+var Ls = new tyts.List('Ls', tyts.String)
 
-Dsby = new tyts.Dict('Dsby', tyts.String, tyts.Bytes)
+var Dsby = new tyts.Dict('Dsby', tyts.String, tyts.Bytes)
 
-Dis = new tyts.Dict('Dis', tyts.Integer, tyts.String)
+var Dis = new tyts.Dict('Dis', tyts.Integer, tyts.String)
 
-LCorpus = new tyts.List('LCorpus', tyts.Integer)
+var LCorpus = new tyts.List('LCorpus', tyts.Integer)
 
-DiCorpus = new tyts.Dict('DiCorpus', tyts.Integer, tyts.Integer)
+var DiCorpus = new tyts.Dict('DiCorpus', tyts.Integer, tyts.Integer)
 
-LLf = new tyts.List('LLf', Lf)
+var LLf = new tyts.List('LLf', Lf)
 
-VVector2byfi = new tyts.Variant('VVector2byfi', 127, [
+var VVector2byfi = new tyts.Variant('VVector2byfi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 21, tagsize: 1, type: tyts.Float32},
 	{tag: 26, tagsize: 1, type: tyts.Bytes},
 	{tag: 34, tagsize: 1, type: _Vector2}
 ])
 
-FixedPoint_3_0 = new tyts.FixedPoint(0, 3)
+var FixedPoint_3_0 = new tyts.FixedPoint(0, 3)
 
-VFixedPoint_3_0Vector2is = new tyts.Variant('VFixedPoint_3_0Vector2is', 127, [
+var VFixedPoint_3_0Vector2is = new tyts.Variant('VFixedPoint_3_0Vector2is', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 16, tagsize: 1, type: FixedPoint_3_0},
 	{tag: 26, tagsize: 1, type: tyts.String},
 	{tag: 34, tagsize: 1, type: _Vector2}
 ])
 
-LVFixedPoint_3_0Vector2is = new tyts.List('LVFixedPoint_3_0Vector2is', VFixedPoint_3_0Vector2is)
+var LVFixedPoint_3_0Vector2is = new tyts.List('LVFixedPoint_3_0Vector2is', VFixedPoint_3_0Vector2is)
 
-VCorpusVector2ds = new tyts.Variant('VCorpusVector2ds', 127, [
+var VCorpusVector2ds = new tyts.Variant('VCorpusVector2ds', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 17, tagsize: 1, type: tyts.Float64},
 	{tag: 26, tagsize: 1, type: tyts.String},
 	{tag: 34, tagsize: 1, type: _Vector2}
 ])
 
-DiVCorpusVector2ds = new tyts.Dict('DiVCorpusVector2ds', tyts.Integer, VCorpusVector2ds)
+var DiVCorpusVector2ds = new tyts.Dict('DiVCorpusVector2ds', tyts.Integer, VCorpusVector2ds)
 
-LVCorpusVector2ds = new tyts.List('LVCorpusVector2ds', VCorpusVector2ds)
+var LVCorpusVector2ds = new tyts.List('LVCorpusVector2ds', VCorpusVector2ds)
 
-DiLVCorpusVector2ds = new tyts.Dict('DiLVCorpusVector2ds', tyts.Integer, LVCorpusVector2ds)
+var DiLVCorpusVector2ds = new tyts.Dict('DiLVCorpusVector2ds', tyts.Integer, LVCorpusVector2ds)
 
-DiLf = new tyts.Dict('DiLf', tyts.Integer, Lf)
+var DiLf = new tyts.Dict('DiLf', tyts.Integer, Lf)
 
-VCorpusVector2dis = new tyts.Variant('VCorpusVector2dis', 127, [
+var VCorpusVector2dis = new tyts.Variant('VCorpusVector2dis', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 16, tagsize: 1, type: tyts.Integer},
 	{tag: 25, tagsize: 1, type: tyts.Float64},
@@ -113,50 +113,50 @@ VCorpusVector2dis = new tyts.Variant('VCorpusVector2dis', 127, [
 	{tag: 42, tagsize: 1, type: _Vector2}
 ])
 
-DiVCorpusVector2dis = new tyts.Dict('DiVCorpusVector2dis', tyts.Integer, VCorpusVector2dis)
+var DiVCorpusVector2dis = new tyts.Dict('DiVCorpusVector2dis', tyts.Integer, VCorpusVector2dis)
 
-DiDiVCorpusVector2dis = new tyts.Dict('DiDiVCorpusVector2dis', tyts.Integer, DiVCorpusVector2dis)
+var DiDiVCorpusVector2dis = new tyts.Dict('DiDiVCorpusVector2dis', tyts.Integer, DiVCorpusVector2dis)
 
-DiDif = new tyts.Dict('DiDif', tyts.Integer, Dif)
+var DiDif = new tyts.Dict('DiDif', tyts.Integer, Dif)
 
-Vin = new tyts.Variant('Vin', 127, [
+var Vin = new tyts.Variant('Vin', 127, [
 	{tag: 16, tagsize: 1, type: tyts.Integer}
 ])
 
-Vfs = new tyts.Variant('Vfs', 127, [
+var Vfs = new tyts.Variant('Vfs', 127, [
 	{tag: 13, tagsize: 1, type: tyts.Float32},
 	{tag: 18, tagsize: 1, type: tyts.String}
 ])
 
-LVfs = new tyts.List('LVfs', Vfs)
+var LVfs = new tyts.List('LVfs', Vfs)
 
-VLVfsi = new tyts.Variant('VLVfsi', 127, [
+var VLVfsi = new tyts.Variant('VLVfsi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: LVfs}
 ])
 
-VLfi = new tyts.Variant('VLfi', 127, [
+var VLfi = new tyts.Variant('VLfi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: Lf}
 ])
 
-DiVfs = new tyts.Dict('DiVfs', tyts.Integer, Vfs)
+var DiVfs = new tyts.Dict('DiVfs', tyts.Integer, Vfs)
 
-VDiVfsi = new tyts.Variant('VDiVfsi', 127, [
+var VDiVfsi = new tyts.Variant('VDiVfsi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: DiVfs}
 ])
 
-VDifi = new tyts.Variant('VDifi', 127, [
+var VDifi = new tyts.Variant('VDifi', 127, [
 	{tag: 8, tagsize: 1, type: tyts.Integer},
 	{tag: 18, tagsize: 1, type: Dif}
 ])
 
-LLLVector2 = new tyts.List('LLLVector2', LLVector2)
+var LLLVector2 = new tyts.List('LLLVector2', LLVector2)
 
-DsVector2 = new tyts.Dict('DsVector2', tyts.String, _Vector2)
+var DsVector2 = new tyts.Dict('DsVector2', tyts.String, _Vector2)
 
-LDsVector2 = new tyts.List('LDsVector2', DsVector2)
+var LDsVector2 = new tyts.List('LDsVector2', DsVector2)
 
 var _Fighter = new tyts.Object('Fighter', 1023, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: _Vector2},
@@ -221,7 +221,7 @@ _Fighter.methods[3].type = new tyts.Method('FighterGPRResult', 127, [
 	{tag: 16, tagsize: 1, type: tyts.Integer}
 ]);
 
-Fighter = _Fighter.Type;
+var Fighter = _Fighter.Type;
 if (typeof(module) != 'undefined') {
 	module.exports.Fighter = Fighter;
 }
@@ -240,7 +240,7 @@ var _Fighter_Part1 = new tyts.Object('Fighter_Part1', 127, [
 	{name: 'Pyv2', tag: 90, tagsize: 1, type: VGoTypei}
 ], [
 ]);
-Fighter_Part1 = _Fighter_Part1.Type;
+var Fighter_Part1 = _Fighter_Part1.Type;
 if (typeof(module) != 'undefined') {
 	module.exports.Fighter_Part1 = Fighter_Part1;
 }
@@ -267,7 +267,7 @@ var _Fighter_Part2 = new tyts.Object('Fighter_Part2', 1023, [
 	{name: 'Ll', tag: 154, tagsize: 2, type: LLf}
 ], [
 ]);
-Fighter_Part2 = _Fighter_Part2.Type;
+var Fighter_Part2 = _Fighter_Part2.Type;
 if (typeof(module) != 'undefined') {
 	module.exports.Fighter_Part2 = Fighter_Part2;
 }
