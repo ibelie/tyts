@@ -82,7 +82,7 @@ tyts.FixedPoint = function(floor, precision) {
 tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
 tyts.FixedPoint.prototype.isPrimitive = true;
 tyts.FixedPoint.prototype.isIterative = false;
-tyts.FixedPoint.prototype.wiretype = tyts.WireBytes;
+tyts.FixedPoint.prototype.wiretype = tyts.WireVarint;
 
 tyts.FixedPoint.prototype.Default = function() {
 	return 0;
