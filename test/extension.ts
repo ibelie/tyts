@@ -18,14 +18,38 @@ class GoType {
 	}
 
 	ByteSize(): number {
-		return 0;
+		let n = 0;
+		let x = this.PP;
+		do { n++; x >>>= 7; } while (x);
+		return n + this.AP.length;
 	}
 
 	Serialize(): Uint8Array {
-		return new Uint8Array(0);
+		let buffer = new Uint8Array(this.ByteSize());
+		let x = this.PP, i = 0;
+		while (x >= 0x80) {
+			buffer[i++] = (x & 0x7F) | 0x80;
+			x >>>= 7;
+		}
+		buffer[i++] = x & 0x7F;
+		for (let j = 0; j < this.AP.length; j++) {
+			buffer[i++] = this.AP.charCodeAt(j);
+		}
+		return buffer;
 	}
 
 	Deserialize(data: Uint8Array): void {
-
+		let s = 0, i = 0;
+		this.PP = 0;
+		while (s < 64) {
+			let b = data[i++];
+			if (b < 0x80) {
+				this.PP |= (b & 0x7F) << s;
+				break;
+			}
+			this.PP |= (b & 0x7F) << s;
+			s += 7;
+		}
+		this.AP = String.fromCharCode.apply(null, data.slice(i));
 	}
 }

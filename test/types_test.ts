@@ -76,7 +76,7 @@ function compareBytes(b1: Uint8Array, b2: Uint8Array): boolean {
 	if (b1.length != b2.length) {
 		return false;
 	}
-	for (var i = 0; i < b1.length; i++) {
+	for (let i = 0; i < b1.length; i++) {
 		if (b1[i] != b2[i]) {
 			return false;
 		}
