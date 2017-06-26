@@ -504,15 +504,15 @@ tyts.Object = function(name, cutoff, fields, methods) {
 	};
 	type.Type.prototype.Serialize = function() {
 		var protobuf = new tyts.ProtoBuf(new Uint8Array(this.ByteSize()));
-		type.Serialize(this, 0, true, protobuf);
+		type.SerializeUnsealed(this, protobuf);
 		return protobuf.buffer;
 	};
 	type.Type.prototype.Deserialize = function(buffer) {
-		type.DeserializeInplace(this, new tyts.ProtoBuf(buffer));
+		type.DeserializeUnsealed(this, new tyts.ProtoBuf(buffer));
 	};
 	type.Type.Deserialize = function(buffer) {
 		var object = new type.Type();
-		type.DeserializeInplace(object, new tyts.ProtoBuf(buffer));
+		type.DeserializeUnsealed(object, new tyts.ProtoBuf(buffer));
 		return object;
 	};
 };
@@ -560,6 +560,21 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		protobuf.WriteVarint(tag);
 	}
 	protobuf.WriteVarint(value.cached_size);
+	this.SerializeUnsealed(value, protobuf);
+};
+
+tyts.Object.prototype.Deserialize = function(value, protobuf) {
+	var buffer = protobuf.ReadBuffer(protobuf.ReadVarint());
+	if (!value) {
+		value = new this.Type();
+	}
+	if (buffer.length > 0) {
+		this.DeserializeUnsealed(value, new tyts.ProtoBuf(buffer));
+	}
+	return value;
+};
+
+tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
 		var fieldname = '_' + field.name;
@@ -569,18 +584,7 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	}
 };
 
-tyts.Object.prototype.Deserialize = function(value, protobuf) {
-	var buffer = protobuf.ReadBuffer(protobuf.ReadVarint());
-	if (!value) {
-		value = new this.Type();
-	}
-	if (buffer.length > 0) {
-		this.DeserializeInplace(value, new tyts.ProtoBuf(buffer));
-	}
-	return value;
-};
-
-tyts.Object.prototype.DeserializeInplace = function(value, protobuf) {
+tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
 		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
