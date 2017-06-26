@@ -500,7 +500,7 @@ tyts.Object = function(name, cutoff, fields, methods) {
 
 	type.Type.prototype.__class__ = name;
 	type.Type.prototype.ByteSize = function() {
-		return type.ByteSize(this, 0, true);
+		return type.ByteSizeUnsealed(this);
 	};
 	type.Type.prototype.Serialize = function() {
 		var protobuf = new tyts.ProtoBuf(new Uint8Array(this.ByteSize()));
@@ -534,15 +534,7 @@ tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!value) {
 		return ignore ? 0 : tagsize + 1;
 	}
-	var size = 0;
-	for (var i = 0; i < this.fields.length; i++) {
-		var field = this.fields[i];
-		var fieldname = '_' + field.name;
-		if (value[fieldname] != undefined) {
-			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
-		}
-	}
-	value.cached_size = size;
+	var size = this.ByteSizeUnsealed(value);
 	return tagsize + tyts.SizeVarint(size) + size;
 };
 
@@ -572,6 +564,19 @@ tyts.Object.prototype.Deserialize = function(value, protobuf) {
 		this.DeserializeUnsealed(value, new tyts.ProtoBuf(buffer));
 	}
 	return value;
+};
+
+tyts.Object.prototype.ByteSizeUnsealed = function(value) {
+	var size = 0;
+	for (var i = 0; i < this.fields.length; i++) {
+		var field = this.fields[i];
+		var fieldname = '_' + field.name;
+		if (value[fieldname] != undefined) {
+			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
+		}
+	}
+	value.cached_size = size;
+	return size;
 };
 
 tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
