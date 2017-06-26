@@ -34,10 +34,6 @@ tyts.ProtoBuf = function(buffer) {
 	this.buffer = buffer;
 };
 
-tyts.ProtoBuf.prototype.Reset = function() {
-	this.offset = 0;
-};
-
 tyts.ProtoBuf.prototype.End = function() {
 	return this.offset >= this.buffer.length;
 }

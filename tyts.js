@@ -387,7 +387,7 @@ tyts.String = new function() {
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (value.length > 0) {
-			var size = this.Size();
+			var size = this.Size(value);
 			return tagsize + tyts.SizeVarint(size) + size;
 		} else if (!ignore) {
 			return tagsize + 1;

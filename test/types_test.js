@@ -59,8 +59,44 @@ fighter.Fdv = { 333: 222.111, 444: 345.123 };
 fighter.Poslll = [[[v, new types.Vector2(), v2], null], null, [[v, new types.Vector2(), v2], [v2, v]]];
 fighter.Posdl = [{ "231": v, "320": null, "321": v2 }, null, { "321": v, "320": null, "231": v2 }];
 function compareGoType(g1, g2, prefix) {
+    if (g1 == g2) {
+        return;
+    }
+    else if (!g1 || !g2) {
+        console.error(prefix, "GoType", g1, g2);
+    }
+    else if (g1.PP != g2.PP) {
+        console.error(prefix, "GoType.PP:", g1.PP, g2.PP);
+    }
+    else if (g1.AP != g2.AP) {
+        console.error(prefix, "GoType.AP:", g1.AP, g2.AP);
+    }
 }
 function compareVector2(v1, v2, prefix) {
+    if (v1 == v2) {
+        return;
+    }
+    else if (!v1 || !v2) {
+        console.error(prefix, "Vector2", v1, v2);
+    }
+    else if (v1.X != v2.X) {
+        console.error(prefix, "Vector2.X:", v1.X, v2.X);
+    }
+    else if (v1.Y != v2.Y) {
+        console.error(prefix, "Vector2.Y:", v1.Y, v2.Y);
+    }
+    else if (v1.S != v2.S) {
+        console.error(prefix, "Vector2.S:", v1.S, v2.S);
+    }
+    else if (v1.B != v2.B) {
+        console.error(prefix, "Vector2.B:", v1.B, v2.B);
+    }
+    else if (v1.E != v2.E) {
+        console.error(prefix, "Vector2.E:", v1.E, v2.E);
+    }
+    else {
+        compareGoType(v1.P, v2.P, prefix + ".P");
+    }
 }
 function compareFighter_Part1(f1, f2) {
 }
@@ -69,8 +105,8 @@ function compareFighter_Part2(f1, f2) {
 function compareFighter(f1, f2) {
 }
 var TestVector2 = function () {
-    console.info('TestVector2 ok');
+    compareVector2(v, types.Vector2.Deserialize(v.Serialize()), "");
 };
 var TestFighter = function () {
-    console.info('TestFighter ok');
+    compareFighter(fighter, types.Fighter.Deserialize(fighter.Serialize()));
 };
