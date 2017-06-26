@@ -527,7 +527,7 @@ tyts.Object.prototype.Default = function() {
 };
 
 tyts.Object.prototype.Check = function(value) {
-	return value instanceof type.Type;
+	return value instanceof this.Type;
 };
 
 tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
@@ -802,7 +802,7 @@ tyts.List.prototype.Check = function(value) {
 };
 
 tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
-	if (!value.length && ignore) {
+	if (!value || !value.length) {
 		return 0;
 	}
 	var element = this.element;
@@ -829,7 +829,7 @@ tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 };
 
 tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
-	if (!value.length && ignore) {
+	if (!value || !value.length) {
 		return;
 	}
 	var element = this.element;
