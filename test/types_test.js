@@ -105,8 +105,12 @@ function compareFighter_Part2(f1, f2) {
 function compareFighter(f1, f2) {
 }
 var TestVector2 = function () {
+    console.info('TestVector2 start');
     compareVector2(v, types.Vector2.Deserialize(v.Serialize()), "");
+    console.info('TestVector2 end');
 };
 var TestFighter = function () {
+    console.info('TestFighter start');
     compareFighter(fighter, types.Fighter.Deserialize(fighter.Serialize()));
+    console.info('TestFighter end');
 };

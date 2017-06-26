@@ -117,10 +117,14 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 }
 
 let TestVector2 = function(): void {
+	console.info('TestVector2 start');
 	compareVector2(v, types.Vector2.Deserialize(v.Serialize()), "");
+	console.info('TestVector2 end');
 }
 
 let TestFighter = function(): void {
+	console.info('TestFighter start');
 	compareFighter(fighter, types.Fighter.Deserialize(fighter.Serialize()));
+	console.info('TestFighter end');
 }
 
