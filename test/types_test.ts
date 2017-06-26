@@ -72,6 +72,18 @@ fighter.Fdv     = {333: 222.111, 444: 345.123};
 fighter.Poslll  = [[[v, new types.Vector2(), v2], null], null, [[v, new types.Vector2(), v2], [v2, v]]];
 fighter.Posdl   = [{"231": v, "320": null, "321": v2}, null, {"321": v, "320": null, "231": v2}];
 
+function compareBytes(b1: Uint8Array, b2: Uint8Array): boolean {
+	if (b1.length != b2.length) {
+		return false;
+	}
+	for (var i = 0; i < b1.length; i++) {
+		if (b1[i] != b2[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function compareGoType(g1: any, g2: any, prefix: string): void {
 	if (g1 == g2) {
 		return;
@@ -95,7 +107,7 @@ function compareVector2(v1: types.Vector2, v2: types.Vector2, prefix: string): v
 		console.error(prefix, "Vector2.Y:", v1.Y, v2.Y)
 	} else if (v1.S != v2.S) {
 		console.error(prefix, "Vector2.S:", v1.S, v2.S)
-	} else if (v1.B != v2.B) {
+	} else if (!compareBytes(v1.B, v2.B)) {
 		console.error(prefix, "Vector2.B:", v1.B, v2.B)
 	} else if (v1.E != v2.E) {
 		console.error(prefix, "Vector2.E:", v1.E, v2.E)
