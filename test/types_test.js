@@ -110,10 +110,89 @@ function compareVector2(v1, v2, prefix) {
     }
 }
 function compareFighter_Part1(f1, f2) {
+    if (f1 == f2) {
+        return;
+    }
+    else if (!f1 || !f2) {
+        console.error("Fighter_Part1", f1, f2);
+        return;
+    }
+    compareVector2(f1.Pos, f2.Pos, "Fighter_Part1.Pos");
+    if (f1.IsAwake != f2.IsAwake) {
+        console.error("Fighter_Part1.IsAwake:", f1.IsAwake, f2.IsAwake);
+    }
+    if (f1.Hp != f2.Hp) {
+        console.error("Fighter_Part1.Hp:", f1.Hp, f2.Hp);
+    }
+    if (Object.keys(f1.Poss).length != Object.keys(f2.Poss).length) {
+        console.error("Fighter_Part1.Poss:", f1.Poss, f2.Poss);
+    }
+    else {
+        for (var k in f1.Poss) {
+            compareVector2(f1.Poss[k], f2.Poss[k], "Fighter_Part1.Poss[" + k + "]");
+        }
+    }
+    if (Object.keys(f1.Posi).length != Object.keys(f2.Posi).length) {
+        console.error("Fighter_Part1.Posi:", f1.Posi, f2.Posi);
+    }
+    else {
+        for (var k in f1.Poss) {
+            if (f1.Posi[k] != f2.Posi[k]) {
+                console.error("Fighter_Part1.Posi:", k, f1.Posi[k], f2.Posi[k]);
+            }
+        }
+    }
+    if (f1.Posl.length != f2.Posl.length) {
+        console.error("Fighter_Part1.Posl:", f1.Posl, f2.Posl);
+    }
+    else {
+        for (var k = 0; k < f1.Posl.length; k++) {
+            compareVector2(f1.Posl[k], f2.Posl[k], "Fighter_Part1.Posl[" + k + "]");
+        }
+    }
+    if (f1.Posll.length != f2.Posll.length) {
+        console.error("Fighter_Part1.Posll: %v %v", f1.Posll, f2.Posll);
+    }
+    else {
+        for (var k1 = 0; k1 < f1.Posll.length; k1++) {
+            var l1 = f1.Posll[k1];
+            var l2 = f2.Posll[k1];
+            if (l1.length != l2.length) {
+                console.error("Fighter_Part1.Posll[", k1, "]:", l1, l2);
+            }
+            else {
+                for (var k2 = 0; k2 < l1.length; k2++) {
+                    compareVector2(l1[k2], l2[k2], "Fighter_Part1.Posll[" + k1 + "][" + k2 + "]");
+                }
+            }
+        }
+    }
+    if (f1.Pyl.length != f2.Pyl.length) {
+        console.error("Fighter_Part1.Pyl:", f1.Pyl, f2.Pyl);
+    }
+    else {
+        for (var k = 0; k < f1.Pyl.length; k++) {
+            compareGoType(f1.Pyl[k], f2.Pyl[k], "Fighter_Part1.Pyl[" + k + "]");
+        }
+    }
+    if (Object.keys(f1.Pyd).length != Object.keys(f2.Pyd).length) {
+        console.error("Fighter_Part1.Pyd:", f1.Pyd, f2.Pyd);
+    }
+    else {
+        for (var k in f1.Pyd) {
+            compareGoType(f1.Pyd[k], f2.Pyd[k], "Fighter_Part1.Pyd[" + k + "]");
+        }
+    }
+    if (f1.Pyv1 != f2.Pyv1) {
+        console.error("Fighter_Part1.Pyv1:", f1.Pyv1, f2.Pyv1);
+    }
+    compareGoType(f1.Pyv2, f2.Pyv2, "Fighter_Part1.Pyv1");
 }
 function compareFighter_Part2(f1, f2) {
+    compareFighter_Part1(f1, f2);
 }
 function compareFighter(f1, f2) {
+    compareFighter_Part2(f1, f2);
 }
 var TestVector2 = function () {
     console.info('TestVector2 start');
