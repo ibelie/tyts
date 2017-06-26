@@ -60,7 +60,7 @@ tyts.ProtoBuf.prototype.WriteVarint = function(x) {
 		this.buffer[this.offset++] = (x & 0x7F) | 0x80;
 		x >>>= 7;
 	}
-	this.buffer[this.offset++] = (x & 0x7F) | 0x80;
+	this.buffer[this.offset++] = x & 0x7F;
 }
 
 tyts.ProtoBuf.prototype.ReadVarint = function() {
@@ -114,7 +114,7 @@ tyts.ProtoBuf.prototype.ReadTag = function(cutoff) {
 }
 
 tyts.ProtoBuf.prototype.SkipField = function(tag) {
-	switch (tag & WireTypeMask) {
+	switch (tag & tyts.WireTypeMask) {
 	case tyts.WireVarint:
 		this.ReadVarint();
 		break;
