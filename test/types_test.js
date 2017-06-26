@@ -138,7 +138,7 @@ function compareFighter_Part1(f1, f2) {
     else {
         for (var k in f1.Poss) {
             if (f1.Posi[k] != f2.Posi[k]) {
-                console.error("Fighter_Part1.Posi:", k, f1.Posi[k], f2.Posi[k]);
+                console.error("Fighter_Part1.Posi[", k, "]:", f1.Posi[k], f2.Posi[k]);
             }
         }
     }
@@ -151,7 +151,7 @@ function compareFighter_Part1(f1, f2) {
         }
     }
     if (f1.Posll.length != f2.Posll.length) {
-        console.error("Fighter_Part1.Posll: %v %v", f1.Posll, f2.Posll);
+        console.error("Fighter_Part1.Posll:", f1.Posll, f2.Posll);
     }
     else {
         for (var k1 = 0; k1 < f1.Posll.length; k1++) {
@@ -189,10 +189,349 @@ function compareFighter_Part1(f1, f2) {
     compareGoType(f1.Pyv2, f2.Pyv2, "Fighter_Part1.Pyv1");
 }
 function compareFighter_Part2(f1, f2) {
+    if (f1 == f2) {
+        return;
+    }
+    else if (!f1 || !f2) {
+        console.error("Fighter_Part2", f1, f2);
+        return;
+    }
     compareFighter_Part1(f1, f2);
+    if (f1.Fl.length != f2.Fl.length) {
+        console.error("Fighter_Part2.Fl:", f1.Fl, f2.Fl);
+    }
+    else {
+        for (var k = 0; k < f1.Fl.length; k++) {
+            if (f1.Fl[k] != f2.Fl[k]) {
+                console.error("Fighter_Part2.Fl[", k, "]:", f1.Fl[k], f2.Fl[k]);
+            }
+        }
+    }
+    if (f1.Bl.length != f2.Bl.length) {
+        console.error("Fighter_Part2.Bl:", f1.Bl, f2.Bl);
+    }
+    else {
+        for (var k = 0; k < f1.Bl.length; k++) {
+            if (!compareBytes(f1.Bl[k], f2.Bl[k])) {
+                console.error("Fighter_Part2.Bl[", k, "]:", f1.Bl[k], f2.Bl[k]);
+            }
+        }
+    }
+    if (f1.Sl.length != f2.Sl.length) {
+        console.error("Fighter_Part2.Sl:", f1.Sl, f2.Sl);
+    }
+    else {
+        for (var k = 0; k < f1.Sl.length; k++) {
+            if (f1.Sl[k] != f2.Sl[k]) {
+                console.error("Fighter_Part2.Sl[", k, "]:", f1.Sl[k], f2.Sl[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Bd).length != Object.keys(f2.Bd).length) {
+        console.error("Fighter_Part2.Bd:", f1.Bd, f2.Bd);
+    }
+    else {
+        for (var k in f1.Bd) {
+            if (!compareBytes(f1.Bd[k], f2.Bd[k])) {
+                console.error("Fighter_Part2.Bd[", k, "]:", f1.Bd[k], f2.Bd[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Sd).length != Object.keys(f2.Sd).length) {
+        console.error("Fighter_Part2.Sd:", f1.Sd, f2.Sd);
+    }
+    else {
+        for (var k in f1.Sd) {
+            if (f1.Sd[k] != f2.Sd[k]) {
+                console.error("Fighter_Part2.Sd[", k, "]:", f1.Sd[k], f2.Sd[k]);
+            }
+        }
+    }
+    if (f1.El.length != f2.El.length) {
+        console.error("Fighter_Part2.El:", f1.El, f2.El);
+    }
+    else {
+        for (var k = 0; k < f1.El.length; k++) {
+            if (f1.El[k] != f2.El[k]) {
+                console.error("Fighter_Part2.El[", k, "]:", f1.El[k], f2.El[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Ed).length != Object.keys(f2.Ed).length) {
+        console.error("Fighter_Part2.Ed:", f1.Ed, f2.Ed);
+    }
+    else {
+        for (var k in f1.Ed) {
+            if (f1.Ed[k] != f2.Ed[k]) {
+                console.error("Fighter_Part2.Ed[", k, "]:", f1.Ed[k], f2.Ed[k]);
+            }
+        }
+    }
+    if (f1.Ll.length != f2.Ll.length) {
+        console.error("Fighter_Part2.Ll:", f1.Ll, f2.Ll);
+    }
+    else {
+        for (var k1 = 0; k1 < f1.Ll.length; k1++) {
+            var l1 = f1.Ll[k1];
+            var l2 = f2.Ll[k1];
+            if (l1.length != l2.length) {
+                console.error("Fighter_Part2.Ll[", k1, "]:", l1, l2);
+            }
+            else {
+                for (var k2 = 0; k2 < l1.length; k2++) {
+                    if (l1[k2] != l2[k2]) {
+                        console.error("Fighter_Part2.Ll[", k1, "][", k2, "]:", l1[k2] != l2[k2]);
+                    }
+                }
+            }
+        }
+    }
 }
 function compareFighter(f1, f2) {
+    if (f1 == f2) {
+        return;
+    }
+    else if (!f1 || !f2) {
+        console.error("Fighter", f1, f2);
+        return;
+    }
     compareFighter_Part2(f1, f2);
+    if (f1.V0 != f2.V0) {
+        console.error("Fighter.V0:", f1.V0, f2.V0);
+    }
+    if (f1.V1 != f2.V1) {
+        console.error("Fighter.V1:", f1.V1, f2.V1);
+    }
+    if (!compareBytes(f1.V2, f2.V2)) {
+        console.error("Fighter.V2:", f1.V2, f2.V2);
+    }
+    compareVector2(f1.V3, f2.V3, "Fighter.V3");
+    if (f1.V4 != f2.V4) {
+        console.error("Fighter.V4:", f1.V4, f2.V4);
+    }
+    if (f1.Vl.length != f2.Vl.length) {
+        console.error("Fighter_Part2.Vl:", f1.Vl, f2.Vl);
+    }
+    else {
+        if (f1.Vl[0] != f2.Vl[0]) {
+            console.error("Fighter.Vl[0]:", f1.Vl[0], f2.Vl[0]);
+        }
+        if (f1.Vl[1] != f2.Vl[1]) {
+            console.error("Fighter.Vl[1]:", f1.Vl[1], f2.Vl[1]);
+        }
+        if (f1.Vl[2] || f2.Vl[2]) {
+            console.error("Fighter.Vl[2]:", f1.Vl[2], f2.Vl[2]);
+        }
+        compareVector2(f1.Vl[3], f2.Vl[3], "Fighter.Vl[3]");
+        if (f1.Vl[4] != f2.Vl[4]) {
+            console.error("Fighter.Vl[4]:", f1.Vl[4], f2.Vl[4]);
+        }
+        if (f1.Vl[5] || f2.Vl[5]) {
+            console.error("Fighter.Vl[5]:", f1.Vl[5], f2.Vl[5]);
+        }
+    }
+    if (Object.keys(f1.Vd).length != Object.keys(f2.Vd).length) {
+        console.error("Fighter_Part2.Vd:", f1.Vd, f2.Vd);
+    }
+    else {
+        if (f1.Vd[0] || f2.Vd[0]) {
+            console.error("Fighter.Vd[0]:", f1.Vd[0], f2.Vd[0]);
+        }
+        if (f1.Vd[12] != f2.Vd[12]) {
+            console.error("Fighter.Vd[12]:", f1.Vd[12], f2.Vd[12]);
+        }
+        if (f1.Vd[23] != f2.Vd[23]) {
+            console.error("Fighter.Vd[23]:", f1.Vd[23], f2.Vd[23]);
+        }
+        compareVector2(f1.Vd[34], f2.Vd[34], "Fighter.Vd[34]");
+        if (f1.Vd[45] != f2.Vd[45]) {
+            console.error("Fighter.Vd[45]:", f1.Vd[45], f2.Vd[45]);
+        }
+    }
+    if (Object.keys(f1.Ld).length != Object.keys(f2.Ld).length) {
+        console.error("Fighter_Part2.Ld:", f1.Ld, f2.Ld);
+    }
+    else {
+        for (var k1 in f1.Ld) {
+            var l1 = f1.Ld[k1];
+            var l2 = f2.Ld[k1];
+            if (l1.length != l2.length) {
+                console.error("Fighter_Part2.Ld[", k1, "]:", l1, l2);
+            }
+            else if (k1 == '12' && l1.length == 2 && l2.length == 2) {
+                if (f1.Ld[12][0] != f2.Ld[12][0]) {
+                    console.error("Fighter.Ld[12][0]:", f1.Ld[12][0], f2.Ld[12][0]);
+                }
+                if (f1.Ld[12][1] != f2.Ld[12][1]) {
+                    console.error("Fighter.Ld[12][1]:", f1.Ld[12][1], f2.Ld[12][1]);
+                }
+            }
+            else if (k1 == '34' && l1.length == 2 && l2.length == 2) {
+                compareVector2(f1.Ld[34][0], f2.Ld[34][0], "Fighter.Ld[34][0]");
+                if (f1.Ld[34][1] != f2.Ld[34][1]) {
+                    console.error("Fighter.Ld[34][1]:", f1.Ld[34][1], f2.Ld[34][1]);
+                }
+            }
+            else {
+                console.error("Fighter_Part2.Ld[", k1, "]:", l1, l2);
+            }
+        }
+    }
+    if (Object.keys(f1.Fld).length != Object.keys(f2.Fld).length) {
+        console.error("Fighter_Part2.Fld:", f1.Fld, f2.Fld);
+    }
+    else {
+        for (var k1 in f1.Fld) {
+            var l1 = f1.Fld[k1];
+            var l2 = f2.Fld[k1];
+            if (l1.length != l2.length) {
+                console.error("Fighter_Part2.Fld[", k1, "]:", l1, l2);
+            }
+            else {
+                for (var k2 = 0; k2 < l1.length; k2++) {
+                    if (l1[k2] != l2[k2]) {
+                        console.error("Fighter_Part2.Fld[", k1, "][", k2, "]:", l1[k2], l2[k2]);
+                    }
+                }
+            }
+        }
+    }
+    if (Object.keys(f1.Dd).length != Object.keys(f2.Dd).length) {
+        console.error("Fighter_Part2.Dd:", f1.Dd, f2.Dd);
+    }
+    else {
+        for (var k1 in f1.Dd) {
+            var l1 = f1.Dd[k1];
+            var l2 = f2.Dd[k1];
+            if (Object.keys(l1).length != Object.keys(l2).length) {
+                console.error("Fighter_Part2.Dd[", k1, "]:", l1, l2);
+            }
+            else if (k1 == '12' && Object.keys(l1).length == 2 && Object.keys(l2).length == 2) {
+                if (f1.Dd[12][111] != f2.Dd[12][111]) {
+                    console.error("Fighter.Dd[12][111]:", f1.Dd[12][111], f2.Dd[12][111]);
+                }
+                if (f1.Dd[12][222] != f2.Dd[12][222]) {
+                    console.error("Fighter.Dd[12][222]:", f1.Dd[12][222], f2.Dd[12][222]);
+                }
+            }
+            else if (k1 == '34' && Object.keys(l1).length == 2 && Object.keys(l2).length == 2) {
+                compareVector2(f1.Dd[34][333], f2.Dd[34][333], "Fighter.Dd[34][333]");
+                if (f1.Dd[34][444] != f2.Dd[34][444]) {
+                    console.error("Fighter.Dd[34][444]:", f1.Dd[34][444], f2.Dd[34][444]);
+                }
+            }
+            else {
+                console.error("Fighter_Part2.Dd[", k1, "]:", l1, l2);
+            }
+        }
+    }
+    if (Object.keys(f1.Fdd).length != Object.keys(f2.Fdd).length) {
+        console.error("Fighter_Part2.Fdd:", f1.Fdd, f2.Fdd);
+    }
+    else {
+        for (var k1 in f1.Fdd) {
+            var l1 = f1.Fdd[k1];
+            var l2 = f2.Fdd[k1];
+            if (Object.keys(l1).length != Object.keys(l2).length) {
+                console.error("Fighter_Part2.Fdd[", k1, "]:", l1, l2);
+            }
+            else {
+                for (var k2 in l1) {
+                    if (l1[k2] != l2[k2]) {
+                        console.error("Fighter_Part2.Fdd[", k1, "][", k2, "]:", l1[k2], l2[k2]);
+                    }
+                }
+            }
+        }
+    }
+    if (f1.Nv != f2.Nv) {
+        console.error("Fighter.Nv:", f1.Nv, f2.Nv);
+    }
+    if (f1.Lv.length != f2.Lv.length || f1.Lv.length != 2) {
+        console.error("Fighter_Part2.Lv:", f1.Lv, f2.Lv);
+    }
+    else {
+        if (f1.Lv[0] != f2.Lv[0]) {
+            console.error("Fighter.Lv[0]:", f1.Lv[0], f2.Lv[0]);
+        }
+        if (f1.Lv[1] != f2.Lv[1]) {
+            console.error("Fighter.Lv[1]:", f1.Lv[1], f2.Lv[1]);
+        }
+    }
+    if (f1.Flv.length != f2.Flv.length) {
+        console.error("Fighter_Part2.Flv:", f1.Flv, f2.Flv);
+    }
+    else {
+        for (var k = 0; k < f1.Flv.length; k++) {
+            if (f1.Flv[k] != f2.Flv[k]) {
+                console.error("Fighter.Flv[", k, "]:", f1.Flv[k], f2.Flv[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Dv).length != Object.keys(f2.Dv).length || Object.keys(f1.Dv).length != 2) {
+        console.error("Fighter_Part2.Dv:", f1.Dv, f2.Dv);
+    }
+    else {
+        if (f1.Dv[333] != f2.Dv[333]) {
+            console.error("Fighter.Dv[333]:", f1.Dv[333], f2.Dv[333]);
+        }
+        if (f1.Dv[444] != f2.Dv[444]) {
+            console.error("Fighter.Dv[444]:", f1.Dv[444], f2.Dv[444]);
+        }
+    }
+    if (Object.keys(f1.Fdv).length != Object.keys(f2.Fdv).length) {
+        console.error("Fighter_Part2.Fdv:", f1.Fdv, f2.Fdv);
+    }
+    else {
+        for (var k in f1.Fdv) {
+            if (f1.Fdv[k] != f2.Fdv[k]) {
+                console.error("Fighter.Fdv[", k, "]:", f1.Fdv[k], f2.Fdv[k]);
+            }
+        }
+    }
+    if (f1.Poslll.length != f2.Poslll.length) {
+        console.error("Fighter_Part1.Poslll:", f1.Poslll, f2.Poslll);
+    }
+    else {
+        for (var k1 = 0; k1 < f1.Poslll.length; k1++) {
+            var ll1 = f1.Poslll[k1];
+            var ll2 = f2.Poslll[k1];
+            if (ll1.length != ll2.length) {
+                console.error("Fighter_Part1.Poslll[", k1, "]:", ll1, ll2);
+            }
+            else {
+                for (var k2 = 0; k2 < ll1.length; k2++) {
+                    var l1 = ll1[k2];
+                    var l2 = ll2[k2];
+                    if (l1.length != l2.length) {
+                        console.error("Fighter_Part1.Poslll[", k1, "][", k2, "]:", l1, l2);
+                    }
+                    else {
+                        for (var k3 = 0; k3 < l1.length; k3++) {
+                            compareVector2(l1[k3], l2[k3], "Fighter_Part1.Poslll[" + k1 + "][" + k2 + "][" + k3 + "]");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (f1.Posdl.length != f2.Posdl.length) {
+        console.error("Fighter_Part2.Posdl:", f1.Posdl, f2.Posdl);
+    }
+    else {
+        for (var k1 = 0; k1 < f1.Posdl.length; k1++) {
+            var d1 = f1.Posdl[k1];
+            var d2 = f2.Posdl[k1];
+            if (Object.keys(d1).length != Object.keys(d2).length) {
+                console.error("Fighter_Part2.Posdl[", k1, "]:", d1, d2);
+            }
+            else {
+                for (var k2 in d1) {
+                    compareVector2(d1[k2], d2[k2], "Fighter_Part1.Posdl[" + k1 + "][" + k2 + "]");
+                }
+            }
+        }
+    }
 }
 var TestVector2 = function () {
     console.info('TestVector2 start');
