@@ -157,7 +157,9 @@ function compareFighter_Part1(f1, f2) {
         for (var k1 = 0; k1 < f1.Posll.length; k1++) {
             var l1 = f1.Posll[k1];
             var l2 = f2.Posll[k1];
-            if (l1.length != l2.length) {
+            if (!l1 && !l2) {
+            }
+            else if ((!l1 && l2) || (l1 && !l2) || l1.length != l2.length) {
                 console.error("Fighter_Part1.Posll[", k1, "]:", l1, l2);
             }
             else {
@@ -274,7 +276,9 @@ function compareFighter_Part2(f1, f2) {
         for (var k1 = 0; k1 < f1.Ll.length; k1++) {
             var l1 = f1.Ll[k1];
             var l2 = f2.Ll[k1];
-            if (l1.length != l2.length) {
+            if (!l1 && !l2) {
+            }
+            else if ((!l1 && l2) || (l1 && !l2) || l1.length != l2.length) {
                 console.error("Fighter_Part2.Ll[", k1, "]:", l1, l2);
             }
             else {
@@ -355,7 +359,9 @@ function compareFighter(f1, f2) {
         for (var k1 in f1.Ld) {
             var l1 = f1.Ld[k1];
             var l2 = f2.Ld[k1];
-            if (l1.length != l2.length) {
+            if (!l1 && !l2) {
+            }
+            else if ((!l1 && l2) || (l1 && !l2) || l1.length != l2.length) {
                 console.error("Fighter_Part2.Ld[", k1, "]:", l1, l2);
             }
             else if (k1 == '12' && l1.length == 2 && l2.length == 2) {
@@ -384,7 +390,9 @@ function compareFighter(f1, f2) {
         for (var k1 in f1.Fld) {
             var l1 = f1.Fld[k1];
             var l2 = f2.Fld[k1];
-            if (l1.length != l2.length) {
+            if (!l1 && !l2) {
+            }
+            else if ((!l1 && l2) || (l1 && !l2) || l1.length != l2.length) {
                 console.error("Fighter_Part2.Fld[", k1, "]:", l1, l2);
             }
             else {
@@ -401,12 +409,14 @@ function compareFighter(f1, f2) {
     }
     else {
         for (var k1 in f1.Dd) {
-            var l1 = f1.Dd[k1];
-            var l2 = f2.Dd[k1];
-            if (Object.keys(l1).length != Object.keys(l2).length) {
-                console.error("Fighter_Part2.Dd[", k1, "]:", l1, l2);
+            var d1 = f1.Dd[k1];
+            var d2 = f2.Dd[k1];
+            if (!d1 && !d2) {
             }
-            else if (k1 == '12' && Object.keys(l1).length == 2 && Object.keys(l2).length == 2) {
+            else if ((!d1 && d2) || (d1 && !d2) || Object.keys(d1).length != Object.keys(d2).length) {
+                console.error("Fighter_Part2.Dd[", k1, "]:", d1, d2);
+            }
+            else if (k1 == '12' && Object.keys(d1).length == 2 && Object.keys(d2).length == 2) {
                 if (f1.Dd[12][111] != f2.Dd[12][111]) {
                     console.error("Fighter.Dd[12][111]:", f1.Dd[12][111], f2.Dd[12][111]);
                 }
@@ -414,14 +424,14 @@ function compareFighter(f1, f2) {
                     console.error("Fighter.Dd[12][222]:", f1.Dd[12][222], f2.Dd[12][222]);
                 }
             }
-            else if (k1 == '34' && Object.keys(l1).length == 2 && Object.keys(l2).length == 2) {
+            else if (k1 == '34' && Object.keys(d1).length == 2 && Object.keys(d2).length == 2) {
                 compareVector2(f1.Dd[34][333], f2.Dd[34][333], "Fighter.Dd[34][333]");
                 if (f1.Dd[34][444] != f2.Dd[34][444]) {
                     console.error("Fighter.Dd[34][444]:", f1.Dd[34][444], f2.Dd[34][444]);
                 }
             }
             else {
-                console.error("Fighter_Part2.Dd[", k1, "]:", l1, l2);
+                console.error("Fighter_Part2.Dd[", k1, "]:", d1, d2);
             }
         }
     }
@@ -430,15 +440,17 @@ function compareFighter(f1, f2) {
     }
     else {
         for (var k1 in f1.Fdd) {
-            var l1 = f1.Fdd[k1];
-            var l2 = f2.Fdd[k1];
-            if (Object.keys(l1).length != Object.keys(l2).length) {
-                console.error("Fighter_Part2.Fdd[", k1, "]:", l1, l2);
+            var d1 = f1.Fdd[k1];
+            var d2 = f2.Fdd[k1];
+            if (!d1 && !d2) {
+            }
+            else if ((!d1 && d2) || (d1 && !d2) || Object.keys(d1).length != Object.keys(d2).length) {
+                console.error("Fighter_Part2.Fdd[", k1, "]:", d1, d2);
             }
             else {
-                for (var k2 in l1) {
-                    if (l1[k2] != l2[k2]) {
-                        console.error("Fighter_Part2.Fdd[", k1, "][", k2, "]:", l1[k2], l2[k2]);
+                for (var k2 in d1) {
+                    if (d1[k2] != d2[k2]) {
+                        console.error("Fighter_Part2.Fdd[", k1, "][", k2, "]:", d1[k2], d2[k2]);
                     }
                 }
             }
@@ -496,14 +508,18 @@ function compareFighter(f1, f2) {
         for (var k1 = 0; k1 < f1.Poslll.length; k1++) {
             var ll1 = f1.Poslll[k1];
             var ll2 = f2.Poslll[k1];
-            if (ll1.length != ll2.length) {
+            if (!ll1 && !ll2) {
+            }
+            else if ((!ll1 && ll2) || (ll1 && !ll2) || ll1.length != ll2.length) {
                 console.error("Fighter_Part1.Poslll[", k1, "]:", ll1, ll2);
             }
             else {
                 for (var k2 = 0; k2 < ll1.length; k2++) {
                     var l1 = ll1[k2];
                     var l2 = ll2[k2];
-                    if (l1.length != l2.length) {
+                    if (!l1 && !l2) {
+                    }
+                    else if ((!l1 && l2) || (l1 && !l2) || l1.length != l2.length) {
                         console.error("Fighter_Part1.Poslll[", k1, "][", k2, "]:", l1, l2);
                     }
                     else {
@@ -522,7 +538,9 @@ function compareFighter(f1, f2) {
         for (var k1 = 0; k1 < f1.Posdl.length; k1++) {
             var d1 = f1.Posdl[k1];
             var d2 = f2.Posdl[k1];
-            if (Object.keys(d1).length != Object.keys(d2).length) {
+            if (!d1 && !d2) {
+            }
+            else if ((!d1 && d2) || (d1 && !d2) || Object.keys(d1).length != Object.keys(d2).length) {
                 console.error("Fighter_Part2.Posdl[", k1, "]:", d1, d2);
             }
             else {

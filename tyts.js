@@ -191,7 +191,7 @@ tyts.Float64 = new function() {
 		var value_h32 = protobuf.ReadUint32();
 		var sign = ((value_h32 >> 31) * 2 + 1);
 		var exp = (value_h32 >>> 20) & 0x7FF;
-		var mant = jspb.BinaryConstants.TWO_TO_32 * (value_h32 & 0xFFFFF) + value_l32;
+		var mant = this.TWO_TO_32 * (value_h32 & 0xFFFFF) + value_l32;
 
 		if (exp == 0x7FF) {
 			if (mant) {
@@ -202,7 +202,7 @@ tyts.Float64 = new function() {
 		} else if (exp == 0) { // Denormal.
 			return sign * Math.pow(2, -1074) * mant;
 		} else {
-			return sign * Math.pow(2, exp - 1075) * (mant + jspb.BinaryConstants.TWO_TO_52);
+			return sign * Math.pow(2, exp - 1075) * (mant + this.TWO_TO_52);
 		}
 	};
 }();
@@ -941,7 +941,7 @@ tyts.Dict.prototype.Deserialize = function(value, protobuf) {
 	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
 	var v, k = this.key.Default();
 	while (!protobuf.End()) {
-		var tag_cutoff = protobuf.ReadTag(this.cutoff);
+		var tag_cutoff = protobuf.ReadTag(0x7F);
 		var i = tag_cutoff[0] >> tyts.WireTypeBits;
 		if (tag_cutoff[1] && (i == 1 || i == 2)) {
 			var field = (i == 1 ? this.key : this.value);
