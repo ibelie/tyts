@@ -117,7 +117,7 @@ var DiDiVCorpusVector2dis = new tyts.Dict('DiDiVCorpusVector2dis', tyts.Integer,
 var DiDif = new tyts.Dict('DiDif', tyts.Integer, Dif)
 
 var Vin = new tyts.Variant('Vin', 127, [
-	{tag: 16, tagsize: 1, type: tyts.Integer}
+	{tag: 8, tagsize: 1, type: tyts.Integer}
 ])
 
 var Vfs = new tyts.Variant('Vfs', 127, [
