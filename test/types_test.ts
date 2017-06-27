@@ -201,7 +201,7 @@ function compareFighter_Part2(f1: types.Fighter_Part2, f2: types.Fighter_Part2):
 		console.error("Fighter_Part2.Fl:", f1.Fl, f2.Fl);
 	} else {
 		for (let k = 0; k < f1.Fl.length; k++) {
-			if (f1.Fl[k] != f2.Fl[k]) {
+			if (f1.Fl[k].toFixed(3) != f2.Fl[k].toFixed(3)) {
 				console.error("Fighter_Part2.Fl[", k, "]:", f1.Fl[k], f2.Fl[k]);
 			}
 		}
@@ -271,8 +271,8 @@ function compareFighter_Part2(f1: types.Fighter_Part2, f2: types.Fighter_Part2):
 				console.error("Fighter_Part2.Ll[", k1, "]:", l1, l2)
 			} else {
 				for (let k2 = 0; k2 < l1.length; k2++) {
-					if (l1[k2] != l2[k2]) {
-						console.error("Fighter_Part2.Ll[", k1, "][", k2, "]:", l1[k2] != l2[k2])
+					if (l1[k2].toFixed(3) != l2[k2].toFixed(3)) {
+						console.error("Fighter_Part2.Ll[", k1, "][", k2, "]:", l1[k2], l2[k2])
 					}
 				}
 			}
@@ -298,7 +298,7 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 		console.error("Fighter.V2:", f1.V2, f2.V2);
 	}
 	compareVector2(f1.V3, f2.V3, "Fighter.V3");
-	if (f1.V4 != f2.V4) {
+	if (f1.V4.toFixed(3) != f2.V4.toFixed(3)) {
 		console.error("Fighter.V4:", f1.V4, f2.V4);
 	}
 	if (f1.Vl.length != f2.Vl.length) {
@@ -375,7 +375,7 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 				console.error("Fighter_Part2.Fld[", k1, "]:", l1, l2);
 			} else {
 				for (let k2 = 0; k2 < l1.length; k2++) {
-					if (l1[k2] != l2[k2]) {
+					if (l1[k2].toFixed(3) != l2[k2].toFixed(3)) {
 						console.error("Fighter_Part2.Fld[", k1, "][", k2, "]:", l1[k2], l2[k2]);
 					}
 				}
@@ -419,7 +419,7 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 				console.error("Fighter_Part2.Fdd[", k1, "]:", d1, d2);
 			} else {
 				for (let k2 in d1) {
-					if (d1[k2] != d2[k2]) {
+					if (d1[k2].toFixed(3) != d2[k2].toFixed(3)) {
 						console.error("Fighter_Part2.Fdd[", k1, "][", k2, "]:", d1[k2], d2[k2]);
 					}
 				}
@@ -443,7 +443,7 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 		console.error("Fighter_Part2.Flv:", f1.Flv, f2.Flv);
 	} else {
 		for (let k = 0; k < f1.Flv.length; k++) {
-			if (f1.Flv[k] != f2.Flv[k]) {
+			if (f1.Flv[k].toFixed(3) != f2.Flv[k].toFixed(3)) {
 				console.error("Fighter.Flv[", k, "]:", f1.Flv[k], f2.Flv[k]);
 			}
 		}
@@ -462,7 +462,7 @@ function compareFighter(f1: types.Fighter, f2: types.Fighter): void {
 		console.error("Fighter_Part2.Fdv:", f1.Fdv, f2.Fdv);
 	} else {
 		for (let k in f1.Fdv) {
-			if (f1.Fdv[k] != f2.Fdv[k]) {
+			if (f1.Fdv[k].toFixed(3) != f2.Fdv[k].toFixed(3)) {
 				console.error("Fighter.Fdv[", k, "]:", f1.Fdv[k], f2.Fdv[k]);
 			}
 		}
