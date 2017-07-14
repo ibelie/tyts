@@ -8,7 +8,7 @@ declare module types {
 		Deserialize(data: Uint8Array): void;
 	}
 
-	export const enum Corpus {
+	const enum Corpus {
 		UNIVERSAL = 0,
 		WEB = 1,
 		IMAGES = 2,
@@ -18,7 +18,7 @@ declare module types {
 		VIDEO = 6
 	}
 
-	export class Vector2 {
+	class Vector2 {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -33,11 +33,11 @@ declare module types {
 		P: Type;
 	}
 
-	export namespace Vector2 {
+	namespace Vector2 {
 		function Deserialize(data: Uint8Array): Vector2;
 	}
 
-	export class Fighter_Part1 {
+	class Fighter_Part1 {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -57,11 +57,11 @@ declare module types {
 		Pyv2: any;
 	}
 
-	export namespace Fighter_Part1 {
+	namespace Fighter_Part1 {
 		function Deserialize(data: Uint8Array): Fighter_Part1;
 	}
 
-	export class Fighter_Part2 extends Fighter_Part1 {
+	class Fighter_Part2 extends Fighter_Part1 {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -78,11 +78,11 @@ declare module types {
 		Ll: number[][];
 	}
 
-	export namespace Fighter_Part2 {
+	namespace Fighter_Part2 {
 		function Deserialize(data: Uint8Array): Fighter_Part2;
 	}
 
-	export class Fighter extends Fighter_Part2 {
+	class Fighter extends Fighter_Part2 {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -117,7 +117,7 @@ declare module types {
 		DeserializeGPRResult(data: Uint8Array): any;
 	}
 
-	export namespace Fighter {
+	namespace Fighter {
 		function Deserialize(data: Uint8Array): Fighter;
 	}
 }
