@@ -36,24 +36,24 @@ tyts.ProtoBuf = function(buffer) {
 
 tyts.ProtoBuf.prototype.End = function() {
 	return this.offset >= this.buffer.length;
-}
+};
 
 tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 	this.buffer.set(bytes, this.offset);
 	this.offset += bytes.length;
-}
+};
 
 tyts.ProtoBuf.prototype.ReadBytes = function(n) {
 	var slice = this.buffer.slice(this.offset, this.offset + n);
 	this.offset += n;
 	return slice;
-}
+};
 
 tyts.ProtoBuf.prototype.ReadBuffer = function(n) {
 	var buffer = this.buffer.subarray(this.offset, this.offset + n);
 	this.offset += n;
 	return buffer;
-}
+};
 
 tyts.ProtoBuf.prototype.WriteVarint = function(x) {
 	while (x >= 0x80) {
@@ -61,7 +61,7 @@ tyts.ProtoBuf.prototype.WriteVarint = function(x) {
 		x >>>= 7;
 	}
 	this.buffer[this.offset++] = x & 0x7F;
-}
+};
 
 tyts.ProtoBuf.prototype.ReadVarint = function() {
 	var x = 0, s = 0;
@@ -74,22 +74,22 @@ tyts.ProtoBuf.prototype.ReadVarint = function() {
 		s += 7;
 	}
 	return x;
-}
+};
 
 tyts.ProtoBuf.prototype.WriteByte = function() {
 	this.WriteBytes(arguments);
-}
+};
 
 tyts.ProtoBuf.prototype.ReadByte = function() {
 	return this.buffer[this.offset++];
-}
+};
 
 tyts.ProtoBuf.prototype.WriteUint32 = function(x) {
 	this.buffer[this.offset++] = (x >>>  0) & 0xFF;
 	this.buffer[this.offset++] = (x >>>  8) & 0xFF;
 	this.buffer[this.offset++] = (x >>> 16) & 0xFF;
 	this.buffer[this.offset++] = (x >>> 24) & 0xFF;
-}
+};
 
 tyts.ProtoBuf.prototype.ReadUint32 = function() {
 	var a = this.buffer[this.offset++];
@@ -97,7 +97,7 @@ tyts.ProtoBuf.prototype.ReadUint32 = function() {
 	var c = this.buffer[this.offset++];
 	var d = this.buffer[this.offset++];
 	return ((a << 0) | (b << 8) | (c << 16) | (d << 24)) >>> 0;
-}
+};
 
 tyts.ProtoBuf.prototype.ReadTag = function(cutoff) {
 	var b1 = this.buffer[this.offset++];
@@ -111,7 +111,7 @@ tyts.ProtoBuf.prototype.ReadTag = function(cutoff) {
 	}
 	var x = this.ReadVarint();
 	return [x, x <= cutoff];
-}
+};
 
 tyts.ProtoBuf.prototype.SkipField = function(tag) {
 	switch (tag & tyts.WireTypeMask) {
@@ -129,4 +129,4 @@ tyts.ProtoBuf.prototype.SkipField = function(tag) {
 		this.ReadUint32();
 		break;
 	}
-}
+};

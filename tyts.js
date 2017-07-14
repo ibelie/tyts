@@ -20,10 +20,10 @@ goog.require('tyts.ProtoBuf');
 goog.require('tyts.SizeVarint');
 goog.require('tyts.WireTypeBits');
 goog.require('tyts.WireTypeMask');
-goog.require('tyts.WireVarint')
-goog.require('tyts.WireFixed64')
-goog.require('tyts.WireBytes')
-goog.require('tyts.WireFixed32')
+goog.require('tyts.WireVarint');
+goog.require('tyts.WireFixed64');
+goog.require('tyts.WireBytes');
+goog.require('tyts.WireFixed32');
 
 
 TYPE_INTEGER    =  0;
