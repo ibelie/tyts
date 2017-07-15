@@ -1,9 +1,9 @@
-/// <reference path="../../typings/node/node.d.ts"/>
-/// <reference path="types_test.ts"/>
-"use strict";
 // Copyright 2017 ibelie, Chen Jie, Joungtao. All rights reserved.
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
+"use strict";
+/// <reference path="../../typings/node/node.d.ts"/>
+/// <reference path="types_test.ts"/>
 var vm = require("vm");
 var fs = require("fs");
 function execfile(path) {

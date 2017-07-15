@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 declare var goog;
-
 goog.provide('GoType');
 
 class GoType {
