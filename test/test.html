@@ -14,6 +14,11 @@
 	<script type="text/javascript">
 		TestVector2();
 		TestFighter();
+		var a = new Uint8Array([1, 2, 3, 4, 250, 125, 213, 123, 128, 127, 98, 97, 96]);
+		var b = new tyts.ProtoBuf(a).Base64();
+		console.info(b);
+		var c = tyts.ProtoBuf.FromBase64(b)
+		console.info(c);
 	</script>
 	test
 </body>
