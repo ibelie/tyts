@@ -103,14 +103,14 @@ declare module types {
 		Fdv: any;
 		Poslll: Vector2[][][];
 		Posdl: {[index: string]: Vector2}[];
-		SerializeRPGParam(a0: Fighter, a1: any, a2: number): Uint8Array;
-		DeserializeRPGParam(data: Uint8Array): any;
-		SerializeRPGResult(a0: Vector2): Uint8Array;
-		DeserializeRPGResult(data: Uint8Array): any;
-		SerializeGPRParam(a0: {[index: number]: any}): Uint8Array;
-		DeserializeGPRParam(data: Uint8Array): any;
-		SerializeGPRResult(a0: Fighter, a1: number): Uint8Array;
-		DeserializeGPRResult(data: Uint8Array): any;
+		static SerializeRPGParam(a0: Fighter, a1: any, a2: number): Uint8Array;
+		static DeserializeRPGParam(data: Uint8Array): any;
+		static SerializeRPGResult(a0: Vector2): Uint8Array;
+		static DeserializeRPGResult(data: Uint8Array): any;
+		static SerializeGPRParam(a0: {[index: number]: any}): Uint8Array;
+		static DeserializeGPRParam(data: Uint8Array): any;
+		static SerializeGPRResult(a0: Fighter, a1: number): Uint8Array;
+		static DeserializeGPRResult(data: Uint8Array): any;
 	}
 
 	namespace Fighter {
