@@ -43,13 +43,15 @@ tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 	this.offset += bytes.length;
 };
 
-tyts.ProtoBuf.prototype.ReadBytes = function(n) {
+tyts.ProtoBuf.prototype.ReadBytes = function() {
+	var n = this.ReadVarint();
 	var slice = this.buffer.slice(this.offset, this.offset + n);
 	this.offset += n;
 	return slice;
 };
 
-tyts.ProtoBuf.prototype.ReadBuffer = function(n) {
+tyts.ProtoBuf.prototype.ReadBuffer = function() {
+	var n = this.ReadVarint();
 	var buffer = this.buffer.subarray(this.offset, this.offset + n);
 	this.offset += n;
 	return buffer;
@@ -123,7 +125,7 @@ tyts.ProtoBuf.prototype.SkipField = function(tag) {
 		this.ReadUint32();
 		break;
 	case tyts.WireBytes:
-		this.ReadBytes(this.ReadVarint());
+		this.ReadBytes();
 		break;
 	case tyts.WireFixed32:
 		this.ReadUint32();

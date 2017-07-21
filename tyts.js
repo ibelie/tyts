@@ -354,7 +354,7 @@ tyts.Bytes = new function() {
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
-		return protobuf.ReadBytes(protobuf.ReadVarint());
+		return protobuf.ReadBytes();
 	};
 }();
 
@@ -423,7 +423,7 @@ tyts.String = new function() {
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
-		var bytes = protobuf.ReadBytes(protobuf.ReadVarint());
+		var bytes = protobuf.ReadBytes();
 		var chars = [];
 
 		for (var i = 0; i < bytes.length;) {
@@ -556,7 +556,7 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Object.prototype.Deserialize = function(value, protobuf) {
-	var buffer = protobuf.ReadBuffer(protobuf.ReadVarint());
+	var buffer = protobuf.ReadBuffer();
 	if (!value) {
 		value = new this.Type();
 	}
@@ -758,7 +758,7 @@ tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Variant.prototype.Deserialize = function(value, protobuf) {
-	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
 		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
@@ -867,7 +867,7 @@ tyts.List.prototype.Deserialize = function(value, protobuf) {
 	}
 	var element = this.element;
 	if (element.isIterative) {
-		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
 		var list;
 		while (!protobuf.End()) {
 			list = element.Deserialize(list, protobuf);
@@ -876,7 +876,7 @@ tyts.List.prototype.Deserialize = function(value, protobuf) {
 	} else if (!element.isPrimitive) {
 		value.push(element.Deserialize(undefined, protobuf));
 	} else {
-		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
 		while (!protobuf.End()) {
 			value.push(element.Deserialize(undefined, protobuf));
 		}
@@ -938,7 +938,7 @@ tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
 };
 
 tyts.Dict.prototype.Deserialize = function(value, protobuf) {
-	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer(protobuf.ReadVarint()));
+	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
 	var v, k = this.key.Default();
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(0x7F);
@@ -1024,6 +1024,6 @@ tyts.Extension.prototype.Deserialize = function(value, protobuf) {
 	if (!value) {
 		value = new this.type();
 	}
-	value.Deserialize(protobuf.ReadBytes(protobuf.ReadVarint()));
+	value.Deserialize(protobuf.ReadBytes());
 	return value;
 };
