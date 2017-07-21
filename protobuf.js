@@ -38,6 +38,10 @@ tyts.ProtoBuf.prototype.End = function() {
 	return this.offset >= this.buffer.length;
 };
 
+tyts.ProtoBuf.prototype.Bytes = function() {
+	return this.buffer.subarray(this.offset);
+};
+
 tyts.ProtoBuf.prototype.WriteBytes = function(bytes) {
 	this.buffer.set(bytes, this.offset);
 	this.offset += bytes.length;
