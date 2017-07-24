@@ -568,9 +568,10 @@ tyts.Object.prototype.Deserialize = function(value, protobuf) {
 
 tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 	var size = 0;
+	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
-		var fieldname = '_' + field.name;
+		var fieldname = prefix + field.name;
 		if (value[fieldname] != undefined) {
 			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
 		}
@@ -580,9 +581,10 @@ tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 };
 
 tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
+	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
-		var fieldname = '_' + field.name;
+		var fieldname = prefix + field.name;
 		if (value[fieldname] != undefined) {
 			field.type.Serialize(value[fieldname], field.tag, true, protobuf);
 		}
@@ -590,13 +592,14 @@ tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
 };
 
 tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
+	var prefix = this.Check(value) ? '_' : '';
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
 		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.fields.length) {
 			var field = this.fields[i].type;
 			var name = this.fields[i].name
-			var fieldname = '_' + name;
+			var fieldname = prefix + name;
 			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
 			var handler = 'On' + name[0].toUpperCase() + name.substr(1) + 'Changed';
 			if (field.wiretype == wiretype) {
