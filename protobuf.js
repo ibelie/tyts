@@ -176,10 +176,10 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 	while (this.offset < end) {
 		var byte1 = this.buffer[this.offset++];
 		output[outLen++] = byteToCharMap[byte1 >> 2];
-		if (this.offset + 1 < end) {
+		if (this.offset < end) {
 			var byte2 = this.buffer[this.offset++];
 			output[outLen++] = byteToCharMap[((byte1 & 0x03) << 4) | (byte2 >> 4)];
-			if (this.offset + 1 < end) {
+			if (this.offset < end) {
 				var byte3 = this.buffer[this.offset++];
 				output[outLen++] = byteToCharMap[((byte2 & 0x0F) << 2) | (byte3 >> 6)];
 				output[outLen++] = byteToCharMap[byte3 & 0x3F];
