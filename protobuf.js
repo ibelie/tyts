@@ -140,26 +140,46 @@ tyts.ProtoBuf.prototype.SkipField = function(tag) {
 tyts.ProtoBuf.byteToCharMap_ = {};
 tyts.ProtoBuf.charToByteMap_ = {};
 tyts.ProtoBuf.ENCODED_VALS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-	'abcdefghijklmnopqrstuvwxyz' +
-	'0123456789' + '-_';
+	'abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_';
 
 for (var i = 0; i < tyts.ProtoBuf.ENCODED_VALS.length; i++) {
 	tyts.ProtoBuf.byteToCharMap_[i] = tyts.ProtoBuf.ENCODED_VALS.charAt(i);
 	tyts.ProtoBuf.charToByteMap_[tyts.ProtoBuf.byteToCharMap_[i]] = i;
 }
 
-tyts.ProtoBuf.prototype.Base64 = function() {
+tyts.ProtoBuf.prototype.WriteBase64 = function(data) {
+	var charToByteMap = tyts.ProtoBuf.charToByteMap_;
+	for (var i = 0; i < data.length; i += 4) {
+		var byte1 = charToByteMap[data.charAt(i)];
+		var byte2 = charToByteMap[data.charAt(i + 1)];
+		this.buffer[this.offset++] = (byte1 << 2) | (byte2 >> 4);
+		if (i + 2 < data.length) {
+			var byte3 = charToByteMap[data.charAt(i + 2)];
+			this.buffer[this.offset++] = ((byte2 << 4) & 0xF0) | (byte3 >> 2);
+			if (i + 3 < data.length) {
+				var byte4 = charToByteMap[data.charAt(i + 3)];
+				this.buffer[this.offset++] = ((byte3 << 6) & 0xC0) | byte4;
+			}
+		}
+	}
+};
+
+tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
+	if (start === undefined) {
+		start = this.offset;
+	}
+	var end = start + count;
 	var outLen = 0;
-	var output = new Array(Math.ceil(this.buffer.length * 4 / 3));
+	var output = new Array(Math.ceil(count * 4 / 3));
 	var byteToCharMap = tyts.ProtoBuf.byteToCharMap_;
 
-	for (var i = 0; i < this.buffer.length; i += 3) {
+	for (var i = start; i < end; i += 3) {
 		var byte1 = this.buffer[i];
 		output[outLen++] = byteToCharMap[byte1 >> 2];
-		if (i + 1 < this.buffer.length) {
+		if (i + 1 < end) {
 			var byte2 = this.buffer[i + 1];
 			output[outLen++] = byteToCharMap[((byte1 & 0x03) << 4) | (byte2 >> 4)];
-			if (i + 2 < this.buffer.length) {
+			if (i + 2 < end) {
 				var byte3 = this.buffer[i + 2];
 				output[outLen++] = byteToCharMap[((byte2 & 0x0F) << 2) | (byte3 >> 6)];
 				output[outLen++] = byteToCharMap[byte3 & 0x3F];
@@ -174,24 +194,14 @@ tyts.ProtoBuf.prototype.Base64 = function() {
 	return output.join('');
 };
 
+tyts.ProtoBuf.prototype.ToBase64 = function() {
+	return tyts.ProtoBuf.ReadBase64(this.buffer.length, 0);
+};
+
 tyts.ProtoBuf.FromBase64 = function(data) {
-	var bufLen = 0;
-	var buffer = new Uint8Array(Math.ceil(data.length * 3 / 4));
-	var charToByteMap = tyts.ProtoBuf.charToByteMap_;
-
-	for (var i = 0; i < data.length; i += 4) {
-		var byte1 = charToByteMap[data.charAt(i)];
-		var byte2 = charToByteMap[data.charAt(i + 1)];
-		buffer[bufLen++] = (byte1 << 2) | (byte2 >> 4);
-		if (i + 2 < data.length) {
-			var byte3 = charToByteMap[data.charAt(i + 2)];
-			buffer[bufLen++] = ((byte2 << 4) & 0xF0) | (byte3 >> 2);
-			if (i + 3 < data.length) {
-				var byte4 = charToByteMap[data.charAt(i + 3)];
-				buffer[bufLen++] = ((byte3 << 6) & 0xC0) | byte4;
-			}
-		}
-	}
-
-	return new tyts.ProtoBuf(buffer.subarray(0, bufLen));
-}
+	var protobuf = new tyts.ProtoBuf(new Uint8Array(Math.ceil(data.length * 3 / 4)));
+	protobuf.WriteBase64(data);
+	protobuf.buffer = protobuf.buffer.subarray(0, protobuf.offset);
+	protobuf.offset = 0;
+	return protobuf;
+};
