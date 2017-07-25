@@ -165,22 +165,22 @@ tyts.ProtoBuf.prototype.WriteBase64 = function(data) {
 };
 
 tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
-	if (start === undefined) {
-		start = this.offset;
+	if (start !== undefined) {
+		this.offset = start;
 	}
-	var end = start + count;
+	var end = this.offset + count;
 	var outLen = 0;
 	var output = new Array(Math.ceil(count * 4 / 3));
 	var byteToCharMap = tyts.ProtoBuf.byteToCharMap_;
 
-	for (var i = start; i < end; i += 3) {
-		var byte1 = this.buffer[i];
+	while (this.offset < end) {
+		var byte1 = this.buffer[this.offset++];
 		output[outLen++] = byteToCharMap[byte1 >> 2];
-		if (i + 1 < end) {
-			var byte2 = this.buffer[i + 1];
+		if (this.offset + 1 < end) {
+			var byte2 = this.buffer[this.offset++];
 			output[outLen++] = byteToCharMap[((byte1 & 0x03) << 4) | (byte2 >> 4)];
-			if (i + 2 < end) {
-				var byte3 = this.buffer[i + 2];
+			if (this.offset + 1 < end) {
+				var byte3 = this.buffer[this.offset++];
 				output[outLen++] = byteToCharMap[((byte2 & 0x0F) << 2) | (byte3 >> 6)];
 				output[outLen++] = byteToCharMap[byte3 & 0x3F];
 			} else {
@@ -195,7 +195,7 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 };
 
 tyts.ProtoBuf.prototype.ToBase64 = function() {
-	return tyts.ProtoBuf.ReadBase64(this.buffer.length, 0);
+	return this.ReadBase64(this.buffer.length, 0);
 };
 
 tyts.ProtoBuf.FromBase64 = function(data) {
