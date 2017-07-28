@@ -137,27 +137,25 @@ tyts.ProtoBuf.prototype.SkipField = function(tag) {
 	}
 };
 
-tyts.ProtoBuf.byteToCharMap_ = {};
-tyts.ProtoBuf.charToByteMap_ = {};
-tyts.ProtoBuf.ENCODED_VALS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+tyts.ProtoBuf.C2BMap = {};
+tyts.ProtoBuf.B2CMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
 	'abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_';
 
-for (var i = 0; i < tyts.ProtoBuf.ENCODED_VALS.length; i++) {
-	tyts.ProtoBuf.byteToCharMap_[i] = tyts.ProtoBuf.ENCODED_VALS.charAt(i);
-	tyts.ProtoBuf.charToByteMap_[tyts.ProtoBuf.byteToCharMap_[i]] = i;
+for (var i = 0; i < tyts.ProtoBuf.B2CMap.length; i++) {
+	tyts.ProtoBuf.C2BMap[tyts.ProtoBuf.B2CMap.charAt(i)] = i;
 }
 
 tyts.ProtoBuf.prototype.WriteBase64 = function(data) {
-	var charToByteMap = tyts.ProtoBuf.charToByteMap_;
-	for (var i = 0; i < data.length; i += 4) {
-		var byte1 = charToByteMap[data.charAt(i)];
-		var byte2 = charToByteMap[data.charAt(i + 1)];
+	var C2BMap = tyts.ProtoBuf.C2BMap;
+	for (var i = 0; i + 1 < data.length;) {
+		var byte1 = C2BMap[data.charAt(i++)];
+		var byte2 = C2BMap[data.charAt(i++)];
 		this.buffer[this.offset++] = (byte1 << 2) | (byte2 >> 4);
-		if (i + 2 < data.length) {
-			var byte3 = charToByteMap[data.charAt(i + 2)];
+		if (i < data.length) {
+			var byte3 = C2BMap[data.charAt(i++)];
 			this.buffer[this.offset++] = ((byte2 << 4) & 0xF0) | (byte3 >> 2);
-			if (i + 3 < data.length) {
-				var byte4 = charToByteMap[data.charAt(i + 3)];
+			if (i < data.length) {
+				var byte4 = C2BMap[data.charAt(i++)];
 				this.buffer[this.offset++] = ((byte3 << 6) & 0xC0) | byte4;
 			}
 		}
@@ -171,23 +169,23 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 	var end = this.offset + count;
 	var outLen = 0;
 	var output = new Array(Math.ceil(count * 4 / 3));
-	var byteToCharMap = tyts.ProtoBuf.byteToCharMap_;
+	var B2CMap = tyts.ProtoBuf.B2CMap;
 
 	while (this.offset < end) {
 		var byte1 = this.buffer[this.offset++];
-		output[outLen++] = byteToCharMap[byte1 >> 2];
+		output[outLen++] = B2CMap.charAt(byte1 >> 2);
 		if (this.offset < end) {
 			var byte2 = this.buffer[this.offset++];
-			output[outLen++] = byteToCharMap[((byte1 & 0x03) << 4) | (byte2 >> 4)];
+			output[outLen++] = B2CMap.charAt(((byte1 & 0x03) << 4) | (byte2 >> 4));
 			if (this.offset < end) {
 				var byte3 = this.buffer[this.offset++];
-				output[outLen++] = byteToCharMap[((byte2 & 0x0F) << 2) | (byte3 >> 6)];
-				output[outLen++] = byteToCharMap[byte3 & 0x3F];
+				output[outLen++] = B2CMap.charAt(((byte2 & 0x0F) << 2) | (byte3 >> 6));
+				output[outLen++] = B2CMap.charAt(byte3 & 0x3F);
 			} else {
-				output[outLen++] = byteToCharMap[(byte2 & 0x0F) << 2];
+				output[outLen++] = B2CMap.charAt((byte2 & 0x0F) << 2);
 			}
 		} else {
-			output[outLen++] = byteToCharMap[(byte1 & 0x03) << 4];
+			output[outLen++] = B2CMap.charAt((byte1 & 0x03) << 4);
 		}
 	}
 
