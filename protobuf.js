@@ -140,8 +140,8 @@ tyts.ProtoBuf.prototype.SkipField = function(tag) {
 };
 
 tyts.ProtoBuf.C2BMap = {};
-tyts.ProtoBuf.B2CMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-	'abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_';
+tyts.ProtoBuf.B2CMap = '-' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+	'abcdefghijklmnopqrstuvwxyz' + '0123456789' + '_';
 
 for (var i = 0; i < tyts.ProtoBuf.B2CMap.length; i++) {
 	tyts.ProtoBuf.C2BMap[tyts.ProtoBuf.B2CMap.charAt(i)] = i;
