@@ -83,7 +83,9 @@ tyts.ProtoBuf.prototype.ReadVarint = function() {
 };
 
 tyts.ProtoBuf.prototype.WriteByte = function() {
-	this.WriteBytes(arguments);
+	for (var i = 0; i < arguments.length; i++) {
+		this.buffer[this.offset++] = arguments[i] & 0xFF;
+	}
 };
 
 tyts.ProtoBuf.prototype.ReadByte = function() {

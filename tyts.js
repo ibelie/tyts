@@ -385,47 +385,24 @@ tyts.String = new function() {
 		}
 		return size;
 	};
-	this.ByteSize = function(value, tagsize, ignore) {
-		if (value.length > 0) {
-			var size = this.Size(value);
-			return tagsize + tyts.SizeVarint(size) + size;
-		} else if (!ignore) {
-			return tagsize + 1;
-		} else {
-			return 0;
+	this.Write = function(value, protobuf) {
+		// UTF16 to UTF8 conversion loop
+		for (var i = 0; i < value.length; i++) {
+			var c = value.charCodeAt(i);
+			if (c < 128) {
+				protobuf.buffer[protobuf.offset++] = c;
+			} else if (c < 2048) {
+				protobuf.buffer[protobuf.offset++] = (c >> 6) | 192;
+				protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
+			} else {
+				protobuf.buffer[protobuf.offset++] = (c >> 12) | 224;
+				protobuf.buffer[protobuf.offset++] = ((c >> 6) & 63) | 128;
+				protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
+			}
 		}
 	};
-	this.Serialize = function(value, tag, ignore, protobuf) {
-		if (value.length > 0) {
-			if (tag != 0) {
-				protobuf.WriteVarint(tag);
-			}
-			protobuf.WriteVarint(this.Size(value));
-			// UTF16 to UTF8 conversion loop
-			for (var i = 0; i < value.length; i++) {
-				var c = value.charCodeAt(i);
-				if (c < 128) {
-					protobuf.buffer[protobuf.offset++] = c;
-				} else if (c < 2048) {
-					protobuf.buffer[protobuf.offset++] = (c >> 6) | 192;
-					protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
-				} else {
-					protobuf.buffer[protobuf.offset++] = (c >> 12) | 224;
-					protobuf.buffer[protobuf.offset++] = ((c >> 6) & 63) | 128;
-					protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
-				}
-			}
-		} else if (!ignore) {
-			if (tag != 0) {
-				protobuf.WriteVarint(tag);
-			}
-			protobuf.WriteVarint(0);
-		}
-	};
-	this.Deserialize = function(value, protobuf) {
-		var bytes = protobuf.ReadBytes();
+	this.Decode = function(bytes) {
 		var chars = [];
-
 		for (var i = 0; i < bytes.length;) {
 			var c = bytes[i++];
 			if (c < 128) { // Regular 7-bit ASCII.
@@ -448,6 +425,33 @@ tyts.String = new function() {
 		// String.fromCharCode.apply is faster than manually appending characters on
 		// Chrome 25+, and generates no additional cons string garbage.
 		return String.fromCharCode.apply(null, chars);
+	};
+	this.ByteSize = function(value, tagsize, ignore) {
+		if (value.length > 0) {
+			var size = this.Size(value);
+			return tagsize + tyts.SizeVarint(size) + size;
+		} else if (!ignore) {
+			return tagsize + 1;
+		} else {
+			return 0;
+		}
+	};
+	this.Serialize = function(value, tag, ignore, protobuf) {
+		if (value.length > 0) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			protobuf.WriteVarint(this.Size(value));
+			this.Write(value, protobuf)
+		} else if (!ignore) {
+			if (tag != 0) {
+				protobuf.WriteVarint(tag);
+			}
+			protobuf.WriteVarint(0);
+		}
+	};
+	this.Deserialize = function(value, protobuf) {
+		return this.Decode(protobuf.ReadBytes());
 	};
 }();
 
