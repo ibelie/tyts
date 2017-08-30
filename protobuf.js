@@ -231,8 +231,7 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 	return output.join('');
 };
 
-tyts.ProtoBuf.prototype.WriteSymbol = function(data) {
-	this.WriteVarint(Math.floor((data.length * 6 + 7) / 8));
+tyts.ProtoBuf.prototype.EncodeSymbol = function(data) {
 	if (data.length < 1) {
 		return;
 	}
@@ -261,8 +260,12 @@ tyts.ProtoBuf.prototype.WriteSymbol = function(data) {
 	}
 };
 
-tyts.ProtoBuf.prototype.ReadSymbol = function() {
-	var count = this.ReadVarint();
+tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
+	if (start !== undefined) {
+		this.offset = start;
+	} else if (count === undefined) {
+		count = this.buffer.length - this.offset;
+	}
 	if (count < 1) {
 		return '';
 	}
@@ -297,6 +300,15 @@ tyts.ProtoBuf.prototype.ReadSymbol = function() {
 	}
 
 	return output.join('');
+};
+
+tyts.ProtoBuf.prototype.WriteSymbol = function(data) {
+	this.WriteVarint(Math.floor((data.length * 6 + 7) / 8));
+	this.EncodeSymbol(data);
+};
+
+tyts.ProtoBuf.prototype.ReadSymbol = function() {
+	return this.DecodeSymbol(this.ReadVarint());
 };
 
 tyts.ProtoBuf.prototype.ToBase64 = function() {
