@@ -293,7 +293,7 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 
 	switch (end - this.offset) {
 	case 1:
-		output[outLen++] = B2CMap.charAt((val >>> 2) & 0x3F);
+		output[outLen++] = B2CMap.charAt((this.buffer[this.offset++] >>> 2) & 0x3F);
 	case 2:
 		var val = (this.buffer[this.offset++] << 8) | this.buffer[this.offset++];
 		output[outLen++] = B2CMap.charAt((val >>> 10) & 0x3F);
