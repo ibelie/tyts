@@ -28,6 +28,7 @@ declare module types {
 		Y: number;
 		B: Uint8Array;
 		S: string;
+		M: string;
 		E: Corpus;
 		P: Type;
 	}
@@ -70,6 +71,9 @@ declare module types {
 		Sl: string[];
 		Bd: {[index: string]: Uint8Array};
 		Sd: {[index: number]: string};
+		Ml: string[];
+		Mbd: {[index: string]: Uint8Array};
+		Md: {[index: number]: string};
 		El: Corpus[];
 		Ed: {[index: number]: Corpus};
 		Ll: number[][];

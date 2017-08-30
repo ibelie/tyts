@@ -15,6 +15,7 @@ v.X = 123;
 v.Y = 45.6;
 v.B = new Uint8Array([1, 2, 3, 4]);
 v.S = "哈哈哈哈";
+v.M = "Symbol_A";
 v.E = 3 /* LOCAL */;
 v.P = new GoType(123, "asdf");
 var v2 = new types.Vector2();
@@ -22,6 +23,7 @@ v2.X = 1234;
 v2.Y = 345.6;
 v2.B = new Uint8Array([4, 3, 2, 1]);
 v2.S = "哈哈 吼吼吼";
+v.M = "Symbol_B";
 v2.E = 5 /* PRODUCTS */;
 v2.P = new GoType(321, "qwer");
 var fighter = new types.Fighter();
@@ -41,6 +43,9 @@ fighter.Sl = ["哈哈", "吼吼", "嘿嘿"];
 fighter.Bl = [new Uint8Array([0, 1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])];
 fighter.Bd = { "哈哈": new Uint8Array([0, 1, 2, 3]), "asdf": new Uint8Array([4, 5, 6]) };
 fighter.Sd = { 321: "哈哈 3", 231: "吼吼 2" };
+fighter.Ml = ["Symbol_X", "", "Symbol_Y"];
+fighter.Mbd = { "Symbol_aaa": new Uint8Array([0, 1, 2, 3]), "Symbol_bbb": new Uint8Array([4, 5, 6]) };
+fighter.Md = { 321: "Symbol_321", 231: "Symbol_231" };
 fighter.El = [3 /* LOCAL */, 4 /* NEWS */, 6 /* VIDEO */];
 fighter.Ed = { 789: 1 /* WEB */, 567: 2 /* IMAGES */ };
 fighter.Ll = [[12.3, 1.23], [1.234, 12.34, 123.4]];
@@ -101,6 +106,9 @@ function compareVector2(v1, v2, prefix) {
     }
     else if (v1.S != v2.S) {
         console.error(prefix, "Vector2.S:", v1.S, v2.S);
+    }
+    else if (v1.M != v2.M) {
+        console.error(prefix, "Vector2.M:", v1.M, v2.M);
     }
     else if (!compareBytes(v1.B, v2.B)) {
         console.error(prefix, "Vector2.B:", v1.B, v2.B);
@@ -249,6 +257,36 @@ function compareFighter_Part2(f1, f2) {
         for (var k in f1.Sd) {
             if (f1.Sd[k] != f2.Sd[k]) {
                 console.error("Fighter_Part2.Sd[", k, "]:", f1.Sd[k], f2.Sd[k]);
+            }
+        }
+    }
+    if (f1.Ml.length != f2.Ml.length) {
+        console.error("Fighter_Part2.Ml:", f1.Ml, f2.Ml);
+    }
+    else {
+        for (var k = 0; k < f1.Ml.length; k++) {
+            if (f1.Ml[k] != f2.Ml[k]) {
+                console.error("Fighter_Part2.Ml[", k, "]:", f1.Ml[k], f2.Ml[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Mbd).length != Object.keys(f2.Mbd).length) {
+        console.error("Fighter_Part2.Mbd:", f1.Mbd, f2.Mbd);
+    }
+    else {
+        for (var k in f1.Mbd) {
+            if (!compareBytes(f1.Mbd[k], f2.Mbd[k])) {
+                console.error("Fighter_Part2.Mbd[", k, "]:", f1.Mbd[k], f2.Mbd[k]);
+            }
+        }
+    }
+    if (Object.keys(f1.Md).length != Object.keys(f2.Md).length) {
+        console.error("Fighter_Part2.Md:", f1.Md, f2.Md);
+    }
+    else {
+        for (var k in f1.Md) {
+            if (f1.Md[k] != f2.Md[k]) {
+                console.error("Fighter_Part2.Md[", k, "]:", f1.Md[k], f2.Md[k]);
             }
         }
     }

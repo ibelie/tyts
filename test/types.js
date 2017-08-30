@@ -17,6 +17,7 @@ goog.require('tyts.List');
 goog.require('tyts.Method');
 goog.require('tyts.Object');
 goog.require('tyts.String');
+goog.require('tyts.Symbol');
 goog.require('tyts.Variant');
 
 goog.require('GoType');
@@ -30,8 +31,9 @@ var Vector2 = new tyts.Object('Vector2', 127, [
 	{name: 'Y', tag: 16, tagsize: 1, type: FixedPoint_1_s10},
 	{name: 'B', tag: 26, tagsize: 1, type: tyts.Bytes},
 	{name: 'S', tag: 34, tagsize: 1, type: tyts.String},
-	{name: 'E', tag: 40, tagsize: 1, type: tyts.Integer},
-	{name: 'P', tag: 50, tagsize: 1, type: GoTypeDelegate}
+	{name: 'M', tag: 42, tagsize: 1, type: tyts.Symbol},
+	{name: 'E', tag: 48, tagsize: 1, type: tyts.Integer},
+	{name: 'P', tag: 58, tagsize: 1, type: GoTypeDelegate}
 ], [
 ]);
 types.Vector2 = Vector2.Type;
@@ -62,6 +64,12 @@ var Ls = new tyts.List('Ls', tyts.String)
 var Dsby = new tyts.Dict('Dsby', tyts.String, tyts.Bytes)
 
 var Dis = new tyts.Dict('Dis', tyts.Integer, tyts.String)
+
+var Lsy = new tyts.List('Lsy', tyts.Symbol)
+
+var Dsyby = new tyts.Dict('Dsyby', tyts.Symbol, tyts.Bytes)
+
+var Disy = new tyts.Dict('Disy', tyts.Integer, tyts.Symbol)
 
 var LCorpus = new tyts.List('LCorpus', tyts.Integer)
 
@@ -172,27 +180,30 @@ var Fighter = new tyts.Object('Fighter', 1023, [
 	{name: 'Sl', tag: 114, tagsize: 1, type: Ls},
 	{name: 'Bd', tag: 122, tagsize: 1, type: Dsby},
 	{name: 'Sd', tag: 130, tagsize: 2, type: Dis},
-	{name: 'El', tag: 138, tagsize: 2, type: LCorpus},
-	{name: 'Ed', tag: 146, tagsize: 2, type: DiCorpus},
-	{name: 'Ll', tag: 154, tagsize: 2, type: LLf},
-	{name: 'V0', tag: 162, tagsize: 2, type: VVector2byfi},
-	{name: 'V1', tag: 170, tagsize: 2, type: VVector2byfi},
-	{name: 'V2', tag: 178, tagsize: 2, type: VVector2byfi},
-	{name: 'V3', tag: 186, tagsize: 2, type: VVector2byfi},
-	{name: 'V4', tag: 194, tagsize: 2, type: VVector2byfi},
-	{name: 'Vl', tag: 202, tagsize: 2, type: LVFixedPoint_3_0Vector2is},
-	{name: 'Vd', tag: 210, tagsize: 2, type: DiVCorpusVector2ds},
-	{name: 'Ld', tag: 218, tagsize: 2, type: DiLVCorpusVector2ds},
-	{name: 'Fld', tag: 226, tagsize: 2, type: DiLf},
-	{name: 'Dd', tag: 234, tagsize: 2, type: DiDiVCorpusVector2dis},
-	{name: 'Fdd', tag: 242, tagsize: 2, type: DiDif},
-	{name: 'Nv', tag: 250, tagsize: 2, type: Vin},
-	{name: 'Lv', tag: 258, tagsize: 2, type: VLVfsi},
-	{name: 'Flv', tag: 266, tagsize: 2, type: VLfi},
-	{name: 'Dv', tag: 274, tagsize: 2, type: VDiVfsi},
-	{name: 'Fdv', tag: 282, tagsize: 2, type: VDifi},
-	{name: 'Poslll', tag: 290, tagsize: 2, type: LLLVector2},
-	{name: 'Posdl', tag: 298, tagsize: 2, type: LDsVector2}
+	{name: 'Ml', tag: 138, tagsize: 2, type: Lsy},
+	{name: 'Mbd', tag: 146, tagsize: 2, type: Dsyby},
+	{name: 'Md', tag: 154, tagsize: 2, type: Disy},
+	{name: 'El', tag: 162, tagsize: 2, type: LCorpus},
+	{name: 'Ed', tag: 170, tagsize: 2, type: DiCorpus},
+	{name: 'Ll', tag: 178, tagsize: 2, type: LLf},
+	{name: 'V0', tag: 186, tagsize: 2, type: VVector2byfi},
+	{name: 'V1', tag: 194, tagsize: 2, type: VVector2byfi},
+	{name: 'V2', tag: 202, tagsize: 2, type: VVector2byfi},
+	{name: 'V3', tag: 210, tagsize: 2, type: VVector2byfi},
+	{name: 'V4', tag: 218, tagsize: 2, type: VVector2byfi},
+	{name: 'Vl', tag: 226, tagsize: 2, type: LVFixedPoint_3_0Vector2is},
+	{name: 'Vd', tag: 234, tagsize: 2, type: DiVCorpusVector2ds},
+	{name: 'Ld', tag: 242, tagsize: 2, type: DiLVCorpusVector2ds},
+	{name: 'Fld', tag: 250, tagsize: 2, type: DiLf},
+	{name: 'Dd', tag: 258, tagsize: 2, type: DiDiVCorpusVector2dis},
+	{name: 'Fdd', tag: 266, tagsize: 2, type: DiDif},
+	{name: 'Nv', tag: 274, tagsize: 2, type: Vin},
+	{name: 'Lv', tag: 282, tagsize: 2, type: VLVfsi},
+	{name: 'Flv', tag: 290, tagsize: 2, type: VLfi},
+	{name: 'Dv', tag: 298, tagsize: 2, type: VDiVfsi},
+	{name: 'Fdv', tag: 306, tagsize: 2, type: VDifi},
+	{name: 'Poslll', tag: 314, tagsize: 2, type: LLLVector2},
+	{name: 'Posdl', tag: 322, tagsize: 2, type: LDsVector2}
 ], [
 	{name: 'RPGParam', type: null},
 	{name: 'RPGResult', type: null},
@@ -253,9 +264,12 @@ var Fighter_Part2 = new tyts.Object('Fighter_Part2', 1023, [
 	{name: 'Sl', tag: 114, tagsize: 1, type: Ls},
 	{name: 'Bd', tag: 122, tagsize: 1, type: Dsby},
 	{name: 'Sd', tag: 130, tagsize: 2, type: Dis},
-	{name: 'El', tag: 138, tagsize: 2, type: LCorpus},
-	{name: 'Ed', tag: 146, tagsize: 2, type: DiCorpus},
-	{name: 'Ll', tag: 154, tagsize: 2, type: LLf}
+	{name: 'Ml', tag: 138, tagsize: 2, type: Lsy},
+	{name: 'Mbd', tag: 146, tagsize: 2, type: Dsyby},
+	{name: 'Md', tag: 154, tagsize: 2, type: Disy},
+	{name: 'El', tag: 162, tagsize: 2, type: LCorpus},
+	{name: 'Ed', tag: 170, tagsize: 2, type: DiCorpus},
+	{name: 'Ll', tag: 178, tagsize: 2, type: LLf}
 ], [
 ]);
 types.Fighter_Part2 = Fighter_Part2.Type;
