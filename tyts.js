@@ -352,7 +352,7 @@ tyts.Bytes = new function() {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
-			protobuf.WriteVarint(0);
+			protobuf.WriteByte(0);
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
@@ -449,7 +449,7 @@ tyts.String = new function() {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
-			protobuf.WriteVarint(0);
+			protobuf.WriteByte(0);
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
@@ -470,65 +470,9 @@ tyts.Symbol = new function() {
 	this.Check = function(value) {
 		return value === String(value);
 	};
-	this.Size = function(value) {
-		var size = 0;
-		for (var i = 0; i < value.length; i++) {
-			var c = value.charCodeAt(i);
-			if (c < 128) {
-				size++;
-			} else if (c < 2048) {
-				size += 2;
-			} else {
-				size += 3;
-			}
-		}
-		return size;
-	};
-	this.Write = function(value, protobuf) {
-		// UTF16 to UTF8 conversion loop
-		for (var i = 0; i < value.length; i++) {
-			var c = value.charCodeAt(i);
-			if (c < 128) {
-				protobuf.buffer[protobuf.offset++] = c;
-			} else if (c < 2048) {
-				protobuf.buffer[protobuf.offset++] = (c >> 6) | 192;
-				protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
-			} else {
-				protobuf.buffer[protobuf.offset++] = (c >> 12) | 224;
-				protobuf.buffer[protobuf.offset++] = ((c >> 6) & 63) | 128;
-				protobuf.buffer[protobuf.offset++] = (c & 63) | 128;
-			}
-		}
-	};
-	this.Decode = function(bytes) {
-		var chars = [];
-		for (var i = 0; i < bytes.length;) {
-			var c = bytes[i++];
-			if (c < 128) { // Regular 7-bit ASCII.
-				chars.push(c);
-			} else if (c < 192) {
-				// UTF-8 continuation mark. We are out of sync. This
-				// might happen if we attempted to read a character
-				// with more than three bytes.
-				continue;
-			} else if (c < 224) { // UTF-8 with two bytes.
-				var c2 = bytes[i++];
-				chars.push(((c & 31) << 6) | (c2 & 63));
-			} else if (c < 240) { // UTF-8 with three bytes.
-				var c2 = bytes[i++];
-				var c3 = bytes[i++];
-				chars.push(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-			}
-		}
-
-		// String.fromCharCode.apply is faster than manually appending characters on
-		// Chrome 25+, and generates no additional cons string garbage.
-		return String.fromCharCode.apply(null, chars);
-	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (value.length > 0) {
-			var size = this.Size(value);
-			return tagsize + tyts.SizeVarint(size) + size;
+			return tagsize + tyts.SizeSymbol(value);
 		} else if (!ignore) {
 			return tagsize + 1;
 		} else {
@@ -540,17 +484,16 @@ tyts.Symbol = new function() {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
-			protobuf.WriteVarint(this.Size(value));
-			this.Write(value, protobuf)
+			protobuf.WriteSymbol(value);
 		} else if (!ignore) {
 			if (tag != 0) {
 				protobuf.WriteVarint(tag);
 			}
-			protobuf.WriteVarint(0);
+			protobuf.WriteByte(0);
 		}
 	};
 	this.Deserialize = function(value, protobuf) {
-		return this.Decode(protobuf.ReadBytes());
+		return protobuf.ReadSymbol();
 	};
 }();
 
@@ -1122,7 +1065,7 @@ tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		if (tag != 0) {
 			protobuf.WriteVarint(tag);
 		}
-		protobuf.WriteVarint(0);
+		protobuf.WriteByte(0);
 	}
 };
 
