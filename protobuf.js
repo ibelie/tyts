@@ -302,8 +302,8 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 		break;
 	}
 
-	if (output[output.length - 1] == '-') {
-		output[output.length - 1] = undefined;
+	if (output[outLen - 1] == '-') {
+		output[outLen - 1] = undefined;
 	}
 	return output.join('');
 };
