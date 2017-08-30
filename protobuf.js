@@ -5,6 +5,7 @@
 goog.provide('tyts.ProtoBuf');
 goog.provide('tyts.SizeVarint');
 goog.provide('tyts.SizeSymbol');
+goog.provide('tyts.SymbolEncodedLen');
 goog.provide('tyts.WireTypeBits');
 goog.provide('tyts.WireTypeMask');
 goog.provide('tyts.WireVarint')
@@ -28,6 +29,10 @@ tyts.SizeVarint = function(x) {
 	var n = 0;
 	do { n++; x >>>= 7; } while (x);
 	return n;
+};
+
+tyts.SymbolEncodedLen = function(data) {
+	return Math.floor((data.length * 6 + 7) / 8);
 };
 
 tyts.SizeSymbol = function(data) {
