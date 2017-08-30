@@ -216,7 +216,7 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 		output[outLen++] = B2CMap.charAt((val >>> 18) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 12) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 6)  & 0x3F);
-		if (outLen + 1 < output.length) {
+		if (outLen < output.length) {
 			output[outLen++] = B2CMap.charAt(val & 0x3F);
 		}
 	}
@@ -290,7 +290,7 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 		output[outLen++] = B2CMap.charAt((val >>> 18) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 12) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 6)  & 0x3F);
-		if (outLen + 1 < output.length) {
+		if (outLen < output.length) {
 			output[outLen++] = B2CMap.charAt(val & 0x3F);
 		}
 	}
