@@ -276,7 +276,7 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 	}
 
 	var outLen = 0;
-	var output = new Array(Math.ceil(count * 4 / 3));
+	var output = new Array(Math.floor(count * 4 / 3));
 	var B2CMap = tyts.ProtoBuf.B2CMap;
 	var end = this.offset + count;
 	var n = this.offset + Math.floor(count / 3) * 3;
@@ -290,9 +290,7 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 		output[outLen++] = B2CMap.charAt((val >>> 18) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 12) & 0x3F);
 		output[outLen++] = B2CMap.charAt((val >>> 6)  & 0x3F);
-		if (outLen < output.length) {
-			output[outLen++] = B2CMap.charAt(val & 0x3F);
-		}
+		output[outLen++] = B2CMap.charAt(val & 0x3F);
 	}
 
 	switch (end - this.offset) {
@@ -304,6 +302,9 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 		output[outLen++] = B2CMap.charAt((val >>> 4) & 0x3F);
 	}
 
+	if (output[output.length - 1] == '-') {
+		output[output.length - 1] = undefined;
+	}
 	return output.join('');
 };
 

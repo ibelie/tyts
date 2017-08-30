@@ -21,7 +21,7 @@ v.X = 123;
 v.Y = 45.6;
 v.B = new Uint8Array([1, 2, 3, 4]);
 v.S = "哈哈哈哈";
-v.M = "Symbol_A";
+v.M = "Symbol_AB";
 v.E = types.Corpus.LOCAL;
 v.P = new GoType(123, "asdf");
 
@@ -30,7 +30,7 @@ v2.X = 1234;
 v2.Y = 345.6;
 v2.B = new Uint8Array([4, 3, 2, 1]);
 v2.S = "哈哈 吼吼吼";
-v.M = "Symbol_B";
+v.M = "Symbol_ABC";
 v2.E = types.Corpus.PRODUCTS;
 v2.P = new GoType(321, "qwer");
 
@@ -52,7 +52,7 @@ fighter.Sl      = ["哈哈", "吼吼", "嘿嘿"];
 fighter.Bl      = [new Uint8Array([0, 1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])];
 fighter.Bd      = {"哈哈": new Uint8Array([0, 1, 2, 3]), "asdf": new Uint8Array([4, 5, 6])};
 fighter.Sd      = {321: "哈哈 3", 231: "吼吼 2"};
-fighter.Ml      = ["Symbol_X", "", "Symbol_Y"];
+fighter.Ml      = ["Symbol_ABCD", "", "Sym"];
 fighter.Mbd     = {"Symbol_aaa": new Uint8Array([0, 1, 2, 3]), "Symbol_bbb": new Uint8Array([4, 5, 6])};
 fighter.Md      = {321: "Symbol_321", 231: "Symbol_231"};
 fighter.El      = [types.Corpus.LOCAL, types.Corpus.NEWS, types.Corpus.VIDEO];
