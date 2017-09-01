@@ -170,26 +170,26 @@ tyts.ProtoBuf.prototype.WriteBase64 = function(data) {
 	for (var i = 0; i < n;) {
 		// Convert 4x 6bit source bytes into 3 bytes
 		var val = (C2BMap[data.charAt(i++)] << 18) |
-			(C2BMap[data.charAt(i++)] << 12) |
-			(C2BMap[data.charAt(i++)] << 6) |
-			C2BMap[data.charAt(i++)];
+				  (C2BMap[data.charAt(i++)] << 12) |
+				  (C2BMap[data.charAt(i++)] << 6) |
+				  (C2BMap[data.charAt(i++)] << 0);
 
 		this.buffer[this.offset++] = 0xFF & (val >>> 16);
 		this.buffer[this.offset++] = 0xFF & (val >>> 8);
-		this.buffer[this.offset++] = 0xFF & val;
+		this.buffer[this.offset++] = 0xFF & (val >>> 0);
 	}
 
 	switch (data.length - n) {
 	case 2:
-		this.buffer[this.offset++] = (C2BMap[data.charAt(n)] << 2) |
-			(C2BMap[data.charAt(n + 1)] >>> 4);
+		this.buffer[this.offset++] = (C2BMap[data.charAt(n + 0)] << 2) |
+									(C2BMap[data.charAt(n + 1)] >>> 4);
 		break;
 	case 3:
-		var val = (C2BMap[data.charAt(n)] << 10) |
-			(C2BMap[data.charAt(n + 1)] << 4) |
-			(C2BMap[data.charAt(n + 2)] >>> 2);
+		var val = (C2BMap[data.charAt(n + 0)] << 10) |
+				  (C2BMap[data.charAt(n + 1)] << 4) |
+				  (C2BMap[data.charAt(n + 2)] >>> 2);
 		this.buffer[this.offset++] = 0xFF & (val >>> 8);
-		this.buffer[this.offset++] = 0xFF & val;
+		this.buffer[this.offset++] = 0xFF & (val >>> 0);
 		break;
 	}
 };
@@ -210,13 +210,13 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 	while (this.offset < n) {
 		// Convert 3x 8bit source bytes into 4 bytes
 		var val = (this.buffer[this.offset++] << 16) |
-			(this.buffer[this.offset++] << 8) |
-			this.buffer[this.offset++];
+				  (this.buffer[this.offset++] << 8) |
+				  (this.buffer[this.offset++] << 0);
 
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 18));
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 12));
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 6));
-		output[outLen++] = B2CMap.charAt(0x3F & val);
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 0));
 	}
 
 	if (this.offset < end) {
@@ -244,13 +244,13 @@ tyts.ProtoBuf.prototype.EncodeSymbol = function(data) {
 	for (var i = 0; i < n;) {
 		// Convert 4x 6bit source bytes into 3 bytes
 		var val = (C2BMap[data.charAt(i++)] << 18) |
-			(C2BMap[data.charAt(i++)] << 12) |
-			(C2BMap[data.charAt(i++)] << 6) |
-			C2BMap[data.charAt(i++)];
+				  (C2BMap[data.charAt(i++)] << 12) |
+				  (C2BMap[data.charAt(i++)] << 6) |
+				  (C2BMap[data.charAt(i++)] << 0);
 
 		this.buffer[this.offset++] = 0xFF & (val >>> 16);
 		this.buffer[this.offset++] = 0xFF & (val >>> 8);
-		this.buffer[this.offset++] = 0xFF & val;
+		this.buffer[this.offset++] = 0xFF & (val >>> 0);
 	}
 
 	var val = 0;
@@ -282,13 +282,13 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 	while (this.offset < n) {
 		// Convert 3x 8bit source bytes into 4 bytes
 		var val = (this.buffer[this.offset++] << 16) |
-			(this.buffer[this.offset++] << 8) |
-			this.buffer[this.offset++];
+				  (this.buffer[this.offset++] << 8) |
+				  (this.buffer[this.offset++] << 0);
 
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 18));
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 12));
 		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 6));
-		output[outLen++] = B2CMap.charAt(0x3F & val);
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 0));
 	}
 
 	switch (end - this.offset) {
