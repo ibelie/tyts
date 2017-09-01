@@ -213,10 +213,10 @@ tyts.ProtoBuf.prototype.ReadBase64 = function(count, start) {
 			(this.buffer[this.offset++] << 8) |
 			this.buffer[this.offset++];
 
-		output[outLen++] = B2CMap.charAt((val >>> 18) & 0x3F);
-		output[outLen++] = B2CMap.charAt((val >>> 12) & 0x3F);
-		output[outLen++] = B2CMap.charAt((val >>> 6)  & 0x3F);
-		output[outLen++] = B2CMap.charAt(val & 0x3F);
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 18));
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 12));
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 6));
+		output[outLen++] = B2CMap.charAt(0x3F & val);
 	}
 
 	if (this.offset < end) {
@@ -285,20 +285,20 @@ tyts.ProtoBuf.prototype.DecodeSymbol = function(count, start) {
 			(this.buffer[this.offset++] << 8) |
 			this.buffer[this.offset++];
 
-		output[outLen++] = B2CMap.charAt((val >>> 18) & 0x3F);
-		output[outLen++] = B2CMap.charAt((val >>> 12) & 0x3F);
-		output[outLen++] = B2CMap.charAt((val >>> 6)  & 0x3F);
-		output[outLen++] = B2CMap.charAt(val & 0x3F);
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 18));
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 12));
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 6));
+		output[outLen++] = B2CMap.charAt(0x3F & val);
 	}
 
 	switch (end - this.offset) {
 	case 1:
-		output[outLen++] = B2CMap.charAt((this.buffer[this.offset++] >>> 2) & 0x3F);
+		output[outLen++] = B2CMap.charAt(0x3F & (this.buffer[this.offset++] >>> 2));
 		break;
 	case 2:
 		var val = (this.buffer[this.offset++] << 8) | this.buffer[this.offset++];
-		output[outLen++] = B2CMap.charAt((val >>> 10) & 0x3F);
-		output[outLen++] = B2CMap.charAt((val >>> 4) & 0x3F);
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 10));
+		output[outLen++] = B2CMap.charAt(0x3F & (val >>> 4));
 		break;
 	}
 
