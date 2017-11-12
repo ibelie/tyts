@@ -2,29 +2,29 @@
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
 
-goog.provide('tyts.Integer');
-goog.provide('tyts.FixedPoint');
-goog.provide('tyts.Float64');
-goog.provide('tyts.Float32');
-goog.provide('tyts.Bool');
-goog.provide('tyts.Bytes');
-goog.provide('tyts.String');
-goog.provide('tyts.Symbol');
-goog.provide('tyts.Object');
-goog.provide('tyts.Method');
-goog.provide('tyts.Variant');
-goog.provide('tyts.List');
-goog.provide('tyts.Dict');
-goog.provide('tyts.Extension');
+goog.provide('ibelie.tyts.Integer');
+goog.provide('ibelie.tyts.FixedPoint');
+goog.provide('ibelie.tyts.Float64');
+goog.provide('ibelie.tyts.Float32');
+goog.provide('ibelie.tyts.Bool');
+goog.provide('ibelie.tyts.Bytes');
+goog.provide('ibelie.tyts.String');
+goog.provide('ibelie.tyts.Symbol');
+goog.provide('ibelie.tyts.Object');
+goog.provide('ibelie.tyts.Method');
+goog.provide('ibelie.tyts.Variant');
+goog.provide('ibelie.tyts.List');
+goog.provide('ibelie.tyts.Dict');
+goog.provide('ibelie.tyts.Extension');
 
-goog.require('tyts.ProtoBuf');
-goog.require('tyts.SizeVarint');
-goog.require('tyts.WireTypeBits');
-goog.require('tyts.WireTypeMask');
-goog.require('tyts.WireVarint');
-goog.require('tyts.WireFixed64');
-goog.require('tyts.WireBytes');
-goog.require('tyts.WireFixed32');
+goog.require('ibelie.tyts.ProtoBuf');
+goog.require('ibelie.tyts.SizeVarint');
+goog.require('ibelie.tyts.WireTypeBits');
+goog.require('ibelie.tyts.WireTypeMask');
+goog.require('ibelie.tyts.WireVarint');
+goog.require('ibelie.tyts.WireFixed64');
+goog.require('ibelie.tyts.WireBytes');
+goog.require('ibelie.tyts.WireFixed32');
 
 
 TYPE_INTEGER    =  0;
@@ -43,11 +43,11 @@ TYPE_EXTENSION  = 12;
 
 //=============================================================================
 
-tyts.Integer = new function() {
+ibelie.tyts.Integer = new function() {
 	this.$ = TYPE_INTEGER;
 	this.isPrimitive = true;
 	this.isIterative = false;
-	this.wiretype = tyts.WireVarint;
+	this.wiretype = ibelie.tyts.WireVarint;
 	this.Default = function() {
 		return 0;
 	};
@@ -56,7 +56,7 @@ tyts.Integer = new function() {
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (!ignore || value != 0) {
-			return tagsize + tyts.SizeVarint(value);
+			return tagsize + ibelie.tyts.SizeVarint(value);
 		} else {
 			return 0;
 		}
@@ -76,33 +76,33 @@ tyts.Integer = new function() {
 
 //=============================================================================
 
-tyts.FixedPoint = function(floor, precision) {
+ibelie.tyts.FixedPoint = function(floor, precision) {
 	this.floor = floor;
 	this.precision = Math.pow(10, precision);
 };
 
-tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
-tyts.FixedPoint.prototype.isPrimitive = true;
-tyts.FixedPoint.prototype.isIterative = false;
-tyts.FixedPoint.prototype.wiretype = tyts.WireVarint;
+ibelie.tyts.FixedPoint.prototype.$ = TYPE_FIXEDPOINT;
+ibelie.tyts.FixedPoint.prototype.isPrimitive = true;
+ibelie.tyts.FixedPoint.prototype.isIterative = false;
+ibelie.tyts.FixedPoint.prototype.wiretype = ibelie.tyts.WireVarint;
 
-tyts.FixedPoint.prototype.Default = function() {
+ibelie.tyts.FixedPoint.prototype.Default = function() {
 	return 0;
 };
 
-tyts.FixedPoint.prototype.Check = function(value) {
+ibelie.tyts.FixedPoint.prototype.Check = function(value) {
 	return value === parseFloat(value);
 };
 
-tyts.FixedPoint.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.FixedPoint.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!ignore || value != this.floor) {
-		return tagsize + tyts.SizeVarint(Math.floor((value - this.floor) * this.precision));
+		return tagsize + ibelie.tyts.SizeVarint(Math.floor((value - this.floor) * this.precision));
 	} else {
 		return 0;
 	}
 };
 
-tyts.FixedPoint.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.FixedPoint.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (!ignore || value != this.floor) {
 		if (tag != 0) {
 			protobuf.WriteVarint(tag);
@@ -111,17 +111,17 @@ tyts.FixedPoint.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	}
 };
 
-tyts.FixedPoint.prototype.Deserialize = function(value, protobuf) {
+ibelie.tyts.FixedPoint.prototype.Deserialize = function(value, protobuf) {
 	return protobuf.ReadVarint() / this.precision + this.floor;
 };
 
 //=============================================================================
 
-tyts.Float64 = new function() {
+ibelie.tyts.Float64 = new function() {
 	this.$ = TYPE_FLOAT64;
 	this.isPrimitive = true;
 	this.isIterative = false;
-	this.wiretype = tyts.WireFixed64;
+	this.wiretype = ibelie.tyts.WireFixed64;
 	this.TWO_TO_20 = 1048576;
 	this.TWO_TO_32 = 4294967296;
 	this.TWO_TO_52 = 4503599627370496;
@@ -211,11 +211,11 @@ tyts.Float64 = new function() {
 
 //=============================================================================
 
-tyts.Float32 = new function() {
+ibelie.tyts.Float32 = new function() {
 	this.$ = TYPE_FLOAT32;
 	this.isPrimitive = true;
 	this.isIterative = false;
-	this.wiretype = tyts.WireFixed32;
+	this.wiretype = ibelie.tyts.WireFixed32;
 	this.TWO_TO_23 = 8388608;
 	this.FLOAT32_MIN = 1.1754943508222875e-38;
 	this.FLOAT32_MAX = 3.4028234663852886e+38;
@@ -288,11 +288,11 @@ tyts.Float32 = new function() {
 
 //=============================================================================
 
-tyts.Bool = new function() {
+ibelie.tyts.Bool = new function() {
 	this.$ = TYPE_BOOL;
 	this.isPrimitive = true;
 	this.isIterative = false;
-	this.wiretype = tyts.WireVarint;
+	this.wiretype = ibelie.tyts.WireVarint;
 	this.Default = function() {
 		return false;
 	};
@@ -321,11 +321,11 @@ tyts.Bool = new function() {
 
 //=============================================================================
 
-tyts.Bytes = new function() {
+ibelie.tyts.Bytes = new function() {
 	this.$ = TYPE_BYTES;
 	this.isPrimitive = false;
 	this.isIterative = false;
-	this.wiretype = tyts.WireBytes;
+	this.wiretype = ibelie.tyts.WireBytes;
 	this.Default = function() {
 		return new Uint8Array(0);
 	};
@@ -334,7 +334,7 @@ tyts.Bytes = new function() {
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (value.length > 0) {
-			return tagsize + tyts.SizeVarint(value.length) + value.length;
+			return tagsize + ibelie.tyts.SizeVarint(value.length) + value.length;
 		} else if (!ignore) {
 			return tagsize + 1;
 		} else {
@@ -362,11 +362,11 @@ tyts.Bytes = new function() {
 
 //=============================================================================
 
-tyts.String = new function() {
+ibelie.tyts.String = new function() {
 	this.$ = TYPE_STRING;
 	this.isPrimitive = false;
 	this.isIterative = false;
-	this.wiretype = tyts.WireBytes;
+	this.wiretype = ibelie.tyts.WireBytes;
 	this.Default = function() {
 		return "";
 	};
@@ -431,7 +431,7 @@ tyts.String = new function() {
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (value.length > 0) {
 			var size = this.Size(value);
-			return tagsize + tyts.SizeVarint(size) + size;
+			return tagsize + ibelie.tyts.SizeVarint(size) + size;
 		} else if (!ignore) {
 			return tagsize + 1;
 		} else {
@@ -459,11 +459,11 @@ tyts.String = new function() {
 
 //=============================================================================
 
-tyts.Symbol = new function() {
+ibelie.tyts.Symbol = new function() {
 	this.$ = TYPE_SYMBOL;
 	this.isPrimitive = false;
 	this.isIterative = false;
-	this.wiretype = tyts.WireBytes;
+	this.wiretype = ibelie.tyts.WireBytes;
 	this.Default = function() {
 		return "";
 	};
@@ -472,7 +472,7 @@ tyts.Symbol = new function() {
 	};
 	this.ByteSize = function(value, tagsize, ignore) {
 		if (value.length > 0) {
-			return tagsize + tyts.SizeSymbol(value);
+			return tagsize + ibelie.tyts.SizeSymbol(value);
 		} else if (!ignore) {
 			return tagsize + 1;
 		} else {
@@ -519,15 +519,15 @@ function registerMethod(type, i) {
 	var method = type.methods[i];
 	type.Type['Serialize' + method.name] = function() {
 		var buffer = new Uint8Array(method.type.ByteSize(arguments));
-		method.type.Serialize(arguments, new tyts.ProtoBuf(buffer));
+		method.type.Serialize(arguments, new ibelie.tyts.ProtoBuf(buffer));
 		return buffer;
 	};
 	type.Type['Deserialize' + method.name] = function(buffer) {
-		return method.type.Deserialize(new tyts.ProtoBuf(buffer));
+		return method.type.Deserialize(new ibelie.tyts.ProtoBuf(buffer));
 	};
 }
 
-tyts.Object = function(name, cutoff, fields, methods) {
+ibelie.tyts.Object = function(name, cutoff, fields, methods) {
 	var type = this;
 	type.name = name;
 	type.cutoff = cutoff;
@@ -549,42 +549,42 @@ tyts.Object = function(name, cutoff, fields, methods) {
 		return type.ByteSizeUnsealed(this);
 	};
 	type.Type.prototype.Serialize = function() {
-		var protobuf = new tyts.ProtoBuf(new Uint8Array(this.ByteSize()));
+		var protobuf = new ibelie.tyts.ProtoBuf(new Uint8Array(this.ByteSize()));
 		type.SerializeUnsealed(this, protobuf);
 		return protobuf.buffer;
 	};
 	type.Type.prototype.Deserialize = function(buffer) {
-		type.DeserializeUnsealed(this, new tyts.ProtoBuf(buffer));
+		type.DeserializeUnsealed(this, new ibelie.tyts.ProtoBuf(buffer));
 	};
 	type.Type.Deserialize = function(buffer) {
 		var object = new type.Type();
-		type.DeserializeUnsealed(object, new tyts.ProtoBuf(buffer));
+		type.DeserializeUnsealed(object, new ibelie.tyts.ProtoBuf(buffer));
 		return object;
 	};
 };
 
-tyts.Object.prototype.$ = TYPE_OBJECT;
-tyts.Object.prototype.isPrimitive = false;
-tyts.Object.prototype.isIterative = false;
-tyts.Object.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.Object.prototype.$ = TYPE_OBJECT;
+ibelie.tyts.Object.prototype.isPrimitive = false;
+ibelie.tyts.Object.prototype.isIterative = false;
+ibelie.tyts.Object.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.Object.prototype.Default = function() {
+ibelie.tyts.Object.prototype.Default = function() {
 	return null;
 };
 
-tyts.Object.prototype.Check = function(value) {
+ibelie.tyts.Object.prototype.Check = function(value) {
 	return value instanceof this.Type;
 };
 
-tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.Object.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!value) {
 		return ignore ? 0 : tagsize + 1;
 	}
 	var size = this.ByteSizeUnsealed(value);
-	return tagsize + tyts.SizeVarint(size) + size;
+	return tagsize + ibelie.tyts.SizeVarint(size) + size;
 };
 
-tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (!value) {
 		if (!ignore) {
 			if (tag != 0) {
@@ -601,18 +601,18 @@ tyts.Object.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	this.SerializeUnsealed(value, protobuf);
 };
 
-tyts.Object.prototype.Deserialize = function(value, protobuf) {
+ibelie.tyts.Object.prototype.Deserialize = function(value, protobuf) {
 	var buffer = protobuf.ReadBuffer();
 	if (!value) {
 		value = new this.Type();
 	}
 	if (buffer.length > 0) {
-		this.DeserializeUnsealed(value, new tyts.ProtoBuf(buffer));
+		this.DeserializeUnsealed(value, new ibelie.tyts.ProtoBuf(buffer));
 	}
 	return value;
 };
 
-tyts.Object.prototype.ByteSizeUnsealed = function(value) {
+ibelie.tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 	var size = 0;
 	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
@@ -626,7 +626,7 @@ tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 	return size;
 };
 
-tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
+ibelie.tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
 	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
@@ -637,16 +637,16 @@ tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
 	}
 };
 
-tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
+ibelie.tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
 	var prefix = this.Check(value) ? '_' : '';
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
-		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		var i = (tag_cutoff[0] >> ibelie.tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.fields.length) {
 			var field = this.fields[i].type;
 			var name = this.fields[i].name
 			var fieldname = prefix + name;
-			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			var wiretype = tag_cutoff[0] & ibelie.tyts.WireTypeMask;
 			var handler = 'On' + name[0].toUpperCase() + name.substr(1) + 'Changed';
 			if (field.wiretype == wiretype) {
 				if (value[handler] == undefined) {
@@ -678,26 +678,26 @@ tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.Method = function(name, cutoff, params) {
+ibelie.tyts.Method = function(name, cutoff, params) {
 	this.name = name;
 	this.cutoff = cutoff;
 	this.params = params;
 };
 
-tyts.Method.prototype.$ = TYPE_OBJECT;
-tyts.Method.prototype.isPrimitive = false;
-tyts.Method.prototype.isIterative = false;
-tyts.Method.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.Method.prototype.$ = TYPE_OBJECT;
+ibelie.tyts.Method.prototype.isPrimitive = false;
+ibelie.tyts.Method.prototype.isIterative = false;
+ibelie.tyts.Method.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.Method.prototype.Default = function() {
+ibelie.tyts.Method.prototype.Default = function() {
 	return undefined;
 };
 
-tyts.Method.prototype.Check = function(value) {
+ibelie.tyts.Method.prototype.Check = function(value) {
 	return false;
 };
 
-tyts.Method.prototype.ByteSize = function(args) {
+ibelie.tyts.Method.prototype.ByteSize = function(args) {
 	if (!args) {
 		return 0;
 	}
@@ -711,7 +711,7 @@ tyts.Method.prototype.ByteSize = function(args) {
 	return size;
 };
 
-tyts.Method.prototype.Serialize = function(args, protobuf) {
+ibelie.tyts.Method.prototype.Serialize = function(args, protobuf) {
 	if (!args) {
 		return;
 	}
@@ -723,14 +723,14 @@ tyts.Method.prototype.Serialize = function(args, protobuf) {
 	}
 };
 
-tyts.Method.prototype.Deserialize = function(protobuf) {
+ibelie.tyts.Method.prototype.Deserialize = function(protobuf) {
 	var args = new Array(this.params.length);
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
-		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		var i = (tag_cutoff[0] >> ibelie.tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.params.length) {
 			var param = this.params[i].type;
-			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			var wiretype = tag_cutoff[0] & ibelie.tyts.WireTypeMask;
 			if (param.wiretype == wiretype) {
 				args[i] = param.Deserialize(args[i], protobuf);
 				continue;
@@ -749,26 +749,26 @@ tyts.Method.prototype.Deserialize = function(protobuf) {
 
 //=============================================================================
 
-tyts.Variant = function(name, cutoff, types) {
+ibelie.tyts.Variant = function(name, cutoff, types) {
 	this.name = name;
 	this.cutoff = cutoff;
 	this.types = types;
 };
 
-tyts.Variant.prototype.$ = TYPE_VARIANT;
-tyts.Variant.prototype.isPrimitive = false;
-tyts.Variant.prototype.isIterative = false;
-tyts.Variant.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.Variant.prototype.$ = TYPE_VARIANT;
+ibelie.tyts.Variant.prototype.isPrimitive = false;
+ibelie.tyts.Variant.prototype.isIterative = false;
+ibelie.tyts.Variant.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.Variant.prototype.Default = function() {
+ibelie.tyts.Variant.prototype.Default = function() {
 	return null;
 };
 
-tyts.Variant.prototype.Check = function(value) {
+ibelie.tyts.Variant.prototype.Check = function(value) {
 	return false;
 };
 
-tyts.Variant.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.Variant.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (value == null) {
 		return ignore ? 0 : tagsize + 1;
 	}
@@ -776,13 +776,13 @@ tyts.Variant.prototype.ByteSize = function(value, tagsize, ignore) {
 		var variant = this.types[i];
 		if (variant.type.Check(value)) {
 			var size = variant.type.ByteSize(value, variant.tagsize, true);
-			return tagsize + tyts.SizeVarint(size) + size;
+			return tagsize + ibelie.tyts.SizeVarint(size) + size;
 		}
 	}
 	return tagsize + 1;
 };
 
-tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (value == null) {
 		if (!ignore) {
 			if (tag != 0) {
@@ -806,14 +806,14 @@ tyts.Variant.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	protobuf.WriteByte(0);
 };
 
-tyts.Variant.prototype.Deserialize = function(value, protobuf) {
-	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
+ibelie.tyts.Variant.prototype.Deserialize = function(value, protobuf) {
+	protobuf = new ibelie.tyts.ProtoBuf(protobuf.ReadBuffer());
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
-		var i = (tag_cutoff[0] >> tyts.WireTypeBits) - 1;
+		var i = (tag_cutoff[0] >> ibelie.tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.types.length) {
 			var variant = this.types[i].type;
-			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			var wiretype = tag_cutoff[0] & ibelie.tyts.WireTypeMask;
 			if (variant.wiretype == wiretype) {
 				value = variant.Deserialize(value, protobuf);
 				continue;
@@ -832,25 +832,25 @@ tyts.Variant.prototype.Deserialize = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.List = function(name, element) {
+ibelie.tyts.List = function(name, element) {
 	this.name = name;
 	this.element = element;
 	this.isIterative = !this.element.isPrimitive;
 };
 
-tyts.List.prototype.$ = TYPE_LIST;
-tyts.List.prototype.isPrimitive = false;
-tyts.List.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.List.prototype.$ = TYPE_LIST;
+ibelie.tyts.List.prototype.isPrimitive = false;
+ibelie.tyts.List.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.List.prototype.Default = function() {
+ibelie.tyts.List.prototype.Default = function() {
 	return [];
 };
 
-tyts.List.prototype.Check = function(value) {
+ibelie.tyts.List.prototype.Check = function(value) {
 	return value instanceof Array;
 };
 
-tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (!value || !value.length) {
 		return 0;
 	}
@@ -859,7 +859,7 @@ tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 		var total = 0;
 		for (var i = 0; i < value.length; i++) {
 			var size = element.ByteSize(value[i], 0, false);
-			total += tagsize + tyts.SizeVarint(size) + size;
+			total += tagsize + ibelie.tyts.SizeVarint(size) + size;
 		}
 		return total;
 	} else if (!element.isPrimitive) {
@@ -873,11 +873,11 @@ tyts.List.prototype.ByteSize = function(value, tagsize, ignore) {
 		for (var i = 0; i < value.length; i++) {
 			size += element.ByteSize(value[i], 0, false);
 		}
-		return tagsize + tyts.SizeVarint(size) + size;
+		return tagsize + ibelie.tyts.SizeVarint(size) + size;
 	}
 };
 
-tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (!value || !value.length) {
 		return;
 	}
@@ -910,13 +910,13 @@ tyts.List.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	}
 };
 
-tyts.List.prototype.Deserialize = function(value, protobuf) {
+ibelie.tyts.List.prototype.Deserialize = function(value, protobuf) {
 	if (!value) {
 		value = [];
 	}
 	var element = this.element;
 	if (element.isIterative) {
-		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
+		protobuf = new ibelie.tyts.ProtoBuf(protobuf.ReadBuffer());
 		var list;
 		while (!protobuf.End()) {
 			list = element.Deserialize(list, protobuf);
@@ -925,7 +925,7 @@ tyts.List.prototype.Deserialize = function(value, protobuf) {
 	} else if (!element.isPrimitive) {
 		value.push(element.Deserialize(undefined, protobuf));
 	} else {
-		protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
+		protobuf = new ibelie.tyts.ProtoBuf(protobuf.ReadBuffer());
 		while (!protobuf.End()) {
 			value.push(element.Deserialize(undefined, protobuf));
 		}
@@ -933,7 +933,7 @@ tyts.List.prototype.Deserialize = function(value, protobuf) {
 	return value;
 };
 
-tyts.List.prototype.DeserializeRepeat = function(value, protobuf) {
+ibelie.tyts.List.prototype.DeserializeRepeat = function(value, protobuf) {
 	if (!value) {
 		value = [];
 	}
@@ -943,36 +943,36 @@ tyts.List.prototype.DeserializeRepeat = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.Dict = function(name, key, value) {
+ibelie.tyts.Dict = function(name, key, value) {
 	this.name = name;
 	this.key = key;
 	this.value = value;
 };
 
-tyts.Dict.prototype.$ = TYPE_DICT;
-tyts.Dict.prototype.isPrimitive = false;
-tyts.Dict.prototype.isIterative = true;
-tyts.Dict.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.Dict.prototype.$ = TYPE_DICT;
+ibelie.tyts.Dict.prototype.isPrimitive = false;
+ibelie.tyts.Dict.prototype.isIterative = true;
+ibelie.tyts.Dict.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.Dict.prototype.Default = function() {
+ibelie.tyts.Dict.prototype.Default = function() {
 	return {};
 };
 
-tyts.Dict.prototype.Check = function(value) {
+ibelie.tyts.Dict.prototype.Check = function(value) {
 	return (value instanceof Object) && !(value instanceof Array) && !value.__class__;
 };
 
-tyts.Dict.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.Dict.prototype.ByteSize = function(value, tagsize, ignore) {
 	var total = 0;
 	for (var k in value) {
 		var size = this.key.ByteSize(k, 1, true);
 		size += this.value.ByteSize(value[k], 1, true);
-		total += tagsize + tyts.SizeVarint(size) + size;
+		total += tagsize + ibelie.tyts.SizeVarint(size) + size;
 	}
 	return total;
 };
 
-tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	for (var k in value) {
 		if (tag != 0) {
 			protobuf.WriteVarint(tag);
@@ -981,20 +981,20 @@ tyts.Dict.prototype.Serialize = function(value, tag, ignore, protobuf) {
 		var size = this.key.ByteSize(k, 1, true);
 		size += this.value.ByteSize(v, 1, true);
 		protobuf.WriteVarint(size);
-		this.key.Serialize(k, (1 << tyts.WireTypeBits) | this.key.wiretype, true, protobuf);
-		this.value.Serialize(v, (2 << tyts.WireTypeBits) | this.value.wiretype, true, protobuf);
+		this.key.Serialize(k, (1 << ibelie.tyts.WireTypeBits) | this.key.wiretype, true, protobuf);
+		this.value.Serialize(v, (2 << ibelie.tyts.WireTypeBits) | this.value.wiretype, true, protobuf);
 	}
 };
 
-tyts.Dict.prototype.Deserialize = function(value, protobuf) {
-	protobuf = new tyts.ProtoBuf(protobuf.ReadBuffer());
+ibelie.tyts.Dict.prototype.Deserialize = function(value, protobuf) {
+	protobuf = new ibelie.tyts.ProtoBuf(protobuf.ReadBuffer());
 	var v, k = this.key.Default();
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(0x7F);
-		var i = tag_cutoff[0] >> tyts.WireTypeBits;
+		var i = tag_cutoff[0] >> ibelie.tyts.WireTypeBits;
 		if (tag_cutoff[1] && (i == 1 || i == 2)) {
 			var field = (i == 1 ? this.key : this.value);
-			var wiretype = tag_cutoff[0] & tyts.WireTypeMask;
+			var wiretype = tag_cutoff[0] & ibelie.tyts.WireTypeMask;
 			if (field.wiretype == wiretype) {
 				if (i == 1) {
 					k = field.Deserialize(k, protobuf);
@@ -1025,28 +1025,28 @@ tyts.Dict.prototype.Deserialize = function(value, protobuf) {
 
 //=============================================================================
 
-tyts.Extension = function(name, type) {
+ibelie.tyts.Extension = function(name, type) {
 	this.name = name;
 	this.type = type;
 };
 
-tyts.Extension.prototype.$ = TYPE_EXTENSION;
-tyts.Extension.prototype.isPrimitive = false;
-tyts.Extension.prototype.isIterative = false;
-tyts.Extension.prototype.wiretype = tyts.WireBytes;
+ibelie.tyts.Extension.prototype.$ = TYPE_EXTENSION;
+ibelie.tyts.Extension.prototype.isPrimitive = false;
+ibelie.tyts.Extension.prototype.isIterative = false;
+ibelie.tyts.Extension.prototype.wiretype = ibelie.tyts.WireBytes;
 
-tyts.Extension.prototype.Default = function() {
+ibelie.tyts.Extension.prototype.Default = function() {
 	return null;
 };
 
-tyts.Extension.prototype.Check = function(value) {
+ibelie.tyts.Extension.prototype.Check = function(value) {
 	return value instanceof this.type;
 };
 
-tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
+ibelie.tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
 	if (value) {
 		var size = value.ByteSize();
-		return tagsize + tyts.SizeVarint(size) + size;
+		return tagsize + ibelie.tyts.SizeVarint(size) + size;
 	} else if (!ignore) {
 		return tagsize + 1;
 	} else {
@@ -1054,7 +1054,7 @@ tyts.Extension.prototype.ByteSize = function(value, tagsize, ignore) {
 	}
 };
 
-tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
+ibelie.tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	if (value) {
 		if (tag != 0) {
 			protobuf.WriteVarint(tag);
@@ -1069,7 +1069,7 @@ tyts.Extension.prototype.Serialize = function(value, tag, ignore, protobuf) {
 	}
 };
 
-tyts.Extension.prototype.Deserialize = function(value, protobuf) {
+ibelie.tyts.Extension.prototype.Deserialize = function(value, protobuf) {
 	if (!value) {
 		value = new this.type();
 	}

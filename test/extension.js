@@ -2,7 +2,7 @@
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
 goog.provide('GoType');
-var GoType = (function () {
+var GoType = /** @class */ (function () {
     function GoType(PP, AP) {
         this.__class__ = 'GoType';
         this.PP = PP;
