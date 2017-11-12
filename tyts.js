@@ -517,12 +517,12 @@ function registerProperty(type, object, i) {
 
 function registerMethod(type, i) {
 	var method = type.methods[i];
-	type.Type['Serialize' + method.name] = function() {
+	type.Type['S_' + method.name] = function() {
 		var buffer = new Uint8Array(method.type.ByteSize(arguments));
 		method.type.Serialize(arguments, new ibelie.tyts.ProtoBuf(buffer));
 		return buffer;
 	};
-	type.Type['Deserialize' + method.name] = function(buffer) {
+	type.Type['D_' + method.name] = function(buffer) {
 		return method.type.Deserialize(new ibelie.tyts.ProtoBuf(buffer));
 	};
 }
