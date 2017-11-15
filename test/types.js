@@ -36,7 +36,7 @@ var Vector2 = new ibelie.tyts.Object('Vector2', 127, [
 	{name: 'P', tag: 58, tagsize: 1, type: GoTypeDelegate}
 ], [
 ]);
-types['Vector2'] = Vector2.Type;
+types.Vector2 = Vector2.Type;
 
 var DiVector2 = new ibelie.tyts.Dict('DiVector2', ibelie.tyts.Integer, Vector2)
 
@@ -229,7 +229,7 @@ Fighter.methods[3].type = new ibelie.tyts.Method('FighterGPRResult', 127, [
 	{tag: 16, tagsize: 1, type: ibelie.tyts.Integer}
 ]);
 
-types['Fighter'] = Fighter.Type;
+types.Fighter = Fighter.Type;
 
 var Fighter_Part1 = new ibelie.tyts.Object('Fighter_Part1', 127, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
@@ -245,7 +245,7 @@ var Fighter_Part1 = new ibelie.tyts.Object('Fighter_Part1', 127, [
 	{name: 'Pyv2', tag: 90, tagsize: 1, type: VGoTypei}
 ], [
 ]);
-types['Fighter_Part1'] = Fighter_Part1.Type;
+types.Fighter_Part1 = Fighter_Part1.Type;
 
 var Fighter_Part2 = new ibelie.tyts.Object('Fighter_Part2', 1023, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
@@ -272,4 +272,4 @@ var Fighter_Part2 = new ibelie.tyts.Object('Fighter_Part2', 1023, [
 	{name: 'Ll', tag: 178, tagsize: 2, type: LLf}
 ], [
 ]);
-types['Fighter_Part2'] = Fighter_Part2.Type;
+types.Fighter_Part2 = Fighter_Part2.Type;
