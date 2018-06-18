@@ -67,6 +67,12 @@ fighter.Fdv = { 333: 222.111, 444: 345.123 };
 fighter.Poslll = [[[v, new types.Vector2(), v2], null], null, [[v, new types.Vector2(), v2], [v2, v]]];
 fighter.Posdl = [{ "231": v, "320": null, "321": v2 }, null, { "321": v, "320": null, "231": v2 }];
 function compareBytes(b1, b2) {
+    if (!b1 && !b2) {
+        return true;
+    }
+    else if (!b2 || !b2) {
+        return false;
+    }
     if (b1.length != b2.length) {
         return false;
     }

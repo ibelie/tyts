@@ -499,32 +499,16 @@ ibelie.tyts.Symbol = new function() {
 
 //=============================================================================
 
-function registerProperty(type, object, i) {
-	var field = type.fields[i];
-	var fieldname = '_' + field.name;
-	Object.defineProperty(object, field.name, {
-		get: function() {
-			if (object[fieldname] == undefined) {
-				object[fieldname] = field.type.Default();
-			}
-			return object[fieldname];
-		},
-		set: function(value) {
-			object[fieldname] = value;
-		}
-	});
-}
-
 function registerMethod(type, i) {
 	var method = type.methods[i];
-	type.Type['S_' + method.name] = function() {
+	method.S(type.Type, function() {
 		var buffer = new Uint8Array(method.type.ByteSize(arguments));
 		method.type.Serialize(arguments, new ibelie.tyts.ProtoBuf(buffer));
 		return buffer;
-	};
-	type.Type['D_' + method.name] = function(buffer) {
+	});
+	method.D(type.Type, function(buffer) {
 		return method.type.Deserialize(new ibelie.tyts.ProtoBuf(buffer));
-	};
+	});
 }
 
 ibelie.tyts.Object = function(cutoff, fields, methods) {
@@ -532,14 +516,8 @@ ibelie.tyts.Object = function(cutoff, fields, methods) {
 	type.cutoff = cutoff;
 	type.fields = fields;
 	type.methods = methods;
-
-	type.Type = function() {
-		for (var i = 0; i < type.fields.length; i++) {
-			registerProperty(type, this, i);
-		}
-	};
-
-	for (var i = 0; i < type.methods.length; i++) {
+	type.Type = function() {};
+	for (var i = 0, n = methods.length; i < n; i++) {
 		registerMethod(type, i);
 	}
 
@@ -613,12 +591,11 @@ ibelie.tyts.Object.prototype.Deserialize = function(value, protobuf) {
 
 ibelie.tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 	var size = 0;
-	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
-		var fieldname = prefix + field.name;
-		if (value[fieldname] != undefined) {
-			size += field.type.ByteSize(value[fieldname], field.tagsize, true);
+		var fieldvalue = field.get(value);
+		if (fieldvalue != undefined) {
+			size += field.type.ByteSize(fieldvalue, field.tagsize, true);
 		}
 	}
 	value.cached_size = size;
@@ -626,44 +603,42 @@ ibelie.tyts.Object.prototype.ByteSizeUnsealed = function(value) {
 };
 
 ibelie.tyts.Object.prototype.SerializeUnsealed = function(value, protobuf) {
-	var prefix = this.Check(value) ? '_' : '';
 	for (var i = 0; i < this.fields.length; i++) {
 		var field = this.fields[i];
-		var fieldname = prefix + field.name;
-		if (value[fieldname] != undefined) {
-			field.type.Serialize(value[fieldname], field.tag, true, protobuf);
+		var fieldvalue = field.get(value);
+		if (fieldvalue != undefined) {
+			field.type.Serialize(fieldvalue, field.tag, true, protobuf);
 		}
 	}
 };
 
 ibelie.tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
-	var prefix = this.Check(value) ? '_' : '';
 	while (!protobuf.End()) {
 		var tag_cutoff = protobuf.ReadTag(this.cutoff);
 		var i = (tag_cutoff[0] >> ibelie.tyts.WireTypeBits) - 1;
 		if (tag_cutoff[1] && i >= 0 && i < this.fields.length) {
-			var field = this.fields[i].type;
-			var name = this.fields[i].name
-			var fieldname = prefix + name;
+			var field = this.fields[i];
+			var type = field.type;
+			var handler = field.handle(value);
+			var fieldvalue = field.get(value)
 			var wiretype = tag_cutoff[0] & ibelie.tyts.WireTypeMask;
-			var handler = 'On' + name[0].toUpperCase() + name.substr(1) + 'Changed';
-			if (field.wiretype == wiretype) {
-				if (value[handler] == undefined) {
-					value[fieldname] = field.Deserialize(value[fieldname], protobuf);
+			if (type.wiretype == wiretype) {
+				if (handler == undefined) {
+					field.set(value, type.Deserialize(fieldvalue, protobuf));
 				} else {
-					var old_value = value[fieldname];
-					var new_value = field.Deserialize(value[fieldname], protobuf);
-					value[fieldname] = new_value;
-					value[handler](old_value, new_value);
+					var old_value = fieldvalue;
+					var new_value = type.Deserialize(fieldvalue, protobuf);
+					field.set(value, new_value);
+					handler(old_value, new_value);
 				}
 				continue;
-			} else if (field.$ == TYPE_LIST && field.element.wiretype == wiretype) {
-				if (value[handler] == undefined) {
-					value[fieldname] = field.DeserializeRepeat(value[fieldname], protobuf);
+			} else if (type.$ == TYPE_LIST && type.element.wiretype == wiretype) {
+				if (handler == undefined) {
+					field.set(value, type.DeserializeRepeat(fieldvalue, protobuf));
 				} else {
-					var new_value = field.DeserializeRepeat(value[fieldname], protobuf);
-					value[fieldname] = new_value;
-					value[handler](new_value, new_value[new_value.length - 1]);
+					var new_value = type.DeserializeRepeat(fieldvalue, protobuf);
+					field.set(value, new_value);
+					handler(new_value, new_value[new_value.length - 1]);
 				}
 				continue;
 			}
