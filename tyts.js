@@ -516,7 +516,14 @@ ibelie.tyts.Object = function(cutoff, fields, methods) {
 	type.cutoff = cutoff;
 	type.fields = fields;
 	type.methods = methods;
-	type.Type = function() {};
+
+	type.Type = function() {
+		for (var i = 0, n = fields.length; i < n; i++) {
+			var field = fields[i];
+			field.set(this, field.type.Default());
+		}
+	};
+
 	for (var i = 0, n = methods.length; i < n; i++) {
 		registerMethod(type, i);
 	}
