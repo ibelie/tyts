@@ -11,6 +11,7 @@ class GoType {
 	AP: string;
 
 	constructor(PP?: number, AP?: string) {
+		this.isObject = true;
 		this.PP = PP;
 		this.AP = AP;
 	}
