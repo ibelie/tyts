@@ -527,9 +527,8 @@ function registerMethod(type, i) {
 	};
 }
 
-ibelie.tyts.Object = function(name, cutoff, fields, methods) {
+ibelie.tyts.Object = function(cutoff, fields, methods) {
 	var type = this;
-	type.name = name;
 	type.cutoff = cutoff;
 	type.fields = fields;
 	type.methods = methods;
@@ -544,7 +543,7 @@ ibelie.tyts.Object = function(name, cutoff, fields, methods) {
 		registerMethod(type, i);
 	}
 
-	type.Type.prototype.__class__ = name;
+	type.Type.prototype.isObject = true;
 	type.Type.prototype.ByteSize = function() {
 		return type.ByteSizeUnsealed(this);
 	};
@@ -678,8 +677,7 @@ ibelie.tyts.Object.prototype.DeserializeUnsealed = function(value, protobuf) {
 
 //=============================================================================
 
-ibelie.tyts.Method = function(name, cutoff, params) {
-	this.name = name;
+ibelie.tyts.Method = function(cutoff, params) {
 	this.cutoff = cutoff;
 	this.params = params;
 };
@@ -749,8 +747,7 @@ ibelie.tyts.Method.prototype.Deserialize = function(protobuf) {
 
 //=============================================================================
 
-ibelie.tyts.Variant = function(name, cutoff, types) {
-	this.name = name;
+ibelie.tyts.Variant = function(cutoff, types) {
 	this.cutoff = cutoff;
 	this.types = types;
 };
@@ -832,8 +829,7 @@ ibelie.tyts.Variant.prototype.Deserialize = function(value, protobuf) {
 
 //=============================================================================
 
-ibelie.tyts.List = function(name, element) {
-	this.name = name;
+ibelie.tyts.List = function(element) {
 	this.element = element;
 	this.isIterative = !this.element.isPrimitive;
 };
@@ -943,8 +939,7 @@ ibelie.tyts.List.prototype.DeserializeRepeat = function(value, protobuf) {
 
 //=============================================================================
 
-ibelie.tyts.Dict = function(name, key, value) {
-	this.name = name;
+ibelie.tyts.Dict = function(key, value) {
 	this.key = key;
 	this.value = value;
 };
@@ -959,7 +954,7 @@ ibelie.tyts.Dict.prototype.Default = function() {
 };
 
 ibelie.tyts.Dict.prototype.Check = function(value) {
-	return (value instanceof Object) && !(value instanceof Array) && !value.__class__;
+	return (value instanceof Object) && !(value instanceof Array) && !value.isObject;
 };
 
 ibelie.tyts.Dict.prototype.ByteSize = function(value, tagsize, ignore) {
@@ -1025,8 +1020,7 @@ ibelie.tyts.Dict.prototype.Deserialize = function(value, protobuf) {
 
 //=============================================================================
 
-ibelie.tyts.Extension = function(name, type) {
-	this.name = name;
+ibelie.tyts.Extension = function(type) {
 	this.type = type;
 };
 

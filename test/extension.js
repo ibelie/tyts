@@ -4,7 +4,6 @@
 goog.provide('GoType');
 var GoType = /** @class */ (function () {
     function GoType(PP, AP) {
-        this.__class__ = 'GoType';
         this.PP = PP;
         this.AP = AP;
     }

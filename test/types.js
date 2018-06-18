@@ -24,9 +24,9 @@ goog.require('GoType');
 
 var FixedPoint_1_s10 = new ibelie.tyts.FixedPoint(-10, 1)
 
-var GoTypeDelegate = new ibelie.tyts.Extension('GoTypeDelegate', GoType)
+var GoTypeDelegate = new ibelie.tyts.Extension(GoType)
 
-var Vector2 = new ibelie.tyts.Object('Vector2', 127, [
+var Vector2 = new ibelie.tyts.Object(127, [
 	{name: 'X', tag: 13, tagsize: 1, type: ibelie.tyts.Float32},
 	{name: 'Y', tag: 16, tagsize: 1, type: FixedPoint_1_s10},
 	{name: 'B', tag: 26, tagsize: 1, type: ibelie.tyts.Bytes},
@@ -38,46 +38,46 @@ var Vector2 = new ibelie.tyts.Object('Vector2', 127, [
 ]);
 types.Vector2 = Vector2.Type;
 
-var DiVector2 = new ibelie.tyts.Dict('DiVector2', ibelie.tyts.Integer, Vector2)
+var DiVector2 = new ibelie.tyts.Dict(ibelie.tyts.Integer, Vector2)
 
-var Dif = new ibelie.tyts.Dict('Dif', ibelie.tyts.Integer, ibelie.tyts.Float32)
+var Dif = new ibelie.tyts.Dict(ibelie.tyts.Integer, ibelie.tyts.Float32)
 
-var LVector2 = new ibelie.tyts.List('LVector2', Vector2)
+var LVector2 = new ibelie.tyts.List(Vector2)
 
-var LLVector2 = new ibelie.tyts.List('LLVector2', LVector2)
+var LLVector2 = new ibelie.tyts.List(LVector2)
 
-var LGoType = new ibelie.tyts.List('LGoType', GoTypeDelegate)
+var LGoType = new ibelie.tyts.List(GoTypeDelegate)
 
-var DiGoType = new ibelie.tyts.Dict('DiGoType', ibelie.tyts.Integer, GoTypeDelegate)
+var DiGoType = new ibelie.tyts.Dict(ibelie.tyts.Integer, GoTypeDelegate)
 
-var VGoTypei = new ibelie.tyts.Variant('VGoTypei', 127, [
+var VGoTypei = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 18, tagsize: 1, type: GoTypeDelegate}
 ])
 
-var Lf = new ibelie.tyts.List('Lf', ibelie.tyts.Float32)
+var Lf = new ibelie.tyts.List(ibelie.tyts.Float32)
 
-var Lby = new ibelie.tyts.List('Lby', ibelie.tyts.Bytes)
+var Lby = new ibelie.tyts.List(ibelie.tyts.Bytes)
 
-var Ls = new ibelie.tyts.List('Ls', ibelie.tyts.String)
+var Ls = new ibelie.tyts.List(ibelie.tyts.String)
 
-var Dsby = new ibelie.tyts.Dict('Dsby', ibelie.tyts.String, ibelie.tyts.Bytes)
+var Dsby = new ibelie.tyts.Dict(ibelie.tyts.String, ibelie.tyts.Bytes)
 
-var Dis = new ibelie.tyts.Dict('Dis', ibelie.tyts.Integer, ibelie.tyts.String)
+var Dis = new ibelie.tyts.Dict(ibelie.tyts.Integer, ibelie.tyts.String)
 
-var Lsy = new ibelie.tyts.List('Lsy', ibelie.tyts.Symbol)
+var Lsy = new ibelie.tyts.List(ibelie.tyts.Symbol)
 
-var Dsyby = new ibelie.tyts.Dict('Dsyby', ibelie.tyts.Symbol, ibelie.tyts.Bytes)
+var Dsyby = new ibelie.tyts.Dict(ibelie.tyts.Symbol, ibelie.tyts.Bytes)
 
-var Disy = new ibelie.tyts.Dict('Disy', ibelie.tyts.Integer, ibelie.tyts.Symbol)
+var Disy = new ibelie.tyts.Dict(ibelie.tyts.Integer, ibelie.tyts.Symbol)
 
-var LCorpus = new ibelie.tyts.List('LCorpus', ibelie.tyts.Integer)
+var LCorpus = new ibelie.tyts.List(ibelie.tyts.Integer)
 
-var DiCorpus = new ibelie.tyts.Dict('DiCorpus', ibelie.tyts.Integer, ibelie.tyts.Integer)
+var DiCorpus = new ibelie.tyts.Dict(ibelie.tyts.Integer, ibelie.tyts.Integer)
 
-var LLf = new ibelie.tyts.List('LLf', Lf)
+var LLf = new ibelie.tyts.List(Lf)
 
-var VVector2byfi = new ibelie.tyts.Variant('VVector2byfi', 127, [
+var VVector2byfi = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 21, tagsize: 1, type: ibelie.tyts.Float32},
 	{tag: 26, tagsize: 1, type: ibelie.tyts.Bytes},
@@ -86,31 +86,31 @@ var VVector2byfi = new ibelie.tyts.Variant('VVector2byfi', 127, [
 
 var FixedPoint_3_0 = new ibelie.tyts.FixedPoint(0, 3)
 
-var VFixedPoint_3_0Vector2is = new ibelie.tyts.Variant('VFixedPoint_3_0Vector2is', 127, [
+var VFixedPoint_3_0Vector2is = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 16, tagsize: 1, type: FixedPoint_3_0},
 	{tag: 26, tagsize: 1, type: ibelie.tyts.String},
 	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
-var LVFixedPoint_3_0Vector2is = new ibelie.tyts.List('LVFixedPoint_3_0Vector2is', VFixedPoint_3_0Vector2is)
+var LVFixedPoint_3_0Vector2is = new ibelie.tyts.List(VFixedPoint_3_0Vector2is)
 
-var VCorpusVector2ds = new ibelie.tyts.Variant('VCorpusVector2ds', 127, [
+var VCorpusVector2ds = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 17, tagsize: 1, type: ibelie.tyts.Float64},
 	{tag: 26, tagsize: 1, type: ibelie.tyts.String},
 	{tag: 34, tagsize: 1, type: Vector2}
 ])
 
-var DiVCorpusVector2ds = new ibelie.tyts.Dict('DiVCorpusVector2ds', ibelie.tyts.Integer, VCorpusVector2ds)
+var DiVCorpusVector2ds = new ibelie.tyts.Dict(ibelie.tyts.Integer, VCorpusVector2ds)
 
-var LVCorpusVector2ds = new ibelie.tyts.List('LVCorpusVector2ds', VCorpusVector2ds)
+var LVCorpusVector2ds = new ibelie.tyts.List(VCorpusVector2ds)
 
-var DiLVCorpusVector2ds = new ibelie.tyts.Dict('DiLVCorpusVector2ds', ibelie.tyts.Integer, LVCorpusVector2ds)
+var DiLVCorpusVector2ds = new ibelie.tyts.Dict(ibelie.tyts.Integer, LVCorpusVector2ds)
 
-var DiLf = new ibelie.tyts.Dict('DiLf', ibelie.tyts.Integer, Lf)
+var DiLf = new ibelie.tyts.Dict(ibelie.tyts.Integer, Lf)
 
-var VCorpusVector2dis = new ibelie.tyts.Variant('VCorpusVector2dis', 127, [
+var VCorpusVector2dis = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 16, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 25, tagsize: 1, type: ibelie.tyts.Float64},
@@ -118,52 +118,52 @@ var VCorpusVector2dis = new ibelie.tyts.Variant('VCorpusVector2dis', 127, [
 	{tag: 42, tagsize: 1, type: Vector2}
 ])
 
-var DiVCorpusVector2dis = new ibelie.tyts.Dict('DiVCorpusVector2dis', ibelie.tyts.Integer, VCorpusVector2dis)
+var DiVCorpusVector2dis = new ibelie.tyts.Dict(ibelie.tyts.Integer, VCorpusVector2dis)
 
-var DiDiVCorpusVector2dis = new ibelie.tyts.Dict('DiDiVCorpusVector2dis', ibelie.tyts.Integer, DiVCorpusVector2dis)
+var DiDiVCorpusVector2dis = new ibelie.tyts.Dict(ibelie.tyts.Integer, DiVCorpusVector2dis)
 
-var DiDif = new ibelie.tyts.Dict('DiDif', ibelie.tyts.Integer, Dif)
+var DiDif = new ibelie.tyts.Dict(ibelie.tyts.Integer, Dif)
 
-var Vin = new ibelie.tyts.Variant('Vin', 127, [
+var Vin = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer}
 ])
 
-var Vfs = new ibelie.tyts.Variant('Vfs', 127, [
+var Vfs = new ibelie.tyts.Variant(127, [
 	{tag: 13, tagsize: 1, type: ibelie.tyts.Float32},
 	{tag: 18, tagsize: 1, type: ibelie.tyts.String}
 ])
 
-var LVfs = new ibelie.tyts.List('LVfs', Vfs)
+var LVfs = new ibelie.tyts.List(Vfs)
 
-var VLVfsi = new ibelie.tyts.Variant('VLVfsi', 127, [
+var VLVfsi = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 18, tagsize: 1, type: LVfs}
 ])
 
-var VLfi = new ibelie.tyts.Variant('VLfi', 127, [
+var VLfi = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 18, tagsize: 1, type: Lf}
 ])
 
-var DiVfs = new ibelie.tyts.Dict('DiVfs', ibelie.tyts.Integer, Vfs)
+var DiVfs = new ibelie.tyts.Dict(ibelie.tyts.Integer, Vfs)
 
-var VDiVfsi = new ibelie.tyts.Variant('VDiVfsi', 127, [
+var VDiVfsi = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 18, tagsize: 1, type: DiVfs}
 ])
 
-var VDifi = new ibelie.tyts.Variant('VDifi', 127, [
+var VDifi = new ibelie.tyts.Variant(127, [
 	{tag: 8, tagsize: 1, type: ibelie.tyts.Integer},
 	{tag: 18, tagsize: 1, type: Dif}
 ])
 
-var LLLVector2 = new ibelie.tyts.List('LLLVector2', LLVector2)
+var LLLVector2 = new ibelie.tyts.List(LLVector2)
 
-var DsVector2 = new ibelie.tyts.Dict('DsVector2', ibelie.tyts.String, Vector2)
+var DsVector2 = new ibelie.tyts.Dict(ibelie.tyts.String, Vector2)
 
-var LDsVector2 = new ibelie.tyts.List('LDsVector2', DsVector2)
+var LDsVector2 = new ibelie.tyts.List(DsVector2)
 
-var Fighter = new ibelie.tyts.Object('Fighter', 1023, [
+var Fighter = new ibelie.tyts.Object(1023, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: ibelie.tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: ibelie.tyts.Float32},
@@ -210,28 +210,28 @@ var Fighter = new ibelie.tyts.Object('Fighter', 1023, [
 	{name: 'GPRParam', type: null},
 	{name: 'GPRResult', type: null}
 ]);
-Fighter.methods[0].type = new ibelie.tyts.Method('FighterRPGParam', 127, [
+Fighter.methods[0].type = new ibelie.tyts.Method(127, [
 	{tag: 10, tagsize: 1, type: Fighter},
 	{tag: 18, tagsize: 1, type: Vin},
 	{tag: 24, tagsize: 1, type: FixedPoint_3_0}
 ]);
 
-Fighter.methods[1].type = new ibelie.tyts.Method('FighterRPGResult', 127, [
+Fighter.methods[1].type = new ibelie.tyts.Method(127, [
 	{tag: 10, tagsize: 1, type: Vector2}
 ]);
 
-Fighter.methods[2].type = new ibelie.tyts.Method('FighterGPRParam', 127, [
+Fighter.methods[2].type = new ibelie.tyts.Method(127, [
 	{tag: 10, tagsize: 1, type: DiVCorpusVector2ds}
 ]);
 
-Fighter.methods[3].type = new ibelie.tyts.Method('FighterGPRResult', 127, [
+Fighter.methods[3].type = new ibelie.tyts.Method(127, [
 	{tag: 10, tagsize: 1, type: Fighter},
 	{tag: 16, tagsize: 1, type: ibelie.tyts.Integer}
 ]);
 
 types.Fighter = Fighter.Type;
 
-var Fighter_Part1 = new ibelie.tyts.Object('Fighter_Part1', 127, [
+var Fighter_Part1 = new ibelie.tyts.Object(127, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: ibelie.tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: ibelie.tyts.Float32},
@@ -247,7 +247,7 @@ var Fighter_Part1 = new ibelie.tyts.Object('Fighter_Part1', 127, [
 ]);
 types.Fighter_Part1 = Fighter_Part1.Type;
 
-var Fighter_Part2 = new ibelie.tyts.Object('Fighter_Part2', 1023, [
+var Fighter_Part2 = new ibelie.tyts.Object(1023, [
 	{name: 'Pos', tag: 10, tagsize: 1, type: Vector2},
 	{name: 'IsAwake', tag: 16, tagsize: 1, type: ibelie.tyts.Bool},
 	{name: 'Hp', tag: 29, tagsize: 1, type: ibelie.tyts.Float32},

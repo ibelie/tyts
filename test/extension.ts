@@ -6,12 +6,11 @@ declare var goog;
 goog.provide('GoType');
 
 class GoType {
-	__class__: string;
+	isObject: true;
 	PP: number;
 	AP: string;
 
 	constructor(PP?: number, AP?: string) {
-		this.__class__ = 'GoType';
 		this.PP = PP;
 		this.AP = AP;
 	}

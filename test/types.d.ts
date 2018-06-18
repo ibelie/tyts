@@ -2,7 +2,7 @@
 
 declare module types {
 	interface Type {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
@@ -19,7 +19,7 @@ declare module types {
 	}
 
 	class Vector2 {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
@@ -38,7 +38,7 @@ declare module types {
 	}
 
 	class Fighter_Part1 {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
@@ -61,7 +61,7 @@ declare module types {
 	}
 
 	class Fighter_Part2 extends Fighter_Part1 {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
@@ -84,7 +84,7 @@ declare module types {
 	}
 
 	class Fighter extends Fighter_Part2 {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
